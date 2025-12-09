@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C.R.E.A.M. COFFEE - Loyalty Program QR Code</title>
+    <meta name="description" content="Scan to join C.R.E.A.M. COFFEE rewards program">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #432818;
+            --bg-medium: #99582A;
+            --text-light: #FFE6A7;
+            --accent: #6F1D1B;
+            --accent-hover: #8a2422;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #2d1810 0%, #432818 50%, #2d1810 100%);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+
+        .container {
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            font-size: 48px;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            background: linear-gradient(135deg, var(--text-light) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .qr-card {
+            background: rgba(153, 88, 42, 0.5);
+            border: 1px solid rgba(255, 230, 167, 0.1);
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 32px;
+            box-shadow: 0 20px 60px rgba(67, 40, 24, 0.5);
+        }
+
+        .qr-wrapper {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            display: inline-block;
+            margin-bottom: 24px;
+        }
+
+        #qrcode {
+            width: 200px;
+            height: 200px;
+        }
+
+        #qrcode img {
+            display: block;
+        }
+
+        .qr-card h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .qr-card p {
+            color: rgba(255, 230, 167, 0.7);
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+        .instructions {
+            background: rgba(153, 88, 42, 0.3);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: left;
+        }
+
+        .instructions h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .instructions h3 .material-icons-round {
+            color: var(--accent);
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .instructions li {
+            color: rgba(255, 230, 167, 0.8);
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 32px;
+        }
+
+        .btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border: none;
+            color: white;
+            box-shadow: 0 4px 20px rgba(111, 29, 27, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(111, 29, 27, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(153, 88, 42, 0.6);
+            border: 1px solid rgba(255, 230, 167, 0.15);
+            color: var(--text-light);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(153, 88, 42, 0.8);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: rgba(255, 230, 167, 0.6);
+            text-decoration: none;
+            font-size: 14px;
+            margin-top: 32px;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: var(--accent);
+        }
+
+        @media print {
+            body {
+                background: white;
+                color: black;
+            }
+
+            .qr-card {
+                background: none;
+                border: 2px solid #ccc;
+                box-shadow: none;
+            }
+
+            .qr-card h2,
+            .qr-card p {
+                color: black;
+            }
+
+            .instructions,
+            .buttons,
+            .back-link {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo">
+            <span class="logo-icon">☕</span>
+            <span class="logo-text">C.R.E.A.M.</span>
+        </div>
+
+        <div class="qr-card">
+            <div class="qr-wrapper">
+                <div id="qrcode"></div>
+            </div>
+            <h2>Join Our Rewards Program</h2>
+            <p>Scan this QR code to sign up for our loyalty program and start earning points with every purchase!</p>
+        </div>
+
+        <div class="instructions">
+            <h3>
+                <span class="material-icons-round">help_outline</span>
+                How to Scan
+            </h3>
+            <ol>
+                <li>Open the Camera app on your iPhone or Android</li>
+                <li>Point your camera at the QR code above</li>
+                <li>Tap the notification that appears</li>
+                <li>Fill out the short registration form</li>
+                <li>Add your digital loyalty card to Apple Wallet</li>
+            </ol>
+        </div>
+
+        <div class="buttons">
+            <button class="btn btn-secondary" onclick="window.print()">
+                <span class="material-icons-round">print</span>
+                Print
+            </button>
+            <a href="register.html" class="btn btn-primary">
+                <span class="material-icons-round">open_in_new</span>
+                Open Link
+            </a>
+        </div>
+
+        <a href="index.html" class="back-link">
+            <span class="material-icons-round">arrow_back</span>
+            Back to Dashboard
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get the current URL and create registration link
+            const baseUrl = window.location.href.replace('qrcode.html', '');
+            const registerUrl = baseUrl + 'register.html';
+
+            // Generate QR Code
+            new QRCode(document.getElementById('qrcode'), {
+                text: registerUrl,
+                width: 200,
+                height: 200,
+                colorDark: '#432818',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C.R.E.A.M. COFFEE - CRM Dashboard</title>
+    <meta name="description" content="C.R.E.A.M. COFFEE CRM with Apple Wallet Integration">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <span class="logo-icon">☕</span>
+                <span class="logo-text">C.R.E.A.M.</span>
+            </div>
+            <button class="sidebar-toggle" id="sidebarToggle">
+                <span class="material-icons-round">menu</span>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-page="dashboard">
+                <span class="material-icons-round">dashboard</span>
+                <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="#" class="nav-item" data-page="pass-designer">
+                <span class="material-icons-round">style</span>
+                <span class="nav-text">Pass Designer</span>
+            </a>
+            <a href="#" class="nav-item" data-page="barista">
+                <span class="material-icons-round">point_of_sale</span>
+                <span class="nav-text">Barista App</span>
+            </a>
+            <a href="#" class="nav-item" data-page="customers">
+                <span class="material-icons-round">people</span>
+                <span class="nav-text">Customers</span>
+            </a>
+            <a href="#" class="nav-item" data-page="campaigns">
+                <span class="material-icons-round">campaign</span>
+                <span class="nav-text">Campaigns</span>
+            </a>
+            <a href="#" class="nav-item" data-page="analytics">
+                <span class="material-icons-round">analytics</span>
+                <span class="nav-text">Analytics</span>
+            </a>
+            <a href="#" class="nav-item" data-page="notifications">
+                <span class="material-icons-round">notifications</span>
+                <span class="nav-text">Push Notifications</span>
+            </a>
+            <a href="#" class="nav-item" data-page="geofencing">
+                <span class="material-icons-round">location_on</span>
+                <span class="nav-text">Geo-Tagging</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">AM</div>
+                <div class="user-details">
+                    <span class="user-name">Admin</span>
+                    <span class="user-role">Manager</span>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content" id="mainContent">
+        <!-- Dashboard Page -->
+        <section class="page active" id="page-dashboard">
+            <header class="page-header">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p class="subtitle">Welcome back! Here's your coffee shop overview.</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary">
+                        <span class="material-icons-round">add</span>
+                        Quick Action
+                    </button>
+                </div>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #EB5E28, #ff7b4a);">
+                        <span class="material-icons-round">people</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" data-count="2847">0</span>
+                        <span class="stat-label">Active Members</span>
+                    </div>
+                    <span class="stat-trend positive">+12.5%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #403D39, #5a5652);">
+                        <span class="material-icons-round">loyalty</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" data-count="45832">0</span>
+                        <span class="stat-label">Points Issued</span>
+                    </div>
+                    <span class="stat-trend positive">+8.3%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #CCC5B9, #e0dbd3);">
+                        <span class="material-icons-round">redeem</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" data-count="1293">0</span>
+                        <span class="stat-label">Redemptions</span>
+                    </div>
+                    <span class="stat-trend positive">+23.1%</span>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #252422, #3d3a37);">
+                        <span class="material-icons-round">attach_money</span>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-value" data-count="18420" data-prefix="$">$0</span>
+                        <span class="stat-label">Revenue Impact</span>
+                    </div>
+                    <span class="stat-trend positive">+15.7%</span>
+                </div>
+            </div>
+
+            <div class="dashboard-grid">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>Engagement Overview</h3>
+                        <select class="select-minimal">
+                            <option>Last 7 Days</option>
+                            <option>Last 30 Days</option>
+                            <option>Last 90 Days</option>
+                        </select>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="engagementChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Activity</h3>
+                        <a href="#" class="link-text">View All</a>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon redeem">
+                                <span class="material-icons-round">redeem</span>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>Sarah Chen</strong> redeemed a free latte</p>
+                                <span class="activity-time">2 minutes ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon points">
+                                <span class="material-icons-round">add_circle</span>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>Mike Johnson</strong> earned 25 points</p>
+                                <span class="activity-time">15 minutes ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon new">
+                                <span class="material-icons-round">person_add</span>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>Emma Wilson</strong> joined the loyalty program</p>
+                                <span class="activity-time">1 hour ago</span>
+                            </div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon tier">
+                                <span class="material-icons-round">trending_up</span>
+                            </div>
+                            <div class="activity-content">
+                                <p><strong>David Kim</strong> reached Gold tier</p>
+                                <span class="activity-time">2 hours ago</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Top Customers</h3>
+                    <a href="#" class="link-text" data-page="customers">View All Customers</a>
+                </div>
+                <div class="table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Tier</th>
+                                <th>Points</th>
+                                <th>Visits</th>
+                                <th>Last Visit</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="customer-cell">
+                                        <div class="customer-avatar">SC</div>
+                                        <div>
+                                            <div class="customer-name">Sarah Chen</div>
+                                            <div class="customer-email">sarah.chen@email.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="tier-badge platinum">Platinum</span></td>
+                                <td><strong>4,250</strong></td>
+                                <td>156</td>
+                                <td>Today</td>
+                                <td>
+                                    <button class="btn-icon"><span
+                                            class="material-icons-round">visibility</span></button>
+                                    <button class="btn-icon"><span class="material-icons-round">edit</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="customer-cell">
+                                        <div class="customer-avatar">MJ</div>
+                                        <div>
+                                            <div class="customer-name">Mike Johnson</div>
+                                            <div class="customer-email">mike.j@email.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="tier-badge gold">Gold</span></td>
+                                <td><strong>2,890</strong></td>
+                                <td>98</td>
+                                <td>Today</td>
+                                <td>
+                                    <button class="btn-icon"><span
+                                            class="material-icons-round">visibility</span></button>
+                                    <button class="btn-icon"><span class="material-icons-round">edit</span></button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="customer-cell">
+                                        <div class="customer-avatar">EW</div>
+                                        <div>
+                                            <div class="customer-name">Emma Wilson</div>
+                                            <div class="customer-email">emma.w@email.com</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td><span class="tier-badge silver">Silver</span></td>
+                                <td><strong>1,450</strong></td>
+                                <td>67</td>
+                                <td>Yesterday</td>
+                                <td>
+                                    <button class="btn-icon"><span
+                                            class="material-icons-round">visibility</span></button>
+                                    <button class="btn-icon"><span class="material-icons-round">edit</span></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pass Designer Page -->
+        <section class="page" id="page-pass-designer">
+            <header class="page-header">
+                <div>
+                    <h1>Pass Designer</h1>
+                    <p class="subtitle">Design your Apple Wallet loyalty pass</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-secondary">
+                        <span class="material-icons-round">visibility</span>
+                        Preview
+                    </button>
+                    <button class="btn btn-primary">
+                        <span class="material-icons-round">save</span>
+                        Save Pass
+                    </button>
+                </div>
+            </header>
+
+            <div class="designer-layout">
+                <div class="designer-preview">
+                    <div class="phone-frame">
+                        <div class="phone-notch"></div>
+                        <div class="phone-screen">
+                            <div class="wallet-pass" id="walletPass">
+                                <div class="pass-header">
+                                    <div class="pass-logo">☕</div>
+                                    <div class="pass-title">C.R.E.A.M. COFFEE</div>
+                                </div>
+                                <div class="pass-hero">
+                                    <div class="pass-tier" id="passTierDisplay">GOLD MEMBER</div>
+                                    <div class="pass-name" id="passNameDisplay">Sarah Chen</div>
+                                </div>
+                                <div class="pass-points">
+                                    <div class="points-label">POINTS BALANCE</div>
+                                    <div class="points-value" id="passPointsDisplay">2,450</div>
+                                </div>
+                                <div class="pass-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="passProgressFill" style="width: 65%;"></div>
+                                    </div>
+                                    <div class="progress-label">550 points to Platinum</div>
+                                </div>
+                                <div class="pass-barcode">
+                                    <div class="barcode-stripes"></div>
+                                    <div class="barcode-number">**** **** **** 4289</div>
+                                </div>
+                                <div class="pass-footer">
+                                    <span class="material-icons-round">keyboard_arrow_down</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="preview-hint">Drag to rotate • Scroll to zoom</p>
+                </div>
+
+                <div class="designer-controls">
+                    <div class="control-section">
+                        <h3>Pass Colors</h3>
+                        <div class="color-pickers">
+                            <div class="color-picker-group">
+                                <label>Background</label>
+                                <div class="color-input-wrapper">
+                                    <input type="color" id="passBgColor" value="#252422">
+                                    <span class="color-hex">#252422</span>
+                                </div>
+                            </div>
+                            <div class="color-picker-group">
+                                <label>Accent</label>
+                                <div class="color-input-wrapper">
+                                    <input type="color" id="passAccentColor" value="#EB5E28">
+                                    <span class="color-hex">#EB5E28</span>
+                                </div>
+                            </div>
+                            <div class="color-picker-group">
+                                <label>Text</label>
+                                <div class="color-input-wrapper">
+                                    <input type="color" id="passTextColor" value="#FFFCF2">
+                                    <span class="color-hex">#FFFCF2</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Pass Content</h3>
+                        <div class="form-group">
+                            <label>Header Title</label>
+                            <input type="text" id="passHeaderTitle" value="C.R.E.A.M. COFFEE" class="form-input">
+                        </div>
+                        <div class="form-group">
+                            <label>Reward Tiers</label>
+                            <div class="tier-config">
+                                <div class="tier-item">
+                                    <span class="tier-badge bronze">Bronze</span>
+                                    <input type="number" value="0" class="tier-points"> pts
+                                </div>
+                                <div class="tier-item">
+                                    <span class="tier-badge silver">Silver</span>
+                                    <input type="number" value="500" class="tier-points"> pts
+                                </div>
+                                <div class="tier-item">
+                                    <span class="tier-badge gold">Gold</span>
+                                    <input type="number" value="1500" class="tier-points"> pts
+                                </div>
+                                <div class="tier-item">
+                                    <span class="tier-badge platinum">Platinum</span>
+                                    <input type="number" value="3000" class="tier-points"> pts
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Logo & Branding</h3>
+                        <div class="upload-zone" id="logoUpload">
+                            <span class="material-icons-round">cloud_upload</span>
+                            <p>Drag & drop logo or <span class="link-text">browse</span></p>
+                            <span class="upload-hint">PNG, SVG up to 2MB</span>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Pass Actions</h3>
+                        <div class="action-buttons">
+                            <button class="btn btn-outline full-width">
+                                <span class="material-icons-round">download</span>
+                                Export .pkpass
+                            </button>
+                            <button class="btn btn-outline full-width">
+                                <span class="material-icons-round">qr_code</span>
+                                Generate QR Code
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-section">
+                        <h3>Customer Registration</h3>
+                        <p style="font-size: 13px; color: rgba(255,252,242,0.6); margin-bottom: 16px;">
+                            Generate a QR code for customers to sign up and add their loyalty card to Apple Wallet.
+                        </p>
+                        <div class="action-buttons">
+                            <a href="qrcode.html" target="_blank" class="btn btn-primary full-width">
+                                <span class="material-icons-round">qr_code_2</span>
+                                View Registration QR
+                            </a>
+                            <a href="register.html" target="_blank" class="btn btn-outline full-width">
+                                <span class="material-icons-round">open_in_new</span>
+                                Preview Registration
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Barista App Page -->
+        <section class="page" id="page-barista">
+            <header class="page-header">
+                <div>
+                    <h1>Barista App</h1>
+                    <p class="subtitle">Scan, earn, and redeem customer rewards</p>
+                </div>
+            </header>
+
+            <div class="barista-layout">
+                <div class="barista-scanner">
+                    <div class="scanner-frame">
+                        <div class="scanner-overlay">
+                            <div class="scanner-corners">
+                                <span></span><span></span><span></span><span></span>
+                            </div>
+                            <div class="scanner-line"></div>
+                        </div>
+                        <div class="scanner-placeholder">
+                            <span class="material-icons-round">qr_code_scanner</span>
+                            <p>Point camera at customer's pass</p>
+                        </div>
+                    </div>
+                    <div class="scanner-actions">
+                        <button class="btn btn-primary" id="simulateScan">
+                            <span class="material-icons-round">qr_code_scanner</span>
+                            Simulate Scan
+                        </button>
+                        <button class="btn btn-secondary" id="manualLookup">
+                            <span class="material-icons-round">search</span>
+                            Manual Lookup
+                        </button>
+                    </div>
+                </div>
+
+                <div class="barista-customer" id="baristaCustomerPanel">
+                    <div class="customer-not-found" id="noCustomerState">
+                        <span class="material-icons-round">person_search</span>
+                        <h3>No Customer Selected</h3>
+                        <p>Scan a pass or search for a customer to get started</p>
+                    </div>
+
+                    <div class="customer-found hidden" id="customerFoundState">
+                        <div class="customer-profile">
+                            <div class="customer-avatar-large" id="baristaAvatar">SC</div>
+                            <div class="customer-info">
+                                <h2 id="baristaCustomerName">Sarah Chen</h2>
+                                <span class="tier-badge gold" id="baristaCustomerTier">Gold Member</span>
+                            </div>
+                        </div>
+
+                        <div class="points-display">
+                            <div class="points-current">
+                                <span class="points-number" id="baristaPoints">2,450</span>
+                                <span class="points-text">Current Points</span>
+                            </div>
+                            <div class="points-divider"></div>
+                            <div class="points-next">
+                                <span class="points-number" id="baristaNextTier">550</span>
+                                <span class="points-text">To Next Tier</span>
+                            </div>
+                        </div>
+
+                        <div class="quick-actions-grid">
+                            <button class="quick-action" id="addPointsBtn">
+                                <div class="action-icon add">
+                                    <span class="material-icons-round">add</span>
+                                </div>
+                                <span>Add Points</span>
+                            </button>
+                            <button class="quick-action" id="redeemBtn">
+                                <div class="action-icon redeem">
+                                    <span class="material-icons-round">redeem</span>
+                                </div>
+                                <span>Redeem Reward</span>
+                            </button>
+                            <button class="quick-action">
+                                <div class="action-icon history">
+                                    <span class="material-icons-round">history</span>
+                                </div>
+                                <span>View History</span>
+                            </button>
+                            <button class="quick-action">
+                                <div class="action-icon notes">
+                                    <span class="material-icons-round">note_add</span>
+                                </div>
+                                <span>Add Note</span>
+                            </button>
+                        </div>
+
+                        <div class="available-rewards">
+                            <h3>Available Rewards</h3>
+                            <div class="rewards-list">
+                                <div class="reward-item" data-points="150">
+                                    <div class="reward-icon">☕</div>
+                                    <div class="reward-info">
+                                        <span class="reward-name">Free Drip Coffee</span>
+                                        <span class="reward-points">150 points</span>
+                                    </div>
+                                    <button class="btn btn-small btn-primary">Redeem</button>
+                                </div>
+                                <div class="reward-item" data-points="250">
+                                    <div class="reward-icon">🥐</div>
+                                    <div class="reward-info">
+                                        <span class="reward-name">Free Pastry</span>
+                                        <span class="reward-points">250 points</span>
+                                    </div>
+                                    <button class="btn btn-small btn-primary">Redeem</button>
+                                </div>
+                                <div class="reward-item" data-points="400">
+                                    <div class="reward-icon">🍵</div>
+                                    <div class="reward-info">
+                                        <span class="reward-name">Free Specialty Latte</span>
+                                        <span class="reward-points">400 points</span>
+                                    </div>
+                                    <button class="btn btn-small btn-primary">Redeem</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Customers Page -->
+        <section class="page" id="page-customers">
+            <header class="page-header">
+                <div>
+                    <h1>Customers</h1>
+                    <p class="subtitle">Manage your loyalty program members</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary">
+                        <span class="material-icons-round">person_add</span>
+                        Add Customer
+                    </button>
+                </div>
+            </header>
+
+            <div class="card">
+                <div class="card-toolbar">
+                    <div class="search-box">
+                        <span class="material-icons-round">search</span>
+                        <input type="text" placeholder="Search customers..." id="customerSearch">
+                    </div>
+                    <div class="filter-group">
+                        <select class="select-styled">
+                            <option value="">All Tiers</option>
+                            <option value="platinum">Platinum</option>
+                            <option value="gold">Gold</option>
+                            <option value="silver">Silver</option>
+                            <option value="bronze">Bronze</option>
+                        </select>
+                        <select class="select-styled">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                        <button class="btn btn-outline">
+                            <span class="material-icons-round">download</span>
+                            Export
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="data-table" id="customersTable">
+                        <thead>
+                            <tr>
+                                <th><input type="checkbox" class="checkbox"></th>
+                                <th>Customer</th>
+                                <th>Phone</th>
+                                <th>Tier</th>
+                                <th>Points</th>
+                                <th>Total Visits</th>
+                                <th>Last Visit</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="table-pagination">
+                    <span class="pagination-info">Showing 1-10 of 2,847 customers</span>
+                    <div class="pagination-controls">
+                        <button class="btn-icon"><span class="material-icons-round">chevron_left</span></button>
+                        <button class="pagination-page active">1</button>
+                        <button class="pagination-page">2</button>
+                        <button class="pagination-page">3</button>
+                        <span class="pagination-dots">...</span>
+                        <button class="pagination-page">285</button>
+                        <button class="btn-icon"><span class="material-icons-round">chevron_right</span></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Campaigns Page -->
+        <section class="page" id="page-campaigns">
+            <header class="page-header">
+                <div>
+                    <h1>Campaigns</h1>
+                    <p class="subtitle">Create and manage marketing campaigns</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="createCampaignBtn">
+                        <span class="material-icons-round">add</span>
+                        Create Campaign
+                    </button>
+                </div>
+            </header>
+
+            <div class="campaign-templates">
+                <h3>Quick Templates</h3>
+                <div class="templates-grid">
+                    <div class="template-card" data-template="double-points">
+                        <div class="template-icon">
+                            <span class="material-icons-round">loyalty</span>
+                        </div>
+                        <h4>Double Points Day</h4>
+                        <p>2x points on all purchases</p>
+                    </div>
+                    <div class="template-card" data-template="birthday">
+                        <div class="template-icon">
+                            <span class="material-icons-round">cake</span>
+                        </div>
+                        <h4>Birthday Reward</h4>
+                        <p>Free drink on customer's birthday</p>
+                    </div>
+                    <div class="template-card" data-template="happy-hour">
+                        <div class="template-icon">
+                            <span class="material-icons-round">schedule</span>
+                        </div>
+                        <h4>Happy Hour</h4>
+                        <p>Bonus points during specific hours</p>
+                    </div>
+                    <div class="template-card" data-template="referral">
+                        <div class="template-icon">
+                            <span class="material-icons-round">group_add</span>
+                        </div>
+                        <h4>Referral Bonus</h4>
+                        <p>Reward customers for referrals</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3>Active Campaigns</h3>
+                    <div class="tab-group">
+                        <button class="tab active">Active</button>
+                        <button class="tab">Scheduled</button>
+                        <button class="tab">Completed</button>
+                    </div>
+                </div>
+                <div class="campaigns-list">
+                    <div class="campaign-item">
+                        <div class="campaign-status active"></div>
+                        <div class="campaign-info">
+                            <h4>Weekend Double Points</h4>
+                            <p>Earn 2x points on all purchases this weekend</p>
+                            <div class="campaign-meta">
+                                <span><span class="material-icons-round">calendar_today</span> Dec 7 - Dec 8,
+                                    2024</span>
+                                <span><span class="material-icons-round">people</span> 1,234 participants</span>
+                            </div>
+                        </div>
+                        <div class="campaign-stats">
+                            <div class="stat">
+                                <span class="stat-value">8,450</span>
+                                <span class="stat-label">Points Earned</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">+45%</span>
+                                <span class="stat-label">Engagement</span>
+                            </div>
+                        </div>
+                        <div class="campaign-actions">
+                            <button class="btn-icon"><span class="material-icons-round">edit</span></button>
+                            <button class="btn-icon"><span class="material-icons-round">pause</span></button>
+                            <button class="btn-icon"><span class="material-icons-round">more_vert</span></button>
+                        </div>
+                    </div>
+                    <div class="campaign-item">
+                        <div class="campaign-status scheduled"></div>
+                        <div class="campaign-info">
+                            <h4>Holiday Special - Free Pastry</h4>
+                            <p>Free pastry with any large drink purchase</p>
+                            <div class="campaign-meta">
+                                <span><span class="material-icons-round">calendar_today</span> Dec 20 - Dec 25,
+                                    2024</span>
+                                <span><span class="material-icons-round">people</span> All members</span>
+                            </div>
+                        </div>
+                        <div class="campaign-stats">
+                            <div class="stat">
+                                <span class="stat-value">--</span>
+                                <span class="stat-label">Points Earned</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value">--</span>
+                                <span class="stat-label">Engagement</span>
+                            </div>
+                        </div>
+                        <div class="campaign-actions">
+                            <button class="btn-icon"><span class="material-icons-round">edit</span></button>
+                            <button class="btn-icon"><span class="material-icons-round">delete</span></button>
+                            <button class="btn-icon"><span class="material-icons-round">more_vert</span></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics Page -->
+        <section class="page" id="page-analytics">
+            <header class="page-header">
+                <div>
+                    <h1>Analytics</h1>
+                    <p class="subtitle">Track your loyalty program performance</p>
+                </div>
+                <div class="header-actions">
+                    <div class="date-range-picker">
+                        <span class="material-icons-round">calendar_today</span>
+                        <span>Last 30 Days</span>
+                        <span class="material-icons-round">expand_more</span>
+                    </div>
+                    <button class="btn btn-outline">
+                        <span class="material-icons-round">download</span>
+                        Export Report
+                    </button>
+                </div>
+            </header>
+
+            <div class="analytics-grid">
+                <div class="card chart-card span-2">
+                    <div class="card-header">
+                        <h3>Points Activity</h3>
+                        <div class="legend">
+                            <span class="legend-item"><span class="dot earned"></span> Earned</span>
+                            <span class="legend-item"><span class="dot redeemed"></span> Redeemed</span>
+                        </div>
+                    </div>
+                    <div class="chart-container large">
+                        <canvas id="pointsChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Tier Distribution</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="tierChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Top Rewards</h3>
+                    </div>
+                    <div class="rewards-ranking">
+                        <div class="ranking-item">
+                            <span class="rank">1</span>
+                            <div class="reward-info">
+                                <span class="reward-name">Free Drip Coffee</span>
+                                <div class="reward-bar">
+                                    <div class="bar-fill" style="width: 85%;"></div>
+                                </div>
+                            </div>
+                            <span class="reward-count">423 redemptions</span>
+                        </div>
+                        <div class="ranking-item">
+                            <span class="rank">2</span>
+                            <div class="reward-info">
+                                <span class="reward-name">Free Pastry</span>
+                                <div class="reward-bar">
+                                    <div class="bar-fill" style="width: 65%;"></div>
+                                </div>
+                            </div>
+                            <span class="reward-count">312 redemptions</span>
+                        </div>
+                        <div class="ranking-item">
+                            <span class="rank">3</span>
+                            <div class="reward-info">
+                                <span class="reward-name">Free Specialty Latte</span>
+                                <div class="reward-bar">
+                                    <div class="bar-fill" style="width: 45%;"></div>
+                                </div>
+                            </div>
+                            <span class="reward-count">189 redemptions</span>
+                        </div>
+                        <div class="ranking-item">
+                            <span class="rank">4</span>
+                            <div class="reward-info">
+                                <span class="reward-name">Coffee Beans (250g)</span>
+                                <div class="reward-bar">
+                                    <div class="bar-fill" style="width: 25%;"></div>
+                                </div>
+                            </div>
+                            <span class="reward-count">98 redemptions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card span-2">
+                    <div class="card-header">
+                        <h3>Customer Acquisition</h3>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="acquisitionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notifications Page -->
+        <section class="page" id="page-notifications">
+            <header class="page-header">
+                <div>
+                    <h1>Push Notifications</h1>
+                    <p class="subtitle">Send targeted messages to your customers</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="createNotificationBtn">
+                        <span class="material-icons-round">add</span>
+                        Create Notification
+                    </button>
+                </div>
+            </header>
+
+            <div class="notifications-layout">
+                <div class="card notification-composer">
+                    <h3>Compose Notification</h3>
+                    <div class="form-group">
+                        <label>Title</label>
+                        <input type="text" class="form-input" placeholder="Enter notification title" id="notifTitle">
+                    </div>
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea class="form-textarea" placeholder="Enter your message..." rows="4"
+                            id="notifMessage"></textarea>
+                        <span class="char-count">0/160 characters</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Target Audience</label>
+                        <div class="checkbox-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" checked> All Members
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Platinum Only
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Gold & Above
+                            </label>
+                            <label class="checkbox-label">
+                                <input type="checkbox"> Inactive (30+ days)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Schedule</label>
+                        <div class="radio-group">
+                            <label class="radio-label">
+                                <input type="radio" name="schedule" checked> Send Now
+                            </label>
+                            <label class="radio-label">
+                                <input type="radio" name="schedule"> Schedule for Later
+                            </label>
+                        </div>
+                        <div class="schedule-picker hidden">
+                            <input type="datetime-local" class="form-input">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn btn-secondary">Save Draft</button>
+                        <button class="btn btn-primary">
+                            <span class="material-icons-round">send</span>
+                            Send Notification
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Notifications</h3>
+                    </div>
+                    <div class="notification-history">
+                        <div class="notif-item">
+                            <div class="notif-icon sent">
+                                <span class="material-icons-round">check_circle</span>
+                            </div>
+                            <div class="notif-content">
+                                <h4>Weekend Double Points!</h4>
+                                <p>Earn 2x points on all purchases this weekend. Don't miss out!</p>
+                                <div class="notif-meta">
+                                    <span>Sent Dec 7, 2024 • 9:00 AM</span>
+                                    <span class="notif-stats">2,456 delivered • 892 opened (36%)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notif-item">
+                            <div class="notif-icon sent">
+                                <span class="material-icons-round">check_circle</span>
+                            </div>
+                            <div class="notif-content">
+                                <h4>New Winter Menu</h4>
+                                <p>Try our new seasonal drinks - Peppermint Mocha & Gingerbread Latte!</p>
+                                <div class="notif-meta">
+                                    <span>Sent Dec 1, 2024 • 10:00 AM</span>
+                                    <span class="notif-stats">2,389 delivered • 1,023 opened (43%)</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="notif-item">
+                            <div class="notif-icon scheduled">
+                                <span class="material-icons-round">schedule</span>
+                            </div>
+                            <div class="notif-content">
+                                <h4>Holiday Hours Reminder</h4>
+                                <p>We'll be closed on Dec 25. Stock up on your favorite beans!</p>
+                                <div class="notif-meta">
+                                    <span>Scheduled for Dec 23, 2024 • 8:00 AM</span>
+                                    <span class="notif-stats">Target: All members</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Geofencing Page -->
+        <section class="page" id="page-geofencing">
+            <header class="page-header">
+                <div>
+                    <h1>Geo-Tagging</h1>
+                    <p class="subtitle">Set up location-based triggers for your customers</p>
+                </div>
+                <div class="header-actions">
+                    <button class="btn btn-primary" id="addLocationBtn">
+                        <span class="material-icons-round">add_location</span>
+                        Add Location
+                    </button>
+                </div>
+            </header>
+
+            <div class="geofencing-layout">
+                <div class="map-container">
+                    <div class="map-placeholder" id="mapPlaceholder">
+                        <div class="map-overlay">
+                            <div class="store-marker main">
+                                <span class="material-icons-round">storefront</span>
+                                <div class="geofence-ring"></div>
+                            </div>
+                            <div class="store-marker secondary" style="top: 30%; left: 60%;">
+                                <span class="material-icons-round">storefront</span>
+                                <div class="geofence-ring"></div>
+                            </div>
+                            <div class="store-marker secondary" style="top: 70%; left: 25%;">
+                                <span class="material-icons-round">storefront</span>
+                                <div class="geofence-ring"></div>
+                            </div>
+                        </div>
+                        <div class="map-controls">
+                            <button class="map-btn"><span class="material-icons-round">add</span></button>
+                            <button class="map-btn"><span class="material-icons-round">remove</span></button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="locations-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Store Locations</h3>
+                        </div>
+                        <div class="locations-list">
+                            <div class="location-item active">
+                                <div class="location-icon">
+                                    <span class="material-icons-round">storefront</span>
+                                </div>
+                                <div class="location-info">
+                                    <h4>C.R.E.A.M. Main</h4>
+                                    <p>123 Coffee Street, Downtown</p>
+                                    <div class="location-settings">
+                                        <span class="geofence-radius">500m radius</span>
+                                        <span class="geofence-status active">Active</span>
+                                    </div>
+                                </div>
+                                <button class="btn-icon"><span class="material-icons-round">settings</span></button>
+                            </div>
+                            <div class="location-item">
+                                <div class="location-icon">
+                                    <span class="material-icons-round">storefront</span>
+                                </div>
+                                <div class="location-info">
+                                    <h4>C.R.E.A.M. Roastery</h4>
+                                    <p>456 Bean Avenue, Industrial</p>
+                                    <div class="location-settings">
+                                        <span class="geofence-radius">300m radius</span>
+                                        <span class="geofence-status active">Active</span>
+                                    </div>
+                                </div>
+                                <button class="btn-icon"><span class="material-icons-round">settings</span></button>
+                            </div>
+                            <div class="location-item">
+                                <div class="location-icon">
+                                    <span class="material-icons-round">storefront</span>
+                                </div>
+                                <div class="location-info">
+                                    <h4>C.R.E.A.M. Express</h4>
+                                    <p>789 Quick Lane, Mall District</p>
+                                    <div class="location-settings">
+                                        <span class="geofence-radius">200m radius</span>
+                                        <span class="geofence-status inactive">Inactive</span>
+                                    </div>
+                                </div>
+                                <button class="btn-icon"><span class="material-icons-round">settings</span></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Trigger Settings</h3>
+                        </div>
+                        <div class="trigger-settings">
+                            <div class="trigger-item">
+                                <div class="trigger-toggle">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="trigger-info">
+                                    <h4>Entry Notification</h4>
+                                    <p>Send welcome message when customer enters geofence</p>
+                                </div>
+                            </div>
+                            <div class="trigger-item">
+                                <div class="trigger-toggle">
+                                    <label class="switch">
+                                        <input type="checkbox" checked>
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="trigger-info">
+                                    <h4>Points Reminder</h4>
+                                    <p>Remind customers of their available points</p>
+                                </div>
+                            </div>
+                            <div class="trigger-item">
+                                <div class="trigger-toggle">
+                                    <label class="switch">
+                                        <input type="checkbox">
+                                        <span class="slider"></span>
+                                    </label>
+                                </div>
+                                <div class="trigger-info">
+                                    <h4>Exit Survey</h4>
+                                    <p>Request feedback after customer leaves</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div class="modal-overlay hidden" id="modalOverlay">
+        <div class="modal" id="modal">
+            <div class="modal-header">
+                <h3 id="modalTitle">Modal Title</h3>
+                <button class="modal-close" id="modalClose">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
