@@ -1827,3 +1827,44 @@ body {
     background: rgba(255, 255, 255, 0.8);
     border-color: var(--accent);
 }
+
+/* Wider Send Rewards Layout */
+.send-reward-card {
+    max-width: none !important;
+}
+
+.reward-history-card {
+    max-width: none !important;
+}
+
+.rewards-layout .card {
+    min-height: 400px;
+}
+
+.reward-preview {
+    padding: 24px !important;
+}
+
+.reward-preview-icon {
+    font-size: 48px !important;
+}
+
+.reward-preview-text strong {
+    font-size: 20px !important;
+}
+
+.reward-preview-text span {
+    font-size: 14px !important;
+}
+
+.reward-history-list .reward-history-item {
+    padding: 18px !important;
+}
+
+.reward-history-icon {
+    font-size: 32px !important;
+}
+
+.reward-history-title {
+    font-size: 15px !important;
+}
