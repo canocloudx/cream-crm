@@ -1758,3 +1758,72 @@ body {
         flex: 1 1 100%;
     }
 }
+
+/* ==================== */
+/* MEMBER MESSAGE STYLES */
+/* ==================== */
+
+.btn-outline {
+    background: transparent !important;
+    border: 2px solid var(--accent) !important;
+    color: var(--accent) !important;
+    box-shadow: none !important;
+}
+
+.btn-outline:hover {
+    background: rgba(156, 123, 107, 0.1) !important;
+}
+
+.member-message-form {
+    padding: 10px 0;
+}
+
+.message-recipient {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    background: rgba(156, 123, 107, 0.1);
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: var(--text-medium);
+}
+
+.message-recipient .material-icons-round {
+    color: var(--accent);
+}
+
+.quick-templates {
+    margin-top: 16px;
+}
+
+.quick-templates label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-medium);
+    margin-bottom: 10px;
+}
+
+.template-chips {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.template-chip {
+    padding: 8px 14px;
+    font-size: 13px;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-dark);
+}
+
+.template-chip:hover {
+    background: rgba(255, 255, 255, 0.8);
+    border-color: var(--accent);
+}

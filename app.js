@@ -343,6 +343,7 @@ window.viewMember = function(id) {
             </div>
 
             <div class="modal-actions">
+                <button class="btn btn-outline" onclick="openMessageToMember(${member.id})"><span class="material-icons-round">message</span>Message</button>
                 <button class="btn btn-primary" onclick="addStampToMember(${member.id}); closeModal();">
                     <span class="material-icons-round">add_circle</span>
                     Add Stamp
@@ -778,4 +779,85 @@ window.openNewCampaignModal = function() {
             <button class="btn btn-primary" onclick="closeModal(); showToast('success', 'Campaign Created', 'Your campaign has been scheduled');">Create Campaign</button>
         </div>
     `);
+};
+
+// Send message to specific member from stamp card
+window.openMessageToMember = function(id) {
+    const member = members.find(m => m.id === id);
+    if (!member) return;
+
+    openModal(`Message ${member.name}`, `
+        <div class="member-message-form">
+            <div class="message-recipient">
+                <span class="material-icons-round">person</span>
+                <span>Sending to: <strong>${member.name}</strong> (${member.memberId})</span>
+            </div>
+            
+            <div class="form-group">
+                <label>Message Title</label>
+                <input type="text" class="form-input" id="memberMsgTitle" placeholder="e.g., Your reward is waiting!">
+            </div>
+
+            <div class="form-group">
+                <label>Message</label>
+                <textarea class="form-input textarea" id="memberMsgBody" rows="4" placeholder="Write your message here..."></textarea>
+            </div>
+
+            <div class="quick-templates">
+                <label>Quick Templates:</label>
+                <div class="template-chips">
+                    <button class="template-chip" onclick="useTemplate('reward')">🎉 Reward Ready</button>
+                    <button class="template-chip" onclick="useTemplate('miss')">👋 We Miss You</button>
+                    <button class="template-chip" onclick="useTemplate('birthday')">🎂 Happy Birthday</button>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="sendMessageToMember(${member.id})">
+                    <span class="material-icons-round">send</span>
+                    Send Message
+                </button>
+            </div>
+        </div>
+    `);
+};
+
+window.useTemplate = function(type) {
+    const titleInput = document.getElementById('memberMsgTitle');
+    const bodyInput = document.getElementById('memberMsgBody');
+    
+    const templates = {
+        reward: {
+            title: 'Your Free Drink is Waiting! 🎉',
+            body: 'Hi! You have a free drink reward ready to use. Stop by and enjoy it on us!'
+        },
+        miss: {
+            title: 'We Miss You! 👋',
+            body: "It's been a while! We'd love to see you again. Come grab your favorite drink soon!"
+        },
+        birthday: {
+            title: 'Happy Birthday! 🎂',
+            body: 'Wishing you a wonderful birthday! Enjoy a special treat on us today!'
+        }
+    };
+
+    if (templates[type]) {
+        titleInput.value = templates[type].title;
+        bodyInput.value = templates[type].body;
+    }
+};
+
+window.sendMessageToMember = function(id) {
+    const member = members.find(m => m.id === id);
+    const title = document.getElementById('memberMsgTitle')?.value;
+    const body = document.getElementById('memberMsgBody')?.value;
+    
+    if (!title || !body) {
+        showToast('error', 'Missing Info', 'Please enter a title and message');
+        return;
+    }
+
+    closeModal();
+    showToast('success', 'Message Sent!', `Message delivered to ${member.name}`);
 };
