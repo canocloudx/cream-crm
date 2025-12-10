@@ -514,10 +514,10 @@ function initGrowthChart() {
     new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
             datasets: [{
                 label: 'New Members',
-                data: [120, 145, 168, 190, 178, 215, 245, 278, 298, 325, 356, 380],
+                data: [28, 35, 42, 38, 45, 52, 48, 56],
                 borderColor: '#D4A574',
                 backgroundColor: 'rgba(212, 165, 116, 0.15)',
                 fill: true,
