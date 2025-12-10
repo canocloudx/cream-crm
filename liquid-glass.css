@@ -2045,3 +2045,17 @@ body {
     border-bottom: 1px solid var(--glass-border);
     margin-bottom: 24px !important;
 }
+
+/* ==================== */
+/* LOGO IMAGE STYLING */
+/* ==================== */
+
+.logo-img {
+    height: 60px;
+    width: auto;
+    object-fit: contain;
+}
+
+.sidebar .logo-img {
+    height: 50px;
+}
