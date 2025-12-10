@@ -303,6 +303,11 @@ function initBaristaApp() {
         const tierThresholds = { bronze: 500, silver: 1500, gold: 3000, platinum: 5000 };
         const nextTier = tierThresholds[customer.tier] || 5000;
         document.getElementById('baristaNextTier').textContent = Math.max(0, nextTier - customer.points).toLocaleString();
+        
+        // Update stamp card
+        if (typeof updateStampCard === 'function') {
+            updateStampCard(customer);
+        }
     }
 
     addPointsBtn?.addEventListener('click', () => {
@@ -454,3 +459,144 @@ function showToast(type, title, message) {
         setTimeout(() => toast.remove(), 300);
     }, 4000);
 }
+
+// ==================== 
+// STAMP CARD SYSTEM
+// ====================
+
+// Add stamps to customer data
+customers.forEach(c => {
+    c.stamps = Math.floor(Math.random() * 6); // 0-5 stamps
+    c.rewards = c.stamps >= 6 ? 1 : 0;
+    // Reset to random for demo
+    c.stamps = c.stamps % 6;
+});
+
+// Initialize Stamp Card
+function initStampCard() {
+    const addStampBtn = document.getElementById('addStampBtn');
+    
+    addStampBtn?.addEventListener('click', () => {
+        addStamp();
+    });
+}
+
+// Update stamp card display
+function updateStampCard(customer) {
+    const stampGrid = document.getElementById('stampGrid');
+    const stampCountDisplay = document.getElementById('stampCountDisplay');
+    const stampProgress = document.querySelector('.stamp-progress');
+    const rewardsWallet = document.getElementById('rewardsWallet');
+    const earnedRewardsList = document.getElementById('earnedRewardsList');
+    const rewardCountBadge = document.getElementById('rewardCountBadge');
+    
+    if (!stampGrid) return;
+    
+    // Store current customer for stamp operations
+    window.currentCustomer = customer;
+    
+    // Update stamp grid
+    const stamps = customer.stamps || 0;
+    stampGrid.innerHTML = '';
+    
+    for (let i = 0; i < 6; i++) {
+        const stamp = document.createElement('div');
+        stamp.className = `stamp ${i < stamps ? 'filled' : 'empty'}`;
+        stampGrid.appendChild(stamp);
+    }
+    
+    // Update count display
+    if (stampCountDisplay) {
+        stampCountDisplay.textContent = `${stamps}/6 stamps`;
+    }
+    
+    // Update progress text
+    if (stampProgress) {
+        const remaining = 6 - stamps;
+        if (remaining > 0) {
+            stampProgress.textContent = `${remaining} more stamp${remaining > 1 ? 's' : ''} for a FREE drink!`;
+        } else {
+            stampProgress.textContent = 'Reward ready to claim!';
+        }
+    }
+    
+    // Update rewards wallet
+    const rewards = customer.rewards || 0;
+    if (rewards > 0 && rewardsWallet) {
+        rewardsWallet.style.display = 'block';
+        rewardCountBadge.textContent = rewards;
+        
+        earnedRewardsList.innerHTML = '';
+        for (let i = 0; i < rewards; i++) {
+            const rewardEl = document.createElement('div');
+            rewardEl.className = 'earned-reward';
+            rewardEl.innerHTML = `
+                <div class="earned-reward-info">
+                    <span class="earned-reward-icon">🎉</span>
+                    <div class="earned-reward-details">
+                        <span class="earned-reward-name">Free Drink</span>
+                        <span class="earned-reward-date">Earned: ${new Date().toLocaleDateString()}</span>
+                    </div>
+                </div>
+                <button class="use-reward-btn" onclick="useReward(${i})">Use</button>
+            `;
+            earnedRewardsList.appendChild(rewardEl);
+        }
+    } else if (rewardsWallet) {
+        rewardsWallet.style.display = 'none';
+    }
+}
+
+// Add a stamp
+function addStamp() {
+    const customer = window.currentCustomer;
+    if (!customer) {
+        showToast('error', 'Error', 'No customer selected');
+        return;
+    }
+    
+    customer.stamps = (customer.stamps || 0) + 1;
+    
+    // Check if earned a reward (6 stamps = 1 free drink)
+    if (customer.stamps >= 6) {
+        customer.stamps = 0;
+        customer.rewards = (customer.rewards || 0) + 1;
+        showToast('success', '🎉 Reward Earned!', 'Customer earned a FREE drink!');
+    } else {
+        showToast('success', 'Stamp Added', `${customer.stamps}/6 stamps collected`);
+    }
+    
+    updateStampCard(customer);
+}
+
+// Use a reward
+window.useReward = function(index) {
+    const customer = window.currentCustomer;
+    if (!customer || !customer.rewards || customer.rewards <= 0) return;
+    
+    customer.rewards--;
+    showToast('success', 'Reward Used', 'Free drink applied!');
+    updateStampCard(customer);
+};
+
+// Hook into existing showCustomer function
+const originalShowCustomer = window.showCustomerOriginal || null;
+
+// Patch the initBaristaApp to include stamp card
+const originalInitBaristaApp = initBaristaApp;
+initBaristaApp = function() {
+    originalInitBaristaApp();
+    initStampCard();
+    
+    // Patch simulate scan to also update stamp card
+    const simulateBtn = document.getElementById('simulateScan');
+    const originalClick = simulateBtn?.onclick;
+    
+    simulateBtn?.addEventListener('click', () => {
+        setTimeout(() => {
+            if (window.currentCustomer) {
+                updateStampCard(window.currentCustomer);
+            }
+        }, 100);
+    });
+};

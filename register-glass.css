@@ -1,0 +1,352 @@
+/* Apple Liquid Glass - Soft Sand Palette - Registration Page */
+
+:root {
+    /* Soft Sand Color Palette */
+    --bg-lightest: #EDEDE9 !important;
+    --bg-light: #F5EBE0 !important;
+    --bg-medium: #E3D5CA !important;
+    --bg-dark: #D6CCC2 !important;
+    --bg-accent: #D5BDAF !important;
+    
+    /* Text Colors */
+    --text-dark: #2D2926 !important;
+    --text-medium: #5D534B !important;
+    --text-light: #8B7F74 !important;
+    
+    /* Accent */
+    --accent: #9C7B6B !important;
+    --accent-hover: #B08E7D !important;
+    --accent-glow: rgba(156, 123, 107, 0.35) !important;
+    
+    /* Glass Effects */
+    --glass-bg: rgba(255, 255, 255, 0.6);
+    --glass-bg-hover: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(45, 41, 38, 0.08);
+    --glass-blur: 24px;
+    
+    /* Radius */
+    --radius: 20px !important;
+    --radius-sm: 12px !important;
+}
+
+/* Body */
+body {
+    background: linear-gradient(135deg, var(--bg-lightest), var(--bg-light)) !important;
+    color: var(--text-dark) !important;
+}
+
+/* Background Effects */
+.bg-gradient {
+    background: 
+        radial-gradient(ellipse at 0% 0%, rgba(213, 189, 175, 0.3) 0%, transparent 50%),
+        radial-gradient(ellipse at 100% 100%, rgba(227, 213, 202, 0.3) 0%, transparent 50%),
+        linear-gradient(180deg, var(--bg-lightest) 0%, var(--bg-light) 50%, var(--bg-medium) 100%) !important;
+}
+
+.bg-pattern {
+    opacity: 0.3 !important;
+}
+
+/* Header - Glass */
+.app-header {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%) !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+}
+
+/* Logo */
+.logo-text {
+    background: linear-gradient(135deg, var(--text-dark), var(--accent)) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+/* Step Header */
+.step-header h1 {
+    background: linear-gradient(135deg, var(--text-dark), var(--text-medium)) !important;
+    -webkit-background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+    background-clip: text !important;
+}
+
+.step-header p {
+    color: var(--text-medium) !important;
+}
+
+/* Progress Bar */
+.progress-bar {
+    background: var(--glass-border) !important;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, var(--accent), var(--accent-hover)) !important;
+    box-shadow: 0 0 8px var(--accent-glow) !important;
+}
+
+/* Step Indicator */
+.step-indicator {
+    color: var(--text-light) !important;
+}
+
+/* Form Group */
+.form-group label {
+    color: var(--text-medium) !important;
+}
+
+.form-group label .material-icons-round {
+    color: var(--accent) !important;
+}
+
+.form-group input,
+.form-group select {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 2px solid var(--glass-border) !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--text-dark) !important;
+}
+
+.form-group input::placeholder {
+    color: var(--text-light) !important;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    border-color: var(--accent) !important;
+    background: var(--glass-bg-hover) !important;
+    box-shadow: 0 0 0 4px var(--accent-glow) !important;
+}
+
+/* Error Message */
+.error-message {
+    color: #B57070 !important;
+}
+
+/* Helper Text */
+.helper-text {
+    color: var(--text-light) !important;
+}
+
+/* Primary Button */
+.btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--accent-hover)) !important;
+    color: white !important;
+    box-shadow: 0 4px 24px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+    border-radius: var(--radius-sm) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-primary::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
+    pointer-events: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px var(--accent-glow), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--radius-sm) !important;
+    color: var(--text-dark) !important;
+}
+
+.btn-secondary:hover {
+    background: var(--glass-bg-hover) !important;
+}
+
+/* Terms Text */
+.terms-text {
+    color: var(--text-light) !important;
+}
+
+.terms-text a {
+    color: var(--accent) !important;
+}
+
+/* Loyalty Card */
+.loyalty-card {
+    background: linear-gradient(145deg, var(--bg-light), var(--bg-lightest)) !important;
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow:
+        0 20px 60px rgba(45, 41, 38, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.card-shine {
+    background: linear-gradient(135deg,
+        transparent 20%,
+        rgba(255, 255, 255, 0.3) 40%,
+        rgba(255, 255, 255, 0.5) 50%,
+        rgba(255, 255, 255, 0.3) 60%,
+        transparent 80%) !important;
+}
+
+.card-brand {
+    color: var(--text-dark) !important;
+}
+
+.member-tier {
+    color: var(--accent) !important;
+}
+
+.member-name {
+    color: var(--text-dark) !important;
+}
+
+.points-label {
+    color: var(--text-light) !important;
+}
+
+.points-value {
+    color: var(--accent) !important;
+}
+
+.card-barcode {
+    background: white !important;
+    box-shadow: 0 2px 8px rgba(45, 41, 38, 0.08) !important;
+}
+
+.member-id {
+    color: var(--text-medium) !important;
+}
+
+/* Card Benefits */
+.card-benefits {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--radius-sm) !important;
+}
+
+.card-benefits h3 {
+    color: var(--text-dark) !important;
+}
+
+.benefits-list li {
+    color: var(--text-medium) !important;
+}
+
+.benefits-list .material-icons-round {
+    color: var(--accent) !important;
+}
+
+/* Phone Mockup */
+.phone-mockup {
+    background: var(--bg-dark) !important;
+    box-shadow:
+        0 30px 60px rgba(45, 41, 38, 0.2),
+        inset 0 0 0 2px var(--glass-border) !important;
+}
+
+.phone-notch {
+    background: var(--bg-dark) !important;
+}
+
+.phone-screen {
+    background: linear-gradient(180deg, var(--bg-light), var(--bg-lightest)) !important;
+}
+
+/* Wallet Card Mini */
+.wallet-card-mini {
+    background: linear-gradient(145deg, var(--bg-light), var(--bg-lightest)) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid var(--glass-border) !important;
+}
+
+.mini-brand {
+    color: var(--text-dark) !important;
+}
+
+.mini-name {
+    color: var(--text-dark) !important;
+}
+
+.mini-points {
+    color: var(--accent) !important;
+}
+
+/* Apple Wallet Button */
+.apple-wallet-btn {
+    background: linear-gradient(180deg, #2a2a2a 0%, #000 100%) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+    border-radius: var(--radius-sm) !important;
+}
+
+.apple-wallet-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+}
+
+/* Google Wallet Button */
+.google-wallet-btn {
+    background: linear-gradient(135deg, #4285F4 0%, #1a73e8 100%) !important;
+    box-shadow: 0 4px 20px rgba(66, 133, 244, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+    border-radius: var(--radius-sm) !important;
+}
+
+.google-wallet-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(66, 133, 244, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+/* Alternative Options */
+.alternative-options p {
+    color: var(--text-light) !important;
+}
+
+/* Success Circle */
+.success-circle {
+    background: linear-gradient(135deg, #6B9080 0%, #5A7D6E 100%) !important;
+    box-shadow: 0 10px 40px rgba(107, 144, 128, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Success Message */
+.success-message h1 {
+    color: var(--text-dark) !important;
+    -webkit-text-fill-color: var(--text-dark) !important;
+    background: none !important;
+}
+
+.success-message p {
+    color: var(--text-medium) !important;
+}
+
+/* Success Stats */
+.success-stats {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(16px) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    border: 1px solid var(--glass-border) !important;
+    border-radius: var(--radius-sm) !important;
+}
+
+.stat-value {
+    color: var(--accent) !important;
+}
+
+.stat-label {
+    color: var(--text-medium) !important;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    border: 2px solid rgba(255, 255, 255, 0.3) !important;
+    border-top-color: white !important;
+}
