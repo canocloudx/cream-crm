@@ -13,11 +13,20 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #432818;
-            --bg-medium: #99582A;
-            --text-light: #FFE6A7;
-            --accent: #6F1D1B;
-            --accent-hover: #8a2422;
+            /* Soft Sand Palette */
+            --bg-warm: #F5F1EB;
+            --bg-cream: #FAF8F5;
+            --text-dark: #2D2926;
+            --text-medium: #5D534B;
+            --text-light: #8B7F74;
+            --accent: #D4A574;
+            --accent-dark: #9C7B6B;
+            --success: #6B9080;
+            
+            /* Glass Effects */
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: 0 8px 32px rgba(45, 41, 38, 0.12);
         }
 
         * {
@@ -28,20 +37,38 @@
 
         body {
             font-family: 'Inter', -apple-system, sans-serif;
-            background: linear-gradient(135deg, #2d1810 0%, #432818 50%, #2d1810 100%);
-            color: var(--text-light);
+            background: linear-gradient(180deg, #F5F1EB 0%, #E8E4DE 50%, #F5F1EB 100%);
+            color: var(--text-dark);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background decorative elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(ellipse at 30% 20%, rgba(212, 165, 116, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at 70% 80%, rgba(107, 144, 128, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: -1;
         }
 
         .container {
             max-width: 500px;
             width: 100%;
             text-align: center;
+            position: relative;
+            z-index: 1;
         }
 
         .logo {
@@ -54,33 +81,51 @@
 
         .logo-icon {
             font-size: 48px;
+            filter: drop-shadow(0 4px 8px rgba(212, 165, 116, 0.3));
         }
 
         .logo-text {
             font-size: 2rem;
             font-weight: 800;
             letter-spacing: 3px;
-            background: linear-gradient(135deg, var(--text-light) 0%, var(--accent) 100%);
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
+        /* Liquid Glass Card */
         .qr-card {
-            background: rgba(153, 88, 42, 0.5);
-            border: 1px solid rgba(255, 230, 167, 0.1);
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
             border-radius: 24px;
             padding: 40px;
-            margin-bottom: 32px;
-            box-shadow: 0 20px 60px rgba(67, 40, 24, 0.5);
+            margin-bottom: 24px;
+            box-shadow: var(--glass-shadow),
+                        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .qr-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
         }
 
         .qr-wrapper {
             background: white;
-            border-radius: 16px;
+            border-radius: 20px;
             padding: 24px;
             display: inline-block;
             margin-bottom: 24px;
+            box-shadow: 0 8px 24px rgba(45, 41, 38, 0.08);
         }
 
         #qrcode {
@@ -90,25 +135,32 @@
 
         #qrcode img {
             display: block;
+            border-radius: 8px;
         }
 
         .qr-card h2 {
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 8px;
+            color: var(--text-dark);
         }
 
         .qr-card p {
-            color: rgba(255, 230, 167, 0.7);
+            color: var(--text-medium);
             font-size: 15px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
+        /* Instructions Glass Card */
         .instructions {
-            background: rgba(153, 88, 42, 0.3);
-            border-radius: 16px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
             padding: 24px;
             text-align: left;
+            box-shadow: var(--glass-shadow);
         }
 
         .instructions h3 {
@@ -118,6 +170,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            color: var(--text-dark);
         }
 
         .instructions h3 .material-icons-round {
@@ -132,15 +185,21 @@
         }
 
         .instructions li {
-            color: rgba(255, 230, 167, 0.8);
+            color: var(--text-medium);
             font-size: 14px;
-            line-height: 1.5;
+            line-height: 1.6;
         }
 
+        .instructions li::marker {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        /* Buttons */
         .buttons {
             display: flex;
             gap: 12px;
-            margin-top: 32px;
+            margin-top: 24px;
         }
 
         .btn {
@@ -150,7 +209,7 @@
             justify-content: center;
             gap: 8px;
             padding: 14px 20px;
-            border-radius: 12px;
+            border-radius: 14px;
             font-size: 14px;
             font-weight: 600;
             font-family: inherit;
@@ -160,62 +219,92 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
             border: none;
             color: white;
-            box-shadow: 0 4px 20px rgba(111, 29, 27, 0.4);
+            box-shadow: 0 4px 16px rgba(212, 165, 116, 0.4);
         }
 
         .btn-primary:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(111, 29, 27, 0.5);
+            box-shadow: 0 8px 24px rgba(212, 165, 116, 0.5);
         }
 
         .btn-secondary {
-            background: rgba(153, 88, 42, 0.6);
-            border: 1px solid rgba(255, 230, 167, 0.15);
-            color: var(--text-light);
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            color: var(--text-dark);
         }
 
         .btn-secondary:hover {
-            background: rgba(153, 88, 42, 0.8);
+            background: rgba(255, 255, 255, 0.9);
+            border-color: var(--accent);
         }
 
         .back-link {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            color: rgba(255, 230, 167, 0.6);
+            color: var(--text-light);
             text-decoration: none;
             font-size: 14px;
             margin-top: 32px;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         .back-link:hover {
             color: var(--accent);
         }
 
+        /* Stamp indicator */
+        .stamp-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(45, 41, 38, 0.08);
+        }
+
+        .stamp-preview {
+            display: flex;
+            gap: 6px;
+        }
+
+        .stamp-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(156, 123, 107, 0.2);
+        }
+
+        .stamp-dot.demo {
+            background: var(--accent);
+        }
+
+        .stamp-text {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
         @media print {
             body {
                 background: white;
-                color: black;
             }
 
             .qr-card {
-                background: none;
-                border: 2px solid #ccc;
+                background: white;
+                border: 2px solid #ddd;
                 box-shadow: none;
-            }
-
-            .qr-card h2,
-            .qr-card p {
-                color: black;
             }
 
             .instructions,
             .buttons,
-            .back-link {
+            .back-link,
+            .stamp-info {
                 display: none;
             }
         }
@@ -234,7 +323,19 @@
                 <div id="qrcode"></div>
             </div>
             <h2>Join Our Rewards Program</h2>
-            <p>Scan this QR code to sign up for our loyalty program and start earning points with every purchase!</p>
+            <p>Scan this QR code to sign up for our loyalty program and start earning stamps with every purchase!</p>
+            
+            <div class="stamp-info">
+                <div class="stamp-preview">
+                    <span class="stamp-dot demo"></span>
+                    <span class="stamp-dot demo"></span>
+                    <span class="stamp-dot"></span>
+                    <span class="stamp-dot"></span>
+                    <span class="stamp-dot"></span>
+                    <span class="stamp-dot"></span>
+                </div>
+                <span class="stamp-text">6 stamps = Free Drink!</span>
+            </div>
         </div>
 
         <div class="instructions">
@@ -275,12 +376,12 @@
             const baseUrl = window.location.href.replace('qrcode.html', '');
             const registerUrl = baseUrl + 'register.html';
 
-            // Generate QR Code
+            // Generate QR Code with new colors
             new QRCode(document.getElementById('qrcode'), {
                 text: registerUrl,
                 width: 200,
                 height: 200,
-                colorDark: '#432818',
+                colorDark: '#2D2926',
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.H
             });
