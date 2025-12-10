@@ -607,3 +607,175 @@ function showToast(type, title, message) {
         setTimeout(() => toast.remove(), 300);
     }, 4000);
 }
+
+// ==================== 
+// CAMPAIGN TABS & MESSAGING
+// ====================
+
+// Initialize Campaign Tabs
+document.addEventListener('DOMContentLoaded', () => {
+    initCampaignTabs();
+    populateMemberSelects();
+});
+
+function initCampaignTabs() {
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const tabId = btn.dataset.tab;
+
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+
+            btn.classList.add('active');
+            document.getElementById(tabId)?.classList.add('active');
+        });
+    });
+}
+
+function populateMemberSelects() {
+    const selects = ['memberSelect', 'rewardMemberSelect'];
+    
+    selects.forEach(selectId => {
+        const select = document.getElementById(selectId);
+        if (!select) return;
+
+        members.forEach(m => {
+            const option = document.createElement('option');
+            option.value = m.id;
+            option.textContent = `${m.name} (${m.memberId})`;
+            select.appendChild(option);
+        });
+    });
+}
+
+// Toggle recipient select visibility
+window.toggleRecipientSelect = function() {
+    const specific = document.querySelector('input[name="recipient"][value="specific"]');
+    const selectGroup = document.getElementById('memberSelectGroup');
+    
+    if (specific?.checked) {
+        selectGroup.style.display = 'block';
+    } else {
+        selectGroup.style.display = 'none';
+    }
+};
+
+window.toggleRewardRecipientSelect = function() {
+    const specific = document.querySelector('input[name="rewardRecipient"][value="specific"]');
+    const selectGroup = document.getElementById('rewardMemberSelectGroup');
+    
+    if (specific?.checked) {
+        selectGroup.style.display = 'block';
+    } else {
+        selectGroup.style.display = 'none';
+    }
+};
+
+// Character count
+window.updateCharCount = function() {
+    const textarea = document.getElementById('msgBody');
+    const counter = document.getElementById('charCount');
+    if (!textarea || !counter) return;
+
+    const len = textarea.value.length;
+    counter.textContent = `${len}/160 characters`;
+    counter.style.color = len > 160 ? '#C27B7B' : 'var(--text-light)';
+};
+
+// Preview message
+window.previewMessage = function() {
+    const title = document.getElementById('msgTitle')?.value || 'No title';
+    const body = document.getElementById('msgBody')?.value || 'No message';
+    const isAll = document.querySelector('input[name="recipient"][value="all"]')?.checked;
+    const recipient = isAll ? 'All Members (2,847)' : 
+        document.getElementById('memberSelect')?.selectedOptions[0]?.text || 'Selected member';
+
+    openModal('Message Preview', `
+        <div class="message-preview">
+            <div class="preview-header">
+                <div class="preview-icon">☕</div>
+                <div class="preview-app">C.R.E.A.M. COFFEE</div>
+            </div>
+            <h3 style="margin: 16px 0 8px;">${title}</h3>
+            <p style="color: var(--text-medium); margin-bottom: 16px;">${body}</p>
+            <div style="font-size: 12px; color: var(--text-light); padding-top: 12px; border-top: 1px solid var(--glass-border);">
+                Will be sent to: <strong>${recipient}</strong>
+            </div>
+        </div>
+    `);
+};
+
+// Send message
+window.sendMessage = function() {
+    const title = document.getElementById('msgTitle')?.value;
+    const body = document.getElementById('msgBody')?.value;
+    
+    if (!title || !body) {
+        showToast('error', 'Missing Info', 'Please enter a title and message');
+        return;
+    }
+
+    const isAll = document.querySelector('input[name="recipient"][value="all"]')?.checked;
+    const count = isAll ? '2,847' : '1';
+
+    showToast('success', 'Message Sent!', `Message delivered to ${count} member(s)`);
+    
+    // Clear form
+    document.getElementById('msgTitle').value = '';
+    document.getElementById('msgBody').value = '';
+    updateCharCount();
+};
+
+// Send reward
+window.sendReward = function() {
+    const rewardType = document.getElementById('rewardType')?.value;
+    const isAll = document.querySelector('input[name="rewardRecipient"][value="all"]')?.checked;
+    
+    const rewardNames = {
+        'free_drink': 'Free Drink',
+        'bonus_stamp': 'Bonus Stamp',
+        'double_stamps': 'Double Stamps'
+    };
+
+    const count = isAll ? '2,847' : '1';
+    const rewardName = rewardNames[rewardType] || 'Reward';
+
+    showToast('success', 'Reward Sent!', `${rewardName} sent to ${count} member(s)`);
+};
+
+// New campaign modal
+window.openNewCampaignModal = function() {
+    openModal('New Campaign', `
+        <div class="form-group">
+            <label>Campaign Name</label>
+            <input type="text" class="form-input" placeholder="e.g., Weekend Special">
+        </div>
+        <div class="form-group">
+            <label>Description</label>
+            <textarea class="form-input textarea" rows="3" placeholder="Describe your campaign..."></textarea>
+        </div>
+        <div class="form-group">
+            <label>Campaign Type</label>
+            <select class="form-input">
+                <option>Double Stamps</option>
+                <option>Free Reward</option>
+                <option>Bonus Stamp</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Start Date</label>
+            <input type="date" class="form-input">
+        </div>
+        <div class="form-group">
+            <label>End Date</label>
+            <input type="date" class="form-input">
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary" onclick="closeModal(); showToast('success', 'Campaign Created', 'Your campaign has been scheduled');">Create Campaign</button>
+        </div>
+    `);
+};

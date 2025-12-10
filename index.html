@@ -158,75 +158,501 @@
             <header class="page-header">
                 <div>
                     <h1>Campaigns</h1>
-                    <p class="subtitle">Create and manage marketing campaigns</p>
+                    <p class="subtitle">Manage campaigns, messages, and rewards</p>
                 </div>
-                <div class="header-actions">
-                    <button class="btn btn-primary">
+            </header>
+
+            <!-- Tabs -->
+            <div class="campaign-tabs">
+                <button class="tab-btn active" data-tab="campaigns-tab">
+                    <span class="material-icons-round">campaign</span>
+                    Campaigns
+                </button>
+                <button class="tab-btn" data-tab="messages-tab">
+                    <span class="material-icons-round">message</span>
+                    Messages
+                </button>
+                <button class="tab-btn" data-tab="rewards-tab">
+                    <span class="material-icons-round">card_giftcard</span>
+                    Send Rewards
+                </button>
+            </div>
+
+            <!-- Campaigns Tab -->
+            <div class="tab-content active" id="campaigns-tab">
+                <div class="tab-header">
+                    <h3>Active Campaigns</h3>
+                    <button class="btn btn-primary btn-sm" onclick="openNewCampaignModal()">
                         <span class="material-icons-round">add</span>
                         New Campaign
                     </button>
                 </div>
-            </header>
+                <div class="campaigns-grid">
+                    <div class="card campaign-card">
+                        <div class="campaign-header">
+                            <span class="campaign-status active">Active</span>
+                            <span class="material-icons-round">more_vert</span>
+                        </div>
+                        <h3>Double Stamp Weekend</h3>
+                        <p>Earn 2 stamps per visit this weekend only!</p>
+                        <div class="campaign-stats">
+                            <div class="campaign-stat">
+                                <span class="stat-num">1,234</span>
+                                <span class="stat-label">Reached</span>
+                            </div>
+                            <div class="campaign-stat">
+                                <span class="stat-num">45%</span>
+                                <span class="stat-label">Engagement</span>
+                            </div>
+                        </div>
+                        <div class="campaign-dates">Dec 14-15, 2024</div>
+                    </div>
 
-            <div class="campaigns-grid">
-                <div class="card campaign-card">
-                    <div class="campaign-header">
-                        <span class="campaign-status active">Active</span>
-                        <span class="material-icons-round">more_vert</span>
-                    </div>
-                    <h3>Double Stamp Weekend</h3>
-                    <p>Earn 2 stamps per visit this weekend only!</p>
-                    <div class="campaign-stats">
-                        <div class="campaign-stat">
-                            <span class="stat-num">1,234</span>
-                            <span class="stat-label">Reached</span>
+                    <div class="card campaign-card">
+                        <div class="campaign-header">
+                            <span class="campaign-status scheduled">Scheduled</span>
+                            <span class="material-icons-round">more_vert</span>
                         </div>
-                        <div class="campaign-stat">
-                            <span class="stat-num">45%</span>
-                            <span class="stat-label">Engagement</span>
+                        <h3>Holiday Special</h3>
+                        <p>Free reward for all members during holidays!</p>
+                        <div class="campaign-stats">
+                            <div class="campaign-stat">
+                                <span class="stat-num">2,847</span>
+                                <span class="stat-label">Target</span>
+                            </div>
+                            <div class="campaign-stat">
+                                <span class="stat-num">--</span>
+                                <span class="stat-label">Engagement</span>
+                            </div>
                         </div>
+                        <div class="campaign-dates">Dec 24-26, 2024</div>
                     </div>
-                    <div class="campaign-dates">Dec 14-15, 2024</div>
+
+                    <div class="card campaign-card">
+                        <div class="campaign-header">
+                            <span class="campaign-status completed">Completed</span>
+                            <span class="material-icons-round">more_vert</span>
+                        </div>
+                        <h3>Welcome Bonus</h3>
+                        <p>New members get 1 free stamp on signup</p>
+                        <div class="campaign-stats">
+                            <div class="campaign-stat">
+                                <span class="stat-num">523</span>
+                                <span class="stat-label">New Members</span>
+                            </div>
+                            <div class="campaign-stat">
+                                <span class="stat-num">89%</span>
+                                <span class="stat-label">Conversion</span>
+                            </div>
+                        </div>
+                        <div class="campaign-dates">Nov 1-30, 2024</div>
+                    </div>
                 </div>
+            </div>
 
-                <div class="card campaign-card">
-                    <div class="campaign-header">
-                        <span class="campaign-status scheduled">Scheduled</span>
-                        <span class="material-icons-round">more_vert</span>
-                    </div>
-                    <h3>Holiday Special</h3>
-                    <p>Free reward for all members during holidays!</p>
-                    <div class="campaign-stats">
-                        <div class="campaign-stat">
-                            <span class="stat-num">2,847</span>
-                            <span class="stat-label">Target</span>
+            <!-- Messages Tab -->
+            <div class="tab-content" id="messages-tab">
+                <div class="messages-layout">
+                    <!-- Compose Message -->
+                    <div class="card compose-card">
+                        <h3>
+                            <span class="material-icons-round">edit</span>
+                            Compose Message
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label>Recipients</label>
+                            <div class="recipient-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="recipient" value="all" checked onchange="toggleRecipientSelect()">
+                                    <span class="radio-label">All Members (2,847)</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="recipient" value="specific" onchange="toggleRecipientSelect()">
+                                    <span class="radio-label">Specific Member</span>
+                                </label>
+                            </div>
                         </div>
-                        <div class="campaign-stat">
-                            <span class="stat-num">--</span>
-                            <span class="stat-label">Engagement</span>
+
+                        <div class="form-group member-select-group" id="memberSelectGroup" style="display: none;">
+                            <label>Select Member</label>
+                            <select class="form-input" id="memberSelect">
+                                <option value="">Choose a member...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Message Title</label>
+                            <input type="text" class="form-input" id="msgTitle" placeholder="e.g., Special Offer Just for You!">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea class="form-input textarea" id="msgBody" rows="4" placeholder="Write your message here..." oninput="updateCharCount()"></textarea>
+                            <span class="char-count" id="charCount">0/160 characters</span>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="previewMessage()">
+                                <span class="material-icons-round">visibility</span>
+                                Preview
+                            </button>
+                            <button class="btn btn-primary" onclick="sendMessage()">
+                                <span class="material-icons-round">send</span>
+                                Send Message
+                            </button>
                         </div>
                     </div>
-                    <div class="campaign-dates">Dec 24-26, 2024</div>
+
+                    <!-- Recent Messages -->
+                    <div class="card recent-messages-card">
+                        <h3>
+                            <span class="material-icons-round">history</span>
+                            Recent Messages
+                        </h3>
+                        <div class="messages-list">
+                            <div class="message-item">
+                                <div class="message-icon sent">
+                                    <span class="material-icons-round">check_circle</span>
+                                </div>
+                                <div class="message-info">
+                                    <span class="message-title">Weekend Double Stamps!</span>
+                                    <span class="message-meta">Sent to All Members • Dec 13, 2024</span>
+                                </div>
+                                <span class="message-stats">2,847 delivered</span>
+                            </div>
+                            <div class="message-item">
+                                <div class="message-icon sent">
+                                    <span class="material-icons-round">check_circle</span>
+                                </div>
+                                <div class="message-info">
+                                    <span class="message-title">Your Free Drink is Waiting!</span>
+                                    <span class="message-meta">Sent to Sarah Chen • Dec 10, 2024</span>
+                                </div>
+                                <span class="message-stats">1 delivered</span>
+                            </div>
+                            <div class="message-item">
+                                <div class="message-icon sent">
+                                    <span class="material-icons-round">check_circle</span>
+                                </div>
+                                <div class="message-info">
+                                    <span class="message-title">Welcome to C.R.E.A.M.!</span>
+                                    <span class="message-meta">Sent to All Members • Dec 1, 2024</span>
+                                </div>
+                                <span class="message-stats">2,654 delivered</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
+            </div>
 
-                <div class="card campaign-card">
-                    <div class="campaign-header">
-                        <span class="campaign-status completed">Completed</span>
-                        <span class="material-icons-round">more_vert</span>
-                    </div>
-                    <h3>Welcome Bonus</h3>
-                    <p>New members get 1 free stamp on signup</p>
-                    <div class="campaign-stats">
-                        <div class="campaign-stat">
-                            <span class="stat-num">523</span>
-                            <span class="stat-label">New Members</span>
+            <!-- Send Rewards Tab -->
+            <div class="tab-content" id="rewards-tab">
+                <div class="rewards-layout">
+                    <!-- Send Reward Form -->
+                    <div class="card send-reward-card">
+                        <h3>
+                            <span class="material-icons-round">card_giftcard</span>
+                            Send Rewards
+                        </h3>
+
+                        <div class="form-group">
+                            <label>Reward Type</label>
+                            <select class="form-input" id="rewardType">
+                                <option value="free_drink">🎉 Free Drink</option>
+                                <option value="bonus_stamp">☕ Bonus Stamp</option>
+                                <option value="double_stamps">⭐ Double Stamps (Next Visit)</option>
+                            </select>
                         </div>
-                        <div class="campaign-stat">
-                            <span class="stat-num">89%</span>
-                            <span class="stat-label">Conversion</span>
+
+                        <div class="form-group">
+                            <label>Recipients</label>
+                            <div class="recipient-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="rewardRecipient" value="all" checked onchange="toggleRewardRecipientSelect()">
+                                    <span class="radio-label">All Members (2,847)</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="rewardRecipient" value="specific" onchange="toggleRewardRecipientSelect()">
+                                    <span class="radio-label">Specific Member</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group member-select-group" id="rewardMemberSelectGroup" style="display: none;">
+                            <label>Select Member</label>
+                            <select class="form-input" id="rewardMemberSelect">
+                                <option value="">Choose a member...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Reason (Optional)</label>
+                            <input type="text" class="form-input" id="rewardReason" placeholder="e.g., Birthday reward, Loyal customer appreciation">
+                        </div>
+
+                        <div class="reward-preview">
+                            <div class="reward-preview-icon">🎉</div>
+                            <div class="reward-preview-text">
+                                <strong>Free Drink</strong>
+                                <span>Will be added to 2,847 members</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary btn-lg" onclick="sendReward()">
+                                <span class="material-icons-round">send</span>
+                                Send Reward
+                            </button>
                         </div>
                     </div>
-                    <div class="campaign-dates">Nov 1-30, 2024</div>
+
+                    <!-- Reward History -->
+                    <div class="card reward-history-card">
+                        <h3>
+                            <span class="material-icons-round">history</span>
+                            Reward History
+                        </h3>
+                        <div class="reward-history-list">
+                            <div class="reward-history-item">
+                                <div class="reward-history-icon">🎉</div>
+                                <div class="reward-history-info">
+                                    <span class="reward-history-title">Free Drink to All Members</span>
+                                    <span class="reward-history-meta">Holiday Special • Dec 1, 2024</span>
+                                </div>
+                                <span class="reward-history-count">2,654 sent</span>
+                            </div>
+                            <div class="reward-history-item">
+                                <div class="reward-history-icon">☕</div>
+                                <div class="reward-history-info">
+                                    <span class="reward-history-title">Bonus Stamp to David Kim</span>
+                                    <span class="reward-history-meta">Birthday Reward • Nov 28, 2024</span>
+                                </div>
+                                <span class="reward-history-count">1 sent</span>
+                            </div>
+                            <div class="reward-history-item">
+                                <div class="reward-history-icon">⭐</div>
+                                <div class="reward-history-info">
+                                    <span class="reward-history-title">Double Stamps to All Members</span>
+                                    <span class="reward-history-meta">Black Friday • Nov 24, 2024</span>
+                                </div>
+                                <span class="reward-history-count">2,432 sent</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+                            <span class="campaign-status completed">Completed</span>
+                            <span class="material-icons-round">more_vert</span>
+                        </div>
+                        <h3>Welcome Bonus</h3>
+                        <p>New members get 1 free stamp on signup</p>
+                        <div class="campaign-stats">
+                            <div class="campaign-stat">
+                                <span class="stat-num">523</span>
+                                <span class="stat-label">New Members</span>
+                            </div>
+                            <div class="campaign-stat">
+                                <span class="stat-num">89%</span>
+                                <span class="stat-label">Conversion</span>
+                            </div>
+                        </div>
+                        <div class="campaign-dates">Nov 1-30, 2024</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Messages Tab -->
+            <div class="tab-content" id="messages-tab">
+                <div class="messages-layout">
+                    <!-- Compose Message -->
+                    <div class="card compose-card">
+                        <h3>
+                            <span class="material-icons-round">edit</span>
+                            Compose Message
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label>Recipients</label>
+                            <div class="recipient-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="recipient" value="all" checked onchange="toggleRecipientSelect()">
+                                    <span class="radio-label">All Members (2,847)</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="recipient" value="specific" onchange="toggleRecipientSelect()">
+                                    <span class="radio-label">Specific Member</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group member-select-group" id="memberSelectGroup" style="display: none;">
+                            <label>Select Member</label>
+                            <select class="form-input" id="memberSelect">
+                                <option value="">Choose a member...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Message Title</label>
+                            <input type="text" class="form-input" id="msgTitle" placeholder="e.g., Special Offer Just for You!">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Message</label>
+                            <textarea class="form-input textarea" id="msgBody" rows="4" placeholder="Write your message here..." oninput="updateCharCount()"></textarea>
+                            <span class="char-count" id="charCount">0/160 characters</span>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-secondary" onclick="previewMessage()">
+                                <span class="material-icons-round">visibility</span>
+                                Preview
+                            </button>
+                            <button class="btn btn-primary" onclick="sendMessage()">
+                                <span class="material-icons-round">send</span>
+                                Send Message
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Recent Messages -->
+                    <div class="card recent-messages-card">
+                        <h3>
+                            <span class="material-icons-round">history</span>
+                            Recent Messages
+                        </h3>
+                        <div class="messages-list">
+                            <div class="message-item">
+                                <div class="message-icon sent">
+                                    <span class="material-icons-round">check_circle</span>
+                                </div>
+                                <div class="message-info">
+                                    <span class="message-title">Weekend Double Stamps!</span>
+                                    <span class="message-meta">Sent to All Members • Dec 13, 2024</span>
+                                </div>
+                                <span class="message-stats">2,847 delivered</span>
+                            </div>
+                            <div class="message-item">
+                                <div class="message-icon sent">
+                                    <span class="material-icons-round">check_circle</span>
+                                </div>
+                                <div class="message-info">
+                                    <span class="message-title">Your Free Drink is Waiting!</span>
+                                    <span class="message-meta">Sent to Sarah Chen • Dec 10, 2024</span>
+                                </div>
+                                <span class="message-stats">1 delivered</span>
+                            </div>
+                            <div class="message-item">
+                                <div class="message-icon sent">
+                                    <span class="material-icons-round">check_circle</span>
+                                </div>
+                                <div class="message-info">
+                                    <span class="message-title">Welcome to C.R.E.A.M.!</span>
+                                    <span class="message-meta">Sent to All Members • Dec 1, 2024</span>
+                                </div>
+                                <span class="message-stats">2,654 delivered</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Send Rewards Tab -->
+            <div class="tab-content" id="rewards-tab">
+                <div class="rewards-layout">
+                    <!-- Send Reward Form -->
+                    <div class="card send-reward-card">
+                        <h3>
+                            <span class="material-icons-round">card_giftcard</span>
+                            Send Rewards
+                        </h3>
+
+                        <div class="form-group">
+                            <label>Reward Type</label>
+                            <select class="form-input" id="rewardType">
+                                <option value="free_drink">🎉 Free Drink</option>
+                                <option value="bonus_stamp">☕ Bonus Stamp</option>
+                                <option value="double_stamps">⭐ Double Stamps (Next Visit)</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Recipients</label>
+                            <div class="recipient-options">
+                                <label class="radio-option">
+                                    <input type="radio" name="rewardRecipient" value="all" checked onchange="toggleRewardRecipientSelect()">
+                                    <span class="radio-label">All Members (2,847)</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="rewardRecipient" value="specific" onchange="toggleRewardRecipientSelect()">
+                                    <span class="radio-label">Specific Member</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group member-select-group" id="rewardMemberSelectGroup" style="display: none;">
+                            <label>Select Member</label>
+                            <select class="form-input" id="rewardMemberSelect">
+                                <option value="">Choose a member...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Reason (Optional)</label>
+                            <input type="text" class="form-input" id="rewardReason" placeholder="e.g., Birthday reward, Loyal customer appreciation">
+                        </div>
+
+                        <div class="reward-preview">
+                            <div class="reward-preview-icon">🎉</div>
+                            <div class="reward-preview-text">
+                                <strong>Free Drink</strong>
+                                <span>Will be added to 2,847 members</span>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary btn-lg" onclick="sendReward()">
+                                <span class="material-icons-round">send</span>
+                                Send Reward
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Reward History -->
+                    <div class="card reward-history-card">
+                        <h3>
+                            <span class="material-icons-round">history</span>
+                            Reward History
+                        </h3>
+                        <div class="reward-history-list">
+                            <div class="reward-history-item">
+                                <div class="reward-history-icon">🎉</div>
+                                <div class="reward-history-info">
+                                    <span class="reward-history-title">Free Drink to All Members</span>
+                                    <span class="reward-history-meta">Holiday Special • Dec 1, 2024</span>
+                                </div>
+                                <span class="reward-history-count">2,654 sent</span>
+                            </div>
+                            <div class="reward-history-item">
+                                <div class="reward-history-icon">☕</div>
+                                <div class="reward-history-info">
+                                    <span class="reward-history-title">Bonus Stamp to David Kim</span>
+                                    <span class="reward-history-meta">Birthday Reward • Nov 28, 2024</span>
+                                </div>
+                                <span class="reward-history-count">1 sent</span>
+                            </div>
+                            <div class="reward-history-item">
+                                <div class="reward-history-icon">⭐</div>
+                                <div class="reward-history-info">
+                                    <span class="reward-history-title">Double Stamps to All Members</span>
+                                    <span class="reward-history-meta">Black Friday • Nov 24, 2024</span>
+                                </div>
+                                <span class="reward-history-count">2,432 sent</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
