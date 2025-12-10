@@ -2081,3 +2081,18 @@ body {
     mix-blend-mode: multiply;
     filter: contrast(1.1);
 }
+
+/* Logo sizing - override all previous */
+.logo-img {
+    height: 120px !important;
+    width: 480px !important;
+    max-width: 100% !important;
+    object-fit: contain !important;
+    mix-blend-mode: multiply;
+    filter: contrast(1.1);
+}
+
+.sidebar .logo-img {
+    height: 80px !important;
+    width: 320px !important;
+}
