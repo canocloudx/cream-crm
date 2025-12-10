@@ -1945,3 +1945,103 @@ body {
     font-style: italic;
     margin: 0;
 }
+
+/* ==================== */
+/* CAMPAIGN TAB FIXES */
+/* ==================== */
+
+/* Better tab buttons */
+.campaign-tabs {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+}
+
+.tab-btn {
+    flex: 1 1 auto !important;
+    white-space: nowrap;
+    min-width: 140px;
+    padding: 12px 16px !important;
+    font-size: 13px !important;
+}
+
+.tab-btn .material-icons-round {
+    font-size: 18px !important;
+}
+
+/* Campaign cards better spacing */
+.campaigns-grid {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)) !important;
+}
+
+/* Messages and Rewards layout improvements */
+.messages-layout, .rewards-layout {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 24px !important;
+}
+
+/* Form inputs proper width */
+.compose-card .form-group,
+.send-reward-card .form-group {
+    width: 100%;
+}
+
+.compose-card .form-input,
+.send-reward-card .form-input {
+    width: 100% !important;
+}
+
+/* Fix recipient options */
+.recipient-options {
+    gap: 12px !important;
+}
+
+.radio-option {
+    padding: 10px 14px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    border: 1px solid var(--glass-border);
+}
+
+.radio-option:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Form actions full width */
+.compose-card .form-actions,
+.send-reward-card .form-actions {
+    margin-top: 24px;
+}
+
+.compose-card .form-actions .btn,
+.send-reward-card .form-actions .btn {
+    flex: 1;
+}
+
+/* Reward preview better */
+.reward-preview {
+    border: 2px solid rgba(107, 144, 128, 0.3) !important;
+}
+
+/* Better message list items */
+.message-item, .reward-history-item {
+    flex-wrap: nowrap !important;
+}
+
+.message-info, .reward-history-info {
+    min-width: 0;
+    flex: 1;
+}
+
+.message-title, .reward-history-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Tab header improvements */
+.tab-header {
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--glass-border);
+    margin-bottom: 24px !important;
+}
