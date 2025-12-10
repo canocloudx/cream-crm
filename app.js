@@ -242,7 +242,7 @@ function initMembersTable() {
                 </div>
             </td>
             <td>
-                <span class="rewards-badge ${m.availableRewards > 0 ? 'has-rewards' : ''}">${m.availableRewards} available</span>
+                <span class="rewards-badge ${m.availableRewards > 0 ? 'has-rewards' : ''}">${m.availableRewards}</span>
             </td>
             <td>${m.lastVisit}</td>
             <td>
