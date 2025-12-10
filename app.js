@@ -861,3 +861,92 @@ window.sendMessageToMember = function(id) {
     closeModal();
     showToast('success', 'Message Sent!', `Message delivered to ${member.name}`);
 };
+
+// ==================== 
+// BIRTHDAY AUTO-REWARDS
+// ====================
+
+// Add birthday to sample members
+const memberBirthdays = {
+    1: '1992-12-10', // Sarah Chen - birthday today for demo!
+    2: '1988-03-15',
+    3: '1995-07-22',
+    4: '1990-11-28',
+    5: '1993-04-10',
+    6: '1987-09-05',
+    7: '1994-12-10', // Maria Garcia - birthday today for demo!
+    8: '1991-02-14',
+    9: '1989-06-30',
+    10: '1996-01-20'
+};
+
+// Check for birthdays on page load
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(checkBirthdays, 1500);
+});
+
+function checkBirthdays() {
+    const today = new Date();
+    const todayStr = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+    
+    const birthdayMembers = [];
+    
+    Object.entries(memberBirthdays).forEach(([id, date]) => {
+        const [year, month, day] = date.split('-');
+        const memberDate = `${month}-${day}`;
+        
+        if (memberDate === todayStr) {
+            const member = members.find(m => m.id === parseInt(id));
+            if (member) {
+                birthdayMembers.push(member);
+                // Auto-add birthday reward
+                member.availableRewards++;
+                member.totalRewards++;
+                member.rewardHistory.unshift({
+                    type: 'earned',
+                    date: today.toISOString().split('T')[0],
+                    desc: '🎂 Birthday free drink!'
+                });
+            }
+        }
+    });
+    
+    if (birthdayMembers.length > 0) {
+        showBirthdayNotification(birthdayMembers);
+    }
+}
+
+function showBirthdayNotification(birthdayMembers) {
+    const names = birthdayMembers.map(m => m.name).join(', ');
+    
+    openModal('🎂 Birthday Rewards Sent!', `
+        <div class="birthday-notification">
+            <div class="birthday-icon">🎉</div>
+            <h3>Happy Birthday!</h3>
+            <p>Automatic birthday rewards have been sent to:</p>
+            <div class="birthday-members">
+                ${birthdayMembers.map(m => `
+                    <div class="birthday-member">
+                        <div class="customer-avatar">${m.name.split(' ').map(n => n[0]).join('')}</div>
+                        <span>${m.name}</span>
+                    </div>
+                `).join('')}
+            </div>
+            <div class="birthday-message">
+                <span class="material-icons-round">message</span>
+                <p>"Happy Birthday! Don't forget to Enjoy Your Complimentary Coffee ☕"</p>
+            </div>
+            <button class="btn btn-primary" onclick="closeModal()">
+                <span class="material-icons-round">check</span>
+                Great!
+            </button>
+        </div>
+    `);
+    
+    // Refresh the table
+    const tbody = document.getElementById('membersTableBody');
+    if (tbody) {
+        tbody.innerHTML = '';
+        initMembersTable();
+    }
+}
