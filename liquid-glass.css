@@ -2059,3 +2059,25 @@ body {
 .sidebar .logo-img {
     height: 50px;
 }
+
+/* Larger logo */
+.logo-img {
+    height: 100px !important;
+    width: auto;
+    object-fit: contain;
+}
+
+.sidebar .logo-img {
+    height: 80px !important;
+}
+
+/* Remove any background on logo container */
+.logo {
+    background: transparent !important;
+}
+
+/* Logo blend to remove grey checkerboard */
+.logo-img {
+    mix-blend-mode: multiply;
+    filter: contrast(1.1);
+}
