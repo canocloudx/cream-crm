@@ -587,6 +587,15 @@
                         <div id="rewardsList"></div>
                     </div>
 
+                    <!-- Reward History -->
+                    <div class="history-section" id="historySection">
+                        <div class="history-header">
+                            <span class="material-icons-round">history</span>
+                            <h4>Reward History</h4>
+                        </div>
+                        <div id="historyList"></div>
+                    </div>
+
                     <button class="btn btn-secondary" onclick="clearCustomer()">
                         <span class="material-icons-round">person_search</span>
                         Scan Another Customer
@@ -601,6 +610,66 @@
         <span class="material-icons-round">check_circle</span>
         <span id="toastMessage">Success!</span>
     </div>
+
+    <style>
+        /* History Section */
+        .history-section {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: var(--text-medium);
+        }
+
+        .history-header h4 {
+            font-size: 14px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .history-item.earned .material-icons-round {
+            color: var(--success);
+            font-size: 18px;
+        }
+
+        .history-item.used .material-icons-round {
+            color: var(--accent);
+            font-size: 18px;
+        }
+
+        .history-item .desc {
+            flex: 1;
+            color: var(--text-dark);
+        }
+
+        .history-item .date {
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        .no-history {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 13px;
+            padding: 12px;
+        }
+    </style>
 
     <script>
         // PIN System
@@ -630,7 +699,7 @@
 
         function updatePinDisplay() {
             for (let i = 1; i <= 4; i++) {
-                const dot = document.getElementById(`dot${i}`);
+                const dot = document.getElementById(\`dot\${i}\`);
                 dot.classList.toggle('filled', i <= currentPin.length);
             }
         }
@@ -646,13 +715,48 @@
             }
         }
 
-        // Customer Data
+        // Customer Data with History
         const customers = {
-            'CREAM-123456': { name: 'Sarah Chen', stamps: 4, rewards: 0 },
-            'CREAM-234567': { name: 'Mike Johnson', stamps: 2, rewards: 1 },
-            'CREAM-345678': { name: 'Emma Wilson', stamps: 5, rewards: 0 },
-            'CREAM-456789': { name: 'David Kim', stamps: 1, rewards: 2 },
-            'CREAM-567890': { name: 'Lisa Park', stamps: 0, rewards: 0 }
+            'CREAM-123456': { 
+                name: 'Sarah Chen', 
+                stamps: 4, 
+                rewards: 1,
+                history: [
+                    { type: 'earned', date: '2024-12-08', desc: 'Free drink earned' },
+                    { type: 'used', date: '2024-12-05', desc: 'Free latte redeemed' }
+                ]
+            },
+            'CREAM-234567': { 
+                name: 'Mike Johnson', 
+                stamps: 2, 
+                rewards: 0,
+                history: [
+                    { type: 'used', date: '2024-12-06', desc: 'Free americano redeemed' }
+                ]
+            },
+            'CREAM-345678': { 
+                name: 'Emma Wilson', 
+                stamps: 5, 
+                rewards: 0,
+                history: [
+                    { type: 'used', date: '2024-11-29', desc: 'Free mocha redeemed' }
+                ]
+            },
+            'CREAM-456789': { 
+                name: 'David Kim', 
+                stamps: 1, 
+                rewards: 2,
+                history: [
+                    { type: 'earned', date: '2024-12-07', desc: 'Free drink earned' },
+                    { type: 'earned', date: '2024-12-03', desc: 'Free drink earned' }
+                ]
+            },
+            'CREAM-567890': { 
+                name: 'Lisa Park', 
+                stamps: 0, 
+                rewards: 0,
+                history: []
+            }
         };
 
         let currentCustomer = null;
@@ -698,8 +802,9 @@
             
             updateStampDisplay();
             updateRewardsDisplay();
+            updateHistoryDisplay();
             
-            showToast(`Welcome, ${currentCustomer.name}!`);
+            showToast(\`Welcome, \${currentCustomer.name}!\`);
         }
 
         function clearCustomer() {
@@ -716,17 +821,17 @@
             
             for (let i = 0; i < 6; i++) {
                 const stamp = document.createElement('div');
-                stamp.className = `stamp ${i < stamps ? 'filled' : 'empty'}`;
+                stamp.className = \`stamp \${i < stamps ? 'filled' : 'empty'}\`;
                 stamp.innerHTML = i < stamps ? '☕' : '';
                 grid.appendChild(stamp);
             }
             
-            document.getElementById('stampCount').textContent = `${stamps}/6`;
+            document.getElementById('stampCount').textContent = \`\${stamps}/6\`;
             
             const remaining = 6 - stamps;
             document.getElementById('stampProgress').textContent = 
                 remaining > 0 
-                    ? `${remaining} more stamp${remaining > 1 ? 's' : ''} for a FREE drink!`
+                    ? \`\${remaining} more stamp\${remaining > 1 ? 's' : ''} for a FREE drink!\`
                     : 'Reward ready!';
         }
 
@@ -743,7 +848,7 @@
                 for (let i = 0; i < rewards; i++) {
                     const item = document.createElement('div');
                     item.className = 'reward-item';
-                    item.innerHTML = `
+                    item.innerHTML = \`
                         <div class="reward-info">
                             <span class="reward-icon">🎉</span>
                             <div>
@@ -752,11 +857,28 @@
                             </div>
                         </div>
                         <button class="use-btn" onclick="useReward()">Use</button>
-                    `;
+                    \`;
                     list.appendChild(item);
                 }
             } else {
                 section.classList.remove('active');
+            }
+        }
+
+        function updateHistoryDisplay() {
+            const history = currentCustomer.history || [];
+            const list = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                list.innerHTML = '<p class="no-history">No reward history yet</p>';
+            } else {
+                list.innerHTML = history.slice(0, 5).map(h => \`
+                    <div class="history-item \${h.type}">
+                        <span class="material-icons-round">\${h.type === 'earned' ? 'card_giftcard' : 'redeem'}</span>
+                        <span class="desc">\${h.desc}</span>
+                        <span class="date">\${h.date}</span>
+                    </div>
+                \`).join('');
             }
         }
 
@@ -768,28 +890,40 @@
             if (currentCustomer.stamps >= 6) {
                 currentCustomer.stamps = 0;
                 currentCustomer.rewards++;
+                currentCustomer.history.unshift({
+                    type: 'earned',
+                    date: new Date().toISOString().split('T')[0],
+                    desc: 'Free drink earned'
+                });
                 showToast('🎉 FREE DRINK EARNED!');
             } else {
-                showToast(`Stamp added! ${currentCustomer.stamps}/6`);
+                showToast(\`Stamp added! \${currentCustomer.stamps}/6\`);
             }
             
             updateStampDisplay();
             updateRewardsDisplay();
+            updateHistoryDisplay();
         }
 
         function useReward() {
             if (!currentCustomer || currentCustomer.rewards <= 0) return;
             
             currentCustomer.rewards--;
+            currentCustomer.history.unshift({
+                type: 'used',
+                date: new Date().toISOString().split('T')[0],
+                desc: 'Free drink redeemed'
+            });
             showToast('Free drink applied! ☕');
             updateRewardsDisplay();
+            updateHistoryDisplay();
         }
 
         function showToast(message, type = 'success') {
             const toast = document.getElementById('toast');
             const toastMessage = document.getElementById('toastMessage');
             
-            toast.className = `toast ${type} show`;
+            toast.className = \`toast \${type} show\`;
             toastMessage.textContent = message;
             
             setTimeout(() => {
