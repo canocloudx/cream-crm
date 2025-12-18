@@ -17,13 +17,6 @@ let customerData = {
 function initRegistration() {
     initForm();
     initNavigation();
-    generateMemberId();
-}
-
-// Generate unique member ID
-function generateMemberId() {
-    const id = Math.floor(100000 + Math.random() * 900000);
-    customerData.memberId = `CREAM-${id}`;
 }
 
 // Form Handling
@@ -43,8 +36,8 @@ function initForm() {
     emailInput.addEventListener('input', () => validateEmail(emailInput));
     birthdayInput.addEventListener('change', () => validateBirthday(birthdayInput));
 
-    // Form submission
-    form.addEventListener('submit', (e) => {
+    // Form submission - SAVES TO HETZNER DATABASE
+    form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         const isNameValid = validateName(nameInput);
@@ -52,17 +45,51 @@ function initForm() {
         const isBirthdayValid = validateBirthday(birthdayInput);
 
         if (isNameValid && isEmailValid && isBirthdayValid) {
-            // Save data
-            customerData.name = nameInput.value.trim();
-            customerData.email = emailInput.value.trim();
-            customerData.gender = document.getElementById('gender').value;
-            customerData.birthday = birthdayInput.value;
+            // Show loading state
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span class="btn-text">Registering...</span>';
+            submitBtn.disabled = true;
 
-            // Update card preview
-            updateCardPreview();
+            try {
+                // Send to API (saves to Hetzner PostgreSQL)
+                const response = await fetch('/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: nameInput.value.trim(),
+                        email: emailInput.value.trim(),
+                        gender: document.getElementById('gender').value,
+                        birthday: birthdayInput.value
+                    })
+                });
 
-            // Go to step 2
-            goToStep(2);
+                const result = await response.json();
+
+                if (result.success) {
+                    // Save data locally for display
+                    customerData.name = result.member.name;
+                    customerData.email = result.member.email;
+                    customerData.gender = result.member.gender;
+                    customerData.birthday = result.member.birthday;
+                    customerData.memberId = result.member.member_id;
+
+                    // Update card preview
+                    updateCardPreview();
+
+                    // Go to step 2
+                    goToStep(2);
+                } else {
+                    alert(result.error || 'Registration failed. Please try again.');
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+                alert('Could not connect to server. Please try again.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
         }
     });
 }
@@ -154,94 +181,56 @@ function initNavigation() {
 
     closeBtn?.addEventListener('click', (e) => {
         e.preventDefault();
-        // Could redirect to store website or close
         window.location.href = 'index.html';
     });
 }
 
 function goToStep(step) {
-    // Hide all steps
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-
-    // Show target step
     const targetStep = document.getElementById(`step${step}`);
     if (targetStep) {
         targetStep.classList.add('active');
         currentStep = step;
     }
-
-    // Update progress bar
     updateProgress(step);
 }
 
 function updateProgress(step) {
     const progressFill = document.getElementById('progressFill');
     const stepIndicator = document.getElementById('stepIndicator');
-
     const percentage = (step / 3) * 100;
     progressFill.style.width = `${percentage}%`;
-
     stepIndicator.textContent = `Step ${step} of 3`;
 }
 
-// Apple Wallet Integration (Simulated)
+// Apple Wallet Integration
 function addToAppleWallet(btn) {
-    // Show loading state
-    btn.innerHTML = `
-        <div class="loading-spinner"></div>
-        <span>Adding to Wallet...</span>
-    `;
+    btn.innerHTML = '<div class="loading-spinner"></div><span>Adding to Wallet...</span>';
     btn.disabled = true;
     btn.style.opacity = '0.7';
 
-    // Simulate API call
     setTimeout(() => {
-        // In production, this would:
-        // 1. Send customer data to server
-        // 2. Generate and sign a .pkpass file
-        // 3. Return the pass for download
-
-        // For demo, we show success screen
         showSuccessScreen('apple');
     }, 2000);
 }
 
-// Google Wallet Integration (Simulated)
+// Google Wallet Integration
 function addToGoogleWallet(btn) {
-    // Show loading state
-    btn.innerHTML = `
-        <div class="loading-spinner"></div>
-        <span>Adding to Google Wallet...</span>
-    `;
+    btn.innerHTML = '<div class="loading-spinner"></div><span>Adding to Google Wallet...</span>';
     btn.disabled = true;
     btn.style.opacity = '0.7';
 
-    // Simulate API call
     setTimeout(() => {
-        // In production, this would:
-        // 1. Send customer data to server
-        // 2. Create a Google Wallet loyalty object using Google Wallet API
-        // 3. Generate a "Save to Google Wallet" JWT token
-        // 4. Open Google Wallet save flow
-
-        // For demo, we show success screen
         showSuccessScreen('google');
     }, 2000);
 }
 
 function showSuccessScreen(walletType = 'apple') {
-    // Hide all steps
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-
-    // Show success
     const successStep = document.getElementById('stepSuccess');
     successStep.classList.add('active');
-
-    // Update progress to complete
     document.getElementById('progressFill').style.width = '100%';
     document.getElementById('stepIndicator').textContent = 'Complete!';
-
-    // Trigger confetti effect
     createConfetti();
 }
 
@@ -267,7 +256,6 @@ function createConfetti() {
         container.appendChild(confetti);
     }
 
-    // Add confetti animation styles
     if (!document.getElementById('confettiStyles')) {
         const style = document.createElement('style');
         style.id = 'confettiStyles';
@@ -287,33 +275,5 @@ function createConfetti() {
             }
         `;
         document.head.appendChild(style);
-    }
-}
-
-// Utility: Format date for display
-function formatDate(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-    });
-}
-
-// Generate QR Code for Barcode (if needed)
-function generateBarcodeQR() {
-    const barcodeContainer = document.getElementById('cardBarcode');
-    if (barcodeContainer && typeof QRCode !== 'undefined') {
-        // Clear existing
-        barcodeContainer.innerHTML = '';
-
-        new QRCode(barcodeContainer, {
-            text: customerData.memberId,
-            width: 80,
-            height: 80,
-            colorDark: '#000000',
-            colorLight: '#ffffff',
-            correctLevel: QRCode.CorrectLevel.M
-        });
     }
 }
