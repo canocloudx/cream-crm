@@ -1,0 +1,19 @@
+{
+    "formatVersion": 1,
+    "passTypeIdentifier": "pass.com.creamcoffee.loyalty",
+    "teamIdentifier": "98824WN2H8",
+    "organizationName": "C.R.E.A.M. Coffee",
+    "description": "C.R.E.A.M. Coffee Loyalty Card",
+    "logoText": "C.R.E.A.M.",
+    "foregroundColor": "rgb(255, 255, 255)",
+    "backgroundColor": "rgb(156, 123, 107)",
+    "labelColor": "rgb(255, 252, 242)",
+    "storeCard": {
+        "headerFields": [],
+        "primaryFields": [],
+        "secondaryFields": [],
+        "auxiliaryFields": [],
+        "backFields": []
+    },
+    "barcodes": []
+}

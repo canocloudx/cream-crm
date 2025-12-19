@@ -205,6 +205,13 @@ function updateProgress(step) {
 
 // Apple Wallet Integration
 function addToAppleWallet(btn) {
+    // Real Apple Wallet pass generation
+    if (customerData.memberId) {
+        window.location.href = "/api/pass/" + customerData.memberId;
+        setTimeout(() => showSuccessScreen("apple"), 1000);
+        return;
+    }
+
     btn.innerHTML = '<div class="loading-spinner"></div><span>Adding to Wallet...</span>';
     btn.disabled = true;
     btn.style.opacity = '0.7';

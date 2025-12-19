@@ -21,6 +21,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^5.2.1",
+    "passkit-generator": "^3.5.6",
     "pg": "^8.16.3"
   }
 }

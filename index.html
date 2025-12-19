@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,19 +8,21 @@
     <meta name="description" content="C.R.E.A.M. COFFEE CRM - Stamps & Rewards">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="liquid-glass.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
+
 <body>
     <!-- Sidebar Navigation -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo">
                 <img src="logo.png" alt="C.R.E.A.M. Coffee" class="logo-img">
-                
+
             </div>
             <button class="sidebar-toggle" id="sidebarToggle">
                 <span class="material-icons-round">menu</span>
@@ -58,7 +61,7 @@
 
     <!-- Main Content -->
     <main class="main-content" id="mainContent">
-        
+
         <!-- Members Page -->
         <section class="page active" id="page-members">
             <header class="page-header">
@@ -255,16 +258,18 @@
                             <span class="material-icons-round">edit</span>
                             Compose Message
                         </h3>
-                        
+
                         <div class="form-group">
                             <label>Recipients</label>
                             <div class="recipient-options">
                                 <label class="radio-option">
-                                    <input type="radio" name="recipient" value="all" checked onchange="toggleRecipientSelect()">
+                                    <input type="radio" name="recipient" value="all" checked
+                                        onchange="toggleRecipientSelect()">
                                     <span class="radio-label">All Members (2,847)</span>
                                 </label>
                                 <label class="radio-option">
-                                    <input type="radio" name="recipient" value="specific" onchange="toggleRecipientSelect()">
+                                    <input type="radio" name="recipient" value="specific"
+                                        onchange="toggleRecipientSelect()">
                                     <span class="radio-label">Specific Member</span>
                                 </label>
                             </div>
@@ -279,12 +284,14 @@
 
                         <div class="form-group">
                             <label>Message Title</label>
-                            <input type="text" class="form-input" id="msgTitle" placeholder="e.g., Special Offer Just for You!">
+                            <input type="text" class="form-input" id="msgTitle"
+                                placeholder="e.g., Special Offer Just for You!">
                         </div>
 
                         <div class="form-group">
                             <label>Message</label>
-                            <textarea class="form-input textarea" id="msgBody" rows="4" placeholder="Write your message here..." oninput="updateCharCount()"></textarea>
+                            <textarea class="form-input textarea" id="msgBody" rows="4"
+                                placeholder="Write your message here..." oninput="updateCharCount()"></textarea>
                             <span class="char-count" id="charCount">0/160 characters</span>
                         </div>
 
@@ -365,11 +372,13 @@
                             <label>Recipients</label>
                             <div class="recipient-options">
                                 <label class="radio-option">
-                                    <input type="radio" name="rewardRecipient" value="all" checked onchange="toggleRewardRecipientSelect()">
+                                    <input type="radio" name="rewardRecipient" value="all" checked
+                                        onchange="toggleRewardRecipientSelect()">
                                     <span class="radio-label">All Members (2,847)</span>
                                 </label>
                                 <label class="radio-option">
-                                    <input type="radio" name="rewardRecipient" value="specific" onchange="toggleRewardRecipientSelect()">
+                                    <input type="radio" name="rewardRecipient" value="specific"
+                                        onchange="toggleRewardRecipientSelect()">
                                     <span class="radio-label">Specific Member</span>
                                 </label>
                             </div>
@@ -384,7 +393,8 @@
 
                         <div class="form-group">
                             <label>Reason (Optional)</label>
-                            <input type="text" class="form-input" id="rewardReason" placeholder="e.g., Birthday reward, Loyal customer appreciation">
+                            <input type="text" class="form-input" id="rewardReason"
+                                placeholder="e.g., Birthday reward, Loyal customer appreciation">
                         </div>
 
                         <div class="reward-preview">
@@ -439,218 +449,225 @@
                 </div>
             </div>
         </section>
-                            <span class="campaign-status completed">Completed</span>
-                            <span class="material-icons-round">more_vert</span>
+        <span class="campaign-status completed">Completed</span>
+        <span class="material-icons-round">more_vert</span>
+        </div>
+        <h3>Welcome Bonus</h3>
+        <p>New members get 1 free stamp on signup</p>
+        <div class="campaign-stats">
+            <div class="campaign-stat">
+                <span class="stat-num">523</span>
+                <span class="stat-label">New Members</span>
+            </div>
+            <div class="campaign-stat">
+                <span class="stat-num">89%</span>
+                <span class="stat-label">Conversion</span>
+            </div>
+        </div>
+        <div class="campaign-dates">Nov 1-30, 2024</div>
+        </div>
+        </div>
+        </div>
+
+        <!-- Messages Tab -->
+        <div class="tab-content" id="messages-tab">
+            <div class="messages-layout">
+                <!-- Compose Message -->
+                <div class="card compose-card">
+                    <h3>
+                        <span class="material-icons-round">edit</span>
+                        Compose Message
+                    </h3>
+
+                    <div class="form-group">
+                        <label>Recipients</label>
+                        <div class="recipient-options">
+                            <label class="radio-option">
+                                <input type="radio" name="recipient" value="all" checked
+                                    onchange="toggleRecipientSelect()">
+                                <span class="radio-label">All Members (2,847)</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="recipient" value="specific"
+                                    onchange="toggleRecipientSelect()">
+                                <span class="radio-label">Specific Member</span>
+                            </label>
                         </div>
-                        <h3>Welcome Bonus</h3>
-                        <p>New members get 1 free stamp on signup</p>
-                        <div class="campaign-stats">
-                            <div class="campaign-stat">
-                                <span class="stat-num">523</span>
-                                <span class="stat-label">New Members</span>
-                            </div>
-                            <div class="campaign-stat">
-                                <span class="stat-num">89%</span>
-                                <span class="stat-label">Conversion</span>
-                            </div>
-                        </div>
-                        <div class="campaign-dates">Nov 1-30, 2024</div>
+                    </div>
+
+                    <div class="form-group member-select-group" id="memberSelectGroup" style="display: none;">
+                        <label>Select Member</label>
+                        <select class="form-input" id="memberSelect">
+                            <option value="">Choose a member...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Message Title</label>
+                        <input type="text" class="form-input" id="msgTitle"
+                            placeholder="e.g., Special Offer Just for You!">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Message</label>
+                        <textarea class="form-input textarea" id="msgBody" rows="4"
+                            placeholder="Write your message here..." oninput="updateCharCount()"></textarea>
+                        <span class="char-count" id="charCount">0/160 characters</span>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn btn-secondary" onclick="previewMessage()">
+                            <span class="material-icons-round">visibility</span>
+                            Preview
+                        </button>
+                        <button class="btn btn-primary" onclick="sendMessage()">
+                            <span class="material-icons-round">send</span>
+                            Send Message
+                        </button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Messages Tab -->
-            <div class="tab-content" id="messages-tab">
-                <div class="messages-layout">
-                    <!-- Compose Message -->
-                    <div class="card compose-card">
-                        <h3>
-                            <span class="material-icons-round">edit</span>
-                            Compose Message
-                        </h3>
-                        
-                        <div class="form-group">
-                            <label>Recipients</label>
-                            <div class="recipient-options">
-                                <label class="radio-option">
-                                    <input type="radio" name="recipient" value="all" checked onchange="toggleRecipientSelect()">
-                                    <span class="radio-label">All Members (2,847)</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="recipient" value="specific" onchange="toggleRecipientSelect()">
-                                    <span class="radio-label">Specific Member</span>
-                                </label>
+                <!-- Recent Messages -->
+                <div class="card recent-messages-card">
+                    <h3>
+                        <span class="material-icons-round">history</span>
+                        Recent Messages
+                    </h3>
+                    <div class="messages-list">
+                        <div class="message-item">
+                            <div class="message-icon sent">
+                                <span class="material-icons-round">check_circle</span>
                             </div>
-                        </div>
-
-                        <div class="form-group member-select-group" id="memberSelectGroup" style="display: none;">
-                            <label>Select Member</label>
-                            <select class="form-input" id="memberSelect">
-                                <option value="">Choose a member...</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Message Title</label>
-                            <input type="text" class="form-input" id="msgTitle" placeholder="e.g., Special Offer Just for You!">
-                        </div>
-
-                        <div class="form-group">
-                            <label>Message</label>
-                            <textarea class="form-input textarea" id="msgBody" rows="4" placeholder="Write your message here..." oninput="updateCharCount()"></textarea>
-                            <span class="char-count" id="charCount">0/160 characters</span>
-                        </div>
-
-                        <div class="form-actions">
-                            <button class="btn btn-secondary" onclick="previewMessage()">
-                                <span class="material-icons-round">visibility</span>
-                                Preview
-                            </button>
-                            <button class="btn btn-primary" onclick="sendMessage()">
-                                <span class="material-icons-round">send</span>
-                                Send Message
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Recent Messages -->
-                    <div class="card recent-messages-card">
-                        <h3>
-                            <span class="material-icons-round">history</span>
-                            Recent Messages
-                        </h3>
-                        <div class="messages-list">
-                            <div class="message-item">
-                                <div class="message-icon sent">
-                                    <span class="material-icons-round">check_circle</span>
-                                </div>
-                                <div class="message-info">
-                                    <span class="message-title">Weekend Double Stamps!</span>
-                                    <span class="message-meta">Sent to All Members • Dec 13, 2024</span>
-                                </div>
-                                <span class="message-stats">2,847 delivered</span>
+                            <div class="message-info">
+                                <span class="message-title">Weekend Double Stamps!</span>
+                                <span class="message-meta">Sent to All Members • Dec 13, 2024</span>
                             </div>
-                            <div class="message-item">
-                                <div class="message-icon sent">
-                                    <span class="material-icons-round">check_circle</span>
-                                </div>
-                                <div class="message-info">
-                                    <span class="message-title">Your Free Drink is Waiting!</span>
-                                    <span class="message-meta">Sent to Sarah Chen • Dec 10, 2024</span>
-                                </div>
-                                <span class="message-stats">1 delivered</span>
-                            </div>
-                            <div class="message-item">
-                                <div class="message-icon sent">
-                                    <span class="material-icons-round">check_circle</span>
-                                </div>
-                                <div class="message-info">
-                                    <span class="message-title">Welcome to C.R.E.A.M.!</span>
-                                    <span class="message-meta">Sent to All Members • Dec 1, 2024</span>
-                                </div>
-                                <span class="message-stats">2,654 delivered</span>
-                            </div>
+                            <span class="message-stats">2,847 delivered</span>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Send Rewards Tab -->
-            <div class="tab-content" id="rewards-tab">
-                <div class="rewards-layout">
-                    <!-- Send Reward Form -->
-                    <div class="card send-reward-card">
-                        <h3>
-                            <span class="material-icons-round">card_giftcard</span>
-                            Send Rewards
-                        </h3>
-
-                        <div class="form-group">
-                            <label>Reward Type</label>
-                            <select class="form-input" id="rewardType">
-                                <option value="free_drink">🎉 Free Drink</option>
-                                <option value="bonus_stamp">☕ Bonus Stamp</option>
-                                <option value="double_stamps">⭐ Double Stamps (Next Visit)</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Recipients</label>
-                            <div class="recipient-options">
-                                <label class="radio-option">
-                                    <input type="radio" name="rewardRecipient" value="all" checked onchange="toggleRewardRecipientSelect()">
-                                    <span class="radio-label">All Members (2,847)</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="rewardRecipient" value="specific" onchange="toggleRewardRecipientSelect()">
-                                    <span class="radio-label">Specific Member</span>
-                                </label>
+                        <div class="message-item">
+                            <div class="message-icon sent">
+                                <span class="material-icons-round">check_circle</span>
                             </div>
-                        </div>
-
-                        <div class="form-group member-select-group" id="rewardMemberSelectGroup" style="display: none;">
-                            <label>Select Member</label>
-                            <select class="form-input" id="rewardMemberSelect">
-                                <option value="">Choose a member...</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Reason (Optional)</label>
-                            <input type="text" class="form-input" id="rewardReason" placeholder="e.g., Birthday reward, Loyal customer appreciation">
-                        </div>
-
-                        <div class="reward-preview">
-                            <div class="reward-preview-icon">🎉</div>
-                            <div class="reward-preview-text">
-                                <strong>Free Drink</strong>
-                                <span>Will be added to 2,847 members</span>
+                            <div class="message-info">
+                                <span class="message-title">Your Free Drink is Waiting!</span>
+                                <span class="message-meta">Sent to Sarah Chen • Dec 10, 2024</span>
                             </div>
+                            <span class="message-stats">1 delivered</span>
                         </div>
-
-                        <div class="form-actions">
-                            <button class="btn btn-primary btn-lg" onclick="sendReward()">
-                                <span class="material-icons-round">send</span>
-                                Send Reward
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Reward History -->
-                    <div class="card reward-history-card">
-                        <h3>
-                            <span class="material-icons-round">history</span>
-                            Reward History
-                        </h3>
-                        <div class="reward-history-list">
-                            <div class="reward-history-item">
-                                <div class="reward-history-icon">🎉</div>
-                                <div class="reward-history-info">
-                                    <span class="reward-history-title">Free Drink to All Members</span>
-                                    <span class="reward-history-meta">Holiday Special • Dec 1, 2024</span>
-                                </div>
-                                <span class="reward-history-count">2,654 sent</span>
+                        <div class="message-item">
+                            <div class="message-icon sent">
+                                <span class="material-icons-round">check_circle</span>
                             </div>
-                            <div class="reward-history-item">
-                                <div class="reward-history-icon">☕</div>
-                                <div class="reward-history-info">
-                                    <span class="reward-history-title">Bonus Stamp to David Kim</span>
-                                    <span class="reward-history-meta">Birthday Reward • Nov 28, 2024</span>
-                                </div>
-                                <span class="reward-history-count">1 sent</span>
+                            <div class="message-info">
+                                <span class="message-title">Welcome to C.R.E.A.M.!</span>
+                                <span class="message-meta">Sent to All Members • Dec 1, 2024</span>
                             </div>
-                            <div class="reward-history-item">
-                                <div class="reward-history-icon">⭐</div>
-                                <div class="reward-history-info">
-                                    <span class="reward-history-title">Double Stamps to All Members</span>
-                                    <span class="reward-history-meta">Black Friday • Nov 24, 2024</span>
-                                </div>
-                                <span class="reward-history-count">2,432 sent</span>
-                            </div>
+                            <span class="message-stats">2,654 delivered</span>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Send Rewards Tab -->
+        <div class="tab-content" id="rewards-tab">
+            <div class="rewards-layout">
+                <!-- Send Reward Form -->
+                <div class="card send-reward-card">
+                    <h3>
+                        <span class="material-icons-round">card_giftcard</span>
+                        Send Rewards
+                    </h3>
+
+                    <div class="form-group">
+                        <label>Reward Type</label>
+                        <select class="form-input" id="rewardType">
+                            <option value="free_drink">🎉 Free Drink</option>
+                            <option value="bonus_stamp">☕ Bonus Stamp</option>
+                            <option value="double_stamps">⭐ Double Stamps (Next Visit)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Recipients</label>
+                        <div class="recipient-options">
+                            <label class="radio-option">
+                                <input type="radio" name="rewardRecipient" value="all" checked
+                                    onchange="toggleRewardRecipientSelect()">
+                                <span class="radio-label">All Members (2,847)</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="rewardRecipient" value="specific"
+                                    onchange="toggleRewardRecipientSelect()">
+                                <span class="radio-label">Specific Member</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group member-select-group" id="rewardMemberSelectGroup" style="display: none;">
+                        <label>Select Member</label>
+                        <select class="form-input" id="rewardMemberSelect">
+                            <option value="">Choose a member...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Reason (Optional)</label>
+                        <input type="text" class="form-input" id="rewardReason"
+                            placeholder="e.g., Birthday reward, Loyal customer appreciation">
+                    </div>
+
+                    <div class="reward-preview">
+                        <div class="reward-preview-icon">🎉</div>
+                        <div class="reward-preview-text">
+                            <strong>Free Drink</strong>
+                            <span>Will be added to 2,847 members</span>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn btn-primary btn-lg" onclick="sendReward()">
+                            <span class="material-icons-round">send</span>
+                            Send Reward
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Reward History -->
+                <div class="card reward-history-card">
+                    <h3>
+                        <span class="material-icons-round">history</span>
+                        Reward History
+                    </h3>
+                    <div class="reward-history-list">
+                        <div class="reward-history-item">
+                            <div class="reward-history-icon">🎉</div>
+                            <div class="reward-history-info">
+                                <span class="reward-history-title">Free Drink to All Members</span>
+                                <span class="reward-history-meta">Holiday Special • Dec 1, 2024</span>
+                            </div>
+                            <span class="reward-history-count">2,654 sent</span>
+                        </div>
+                        <div class="reward-history-item">
+                            <div class="reward-history-icon">☕</div>
+                            <div class="reward-history-info">
+                                <span class="reward-history-title">Bonus Stamp to David Kim</span>
+                                <span class="reward-history-meta">Birthday Reward • Nov 28, 2024</span>
+                            </div>
+                            <span class="reward-history-count">1 sent</span>
+                        </div>
+                        <div class="reward-history-item">
+                            <div class="reward-history-icon">⭐</div>
+                            <div class="reward-history-info">
+                                <span class="reward-history-title">Double Stamps to All Members</span>
+                                <span class="reward-history-meta">Black Friday • Nov 24, 2024</span>
+                            </div>
+                            <span class="reward-history-count">2,432 sent</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         </section>
 
         <!-- Reports Page -->
@@ -713,44 +730,123 @@
                 </div>
             </header>
 
-            <div class="settings-grid">
-                <div class="card settings-card">
-                    <div class="settings-icon">
-                        <span class="material-icons-round">qr_code</span>
+            <div class="settings-columns">
+                <!-- Left Column: Stores + QR Codes -->
+                <div class="settings-column">
+                    <div class="card settings-card stores-section">
+                        <div class="settings-icon">
+                            <span class="material-icons-round">storefront</span>
+                        </div>
+                        <h3>Stores</h3>
+                        <p>Manage your coffee shop locations</p>
+                        <button class="btn btn-primary" onclick="openStoreModal()">
+                            <span class="material-icons-round">add_business</span>
+                            Add New Store
+                        </button>
+                        <div class="stores-list" id="storesList">
+                            <div class="store-list-header">
+                                <span class="stores-count">Locations (1)</span>
+                            </div>
+                            <div class="store-item">
+                                <div class="store-item-icon">
+                                    <span class="material-icons-round">store</span>
+                                </div>
+                                <div class="store-item-info">
+                                    <span class="store-item-name">C.R.E.A.M. Paspatur</span>
+                                    <span class="store-item-address">Cumhuriyet Mah 38. Sokak No:4</span>
+                                    <span class="store-item-manager">
+                                        <span class="material-icons-round">person</span>
+                                        Ece Diler Türedi
+                                    </span>
+                                    <span class="store-item-phone">
+                                        <span class="material-icons-round">phone</span>
+                                        05336892009
+                                    </span>
+                                </div>
+                                <div class="store-actions">
+                                    <button class="btn-edit-store" onclick="editStore(1)" title="Edit store">
+                                        <span class="material-icons-round">edit</span>
+                                    </button>
+                                    <button class="btn-delete-store" onclick="deleteStore(1)" title="Delete store">
+                                        <span class="material-icons-round">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h3>QR Code Generator</h3>
-                    <p>Generate QR codes for customer registration</p>
-                    <a href="qrcode.html" class="btn btn-primary" target="_blank">Open Generator</a>
+
+                    <div class="card settings-card">
+                        <div class="settings-icon">
+                            <span class="material-icons-round">qr_code_2</span>
+                        </div>
+                        <h3>QR Codes</h3>
+                        <p>View survey QR codes for members</p>
+                        <button class="btn btn-primary" onclick="openQRCodesModal()">View QR Codes</button>
+                    </div>
                 </div>
 
-                <div class="card settings-card">
-                    <div class="settings-icon">
-                        <span class="material-icons-round">style</span>
+                <!-- Right Column: Users + Stamp Card Settings -->
+                <div class="settings-column">
+                    <div class="card settings-card users-section">
+                        <div class="settings-icon">
+                            <span class="material-icons-round">group_add</span>
+                        </div>
+                        <h3>Users</h3>
+                        <p>Manage staff accounts (Owners & Baristas)</p>
+                        <button class="btn btn-primary" onclick="openUserModal()">
+                            <span class="material-icons-round">person_add</span>
+                            Add User
+                        </button>
+                        <div class="users-list" id="usersList">
+                            <div class="user-list-header">
+                                <span class="users-count">Staff Members (2)</span>
+                            </div>
+                            <div class="user-item">
+                                <div class="user-item-avatar owner">AM</div>
+                                <div class="user-item-info">
+                                    <span class="user-item-name">Admin Manager</span>
+                                    <span class="user-item-email">admin@creamcoffee.com</span>
+                                </div>
+                                <span class="user-type-badge owner">Owner</span>
+                                <div class="user-actions">
+                                    <button class="btn-edit-user" onclick="editUser(1)" title="Edit user">
+                                        <span class="material-icons-round">edit</span>
+                                    </button>
+                                    <button class="btn-delete-user" onclick="deleteUser(1)" title="Delete user">
+                                        <span class="material-icons-round">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="user-item">
+                                <div class="user-item-avatar barista">JD</div>
+                                <div class="user-item-info">
+                                    <span class="user-item-name">John Doe</span>
+                                    <span class="user-item-email">john@creamcoffee.com</span>
+                                </div>
+                                <span class="user-type-badge barista">Barista</span>
+                                <div class="user-actions">
+                                    <button class="btn-edit-user" onclick="editUser(2)" title="Edit user">
+                                        <span class="material-icons-round">edit</span>
+                                    </button>
+                                    <button class="btn-delete-user" onclick="deleteUser(2)" title="Delete user">
+                                        <span class="material-icons-round">delete</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <h3>Pass Designer</h3>
-                    <p>Customize your Apple Wallet pass design</p>
-                    <button class="btn btn-primary" onclick="openPassDesigner()">Open Designer</button>
-                </div>
 
-                <div class="card settings-card">
-                    <div class="settings-icon">
-                        <span class="material-icons-round">local_cafe</span>
+                    <div class="card settings-card">
+                        <div class="settings-icon">
+                            <span class="material-icons-round">local_cafe</span>
+                        </div>
+                        <h3>Stamp Card Settings</h3>
+                        <p>Configure stamps required for rewards</p>
+                        <div class="setting-row">
+                            <label>Stamps for free drink:</label>
+                            <input type="number" class="form-input small" value="6" min="1" max="20">
+                        </div>
                     </div>
-                    <h3>Stamp Card Settings</h3>
-                    <p>Configure stamps required for rewards</p>
-                    <div class="setting-row">
-                        <label>Stamps for free drink:</label>
-                        <input type="number" class="form-input small" value="6" min="1" max="20">
-                    </div>
-                </div>
-
-                <div class="card settings-card">
-                    <div class="settings-icon">
-                        <span class="material-icons-round">storefront</span>
-                    </div>
-                    <h3>Store Information</h3>
-                    <p>Update your business details</p>
-                    <button class="btn btn-secondary">Edit Info</button>
                 </div>
             </div>
         </section>
@@ -772,8 +868,546 @@
     <!-- Toast Container -->
     <div id="toastContainer"></div>
 
-    <script src="api.js"></script>
-    <script src="app.js"></script>
-    <script src="app-live.js"></script>
+    <!-- Add User Modal -->
+    <div class="modal-overlay hidden" id="userModalOverlay">
+        <div class="modal user-modal">
+            <div class="modal-header">
+                <h2>Add New User</h2>
+                <button class="modal-close" onclick="closeUserModal()">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addUserForm" onsubmit="addUser(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="userName">Name</label>
+                            <input type="text" class="form-input" id="userName" placeholder="Enter first name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="userSurname">Surname</label>
+                            <input type="text" class="form-input" id="userSurname" placeholder="Enter last name"
+                                required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userEmail">Email</label>
+                        <input type="email" class="form-input" id="userEmail" placeholder="Enter email address"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPassword">Password</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" class="form-input" id="userPassword" placeholder="Create a password"
+                                required minlength="6">
+                            <button type="button" class="password-toggle" onclick="togglePasswordVisibility()">
+                                <span class="material-icons-round">visibility_off</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="userPhone">Phone Number</label>
+                        <input type="tel" class="form-input" id="userPhone" placeholder="Enter phone number" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userType">User Type</label>
+                        <select class="form-input" id="userType" required>
+                            <option value="">Select user type...</option>
+                            <option value="owner">👑 Owner</option>
+                            <option value="barista">☕ Barista</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-icons-round">person_add</span>
+                            Add User
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- QR Codes Modal -->
+    <div class="modal-overlay hidden" id="qrCodesModalOverlay">
+        <div class="modal qr-codes-modal">
+            <div class="modal-header">
+                <h2>Survey QR Codes</h2>
+                <button class="modal-close" onclick="closeQRCodesModal()">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="qr-modal-subtitle">Scan these QR codes for member registration</p>
+                <div class="qr-codes-grid">
+                    <div class="qr-code-card">
+                        <div class="qr-code-image">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://cream-coffee.com/member-survey"
+                                alt="Member Survey QR">
+                        </div>
+                        <div class="qr-code-info">
+                            <h4>☕ C.R.E.A.M. Member</h4>
+                            <p>For regular loyalty members</p>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadQR('member')">
+                            <span class="material-icons-round">download</span>
+                            Download
+                        </button>
+                    </div>
+                    <div class="qr-code-card">
+                        <div class="qr-code-image">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https://cream-coffee.com/elite-member-survey"
+                                alt="Elite Member Survey QR">
+                        </div>
+                        <div class="qr-code-info">
+                            <h4>👑 C.R.E.A.M. Elite Member</h4>
+                            <p>For elite loyalty members</p>
+                        </div>
+                        <button class="btn btn-secondary btn-sm" onclick="downloadQR('elite')">
+                            <span class="material-icons-round">download</span>
+                            Download
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Store Modal -->
+    <div class="modal-overlay hidden" id="storeModalOverlay">
+        <div class="modal store-modal">
+            <div class="modal-header">
+                <h2>Add New Store</h2>
+                <button class="modal-close" onclick="closeStoreModal()">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="addStoreForm" onsubmit="addStore(event)">
+                    <div class="form-group">
+                        <label for="storeName">Store Name</label>
+                        <input type="text" class="form-input" id="storeName" placeholder="e.g., C.R.E.A.M. Downtown"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="storeAddress">Address</label>
+                        <input type="text" class="form-input" id="storeAddress" placeholder="Enter full address"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="storeManager">Manager</label>
+                        <input type="text" class="form-input" id="storeManager" placeholder="Manager's full name"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="storePhone">Phone</label>
+                        <input type="tel" class="form-input" id="storePhone" placeholder="Phone number" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeStoreModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-icons-round">add_business</span>
+                            Add Store
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Settings Columns Layout */
+        .settings-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+        }
+
+        .settings-column {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .settings-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Stores Section Styles */
+        .stores-list {
+            margin-top: 16px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .store-list-header {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(45, 41, 38, 0.1);
+            margin-bottom: 8px;
+        }
+
+        .stores-count {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-medium);
+        }
+
+        .store-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .store-item:hover {
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .store-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .store-item-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #9C7B6B, #B08E7D);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .store-item-icon .material-icons-round {
+            font-size: 22px;
+        }
+
+        .store-item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .store-item-name {
+            font-weight: 600;
+            font-size: 15px;
+            color: var(--text-dark);
+        }
+
+        .store-item-address {
+            font-size: 13px;
+            color: var(--text-medium);
+        }
+
+        .store-item-manager,
+        .store-item-phone {
+            font-size: 12px;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .store-item-manager .material-icons-round,
+        .store-item-phone .material-icons-round {
+            font-size: 14px;
+        }
+
+        .store-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .btn-edit-store,
+        .btn-delete-store {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit-store:hover {
+            background: rgba(156, 123, 107, 0.15);
+            color: #9C7B6B;
+        }
+
+        .btn-delete-store:hover {
+            background: rgba(194, 123, 123, 0.15);
+            color: #C27B7B;
+        }
+
+        .btn-edit-store .material-icons-round,
+        .btn-delete-store .material-icons-round {
+            font-size: 20px;
+        }
+
+        .store-modal {
+            max-width: 480px;
+        }
+
+        .users-list {
+            margin-top: 16px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 12px;
+            padding: 12px;
+        }
+
+        .user-list-header {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(45, 41, 38, 0.1);
+            margin-bottom: 8px;
+        }
+
+        .users-count {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-medium);
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 10px;
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .user-item:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(4px);
+        }
+
+        .user-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .user-item-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+        }
+
+        .user-item-avatar.owner {
+            background: linear-gradient(135deg, #D4A574, #C29662);
+        }
+
+        .user-item-avatar.barista {
+            background: linear-gradient(135deg, #9C7B6B, #B08E7D);
+        }
+
+        .user-item-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .user-item-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .user-item-email {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .user-type-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .user-type-badge.owner {
+            background: linear-gradient(135deg, rgba(212, 165, 116, 0.2), rgba(194, 150, 98, 0.2));
+            color: #C29662;
+        }
+
+        .user-type-badge.barista {
+            background: linear-gradient(135deg, rgba(156, 123, 107, 0.2), rgba(176, 142, 125, 0.2));
+            color: #9C7B6B;
+        }
+
+        /* User Action Buttons */
+        .user-actions {
+            display: flex;
+            gap: 4px;
+            margin-left: 8px;
+        }
+
+        .btn-edit-user,
+        .btn-delete-user {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .btn-edit-user:hover {
+            background: rgba(156, 123, 107, 0.15);
+            color: #9C7B6B;
+        }
+
+        .btn-delete-user:hover {
+            background: rgba(194, 123, 123, 0.15);
+            color: #C27B7B;
+        }
+
+        .btn-edit-user .material-icons-round,
+        .btn-delete-user .material-icons-round {
+            font-size: 20px;
+        }
+
+        /* User Modal Styles */
+        .user-modal {
+            max-width: 500px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .password-input-wrapper {
+            position: relative;
+        }
+
+        .password-input-wrapper .form-input {
+            padding-right: 48px;
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s ease;
+        }
+
+        .password-toggle:hover {
+            color: var(--text-dark);
+        }
+
+        @media (max-width: 768px) {
+            .users-section {
+                grid-column: span 1;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .qr-codes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* QR Codes Modal Styles */
+        .qr-codes-modal {
+            max-width: 650px;
+        }
+
+        .qr-modal-subtitle {
+            text-align: center;
+            color: var(--text-medium);
+            margin-bottom: 24px;
+        }
+
+        .qr-codes-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .qr-code-card {
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid rgba(45, 41, 38, 0.08);
+            transition: all 0.2s ease;
+        }
+
+        .qr-code-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(45, 41, 38, 0.1);
+        }
+
+        .qr-code-image {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .qr-code-image img {
+            display: block;
+            width: 150px;
+            height: 150px;
+        }
+
+        .qr-code-info h4 {
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: var(--text-dark);
+        }
+
+        .qr-code-info p {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 12px;
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+    </style>
+
+    <script src="app.js?v=4"></script>
 </body>
+
 </html>

@@ -3,150 +3,39 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initSidebar();
     initCounters();
-    initMembersTable();
+    loadMembersFromAPI();
     initCharts();
     initModals();
 });
 
-// Sample Member Data (Stamps & Rewards only - NO POINTS)
-const members = [
-    { 
-        id: 1, 
-        name: 'Sarah Chen', 
-        email: 'sarah.chen@email.com', 
-        memberId: 'CREAM-123456',
-        stamps: 4, 
-        totalRewards: 5,
-        availableRewards: 1, 
-        lastVisit: 'Today',
-        rewardHistory: [
-            { type: 'earned', date: '2024-12-08', desc: 'Free drink earned' },
-            { type: 'used', date: '2024-12-09', desc: 'Free latte redeemed' },
-            { type: 'earned', date: '2024-12-01', desc: 'Free drink earned' },
-            { type: 'used', date: '2024-12-02', desc: 'Free cappuccino redeemed' }
-        ]
-    },
-    { 
-        id: 2, 
-        name: 'Mike Johnson', 
-        email: 'mike.j@email.com', 
-        memberId: 'CREAM-234567',
-        stamps: 2, 
-        totalRewards: 3,
-        availableRewards: 0, 
-        lastVisit: 'Today',
-        rewardHistory: [
-            { type: 'earned', date: '2024-12-05', desc: 'Free drink earned' },
-            { type: 'used', date: '2024-12-06', desc: 'Free americano redeemed' }
-        ]
-    },
-    { 
-        id: 3, 
-        name: 'Emma Wilson', 
-        email: 'emma.w@email.com', 
-        memberId: 'CREAM-345678',
-        stamps: 5, 
-        totalRewards: 2,
-        availableRewards: 0, 
-        lastVisit: 'Yesterday',
-        rewardHistory: [
-            { type: 'earned', date: '2024-11-28', desc: 'Free drink earned' },
-            { type: 'used', date: '2024-11-29', desc: 'Free mocha redeemed' }
-        ]
-    },
-    { 
-        id: 4, 
-        name: 'David Kim', 
-        email: 'david.k@email.com', 
-        memberId: 'CREAM-456789',
-        stamps: 1, 
-        totalRewards: 8,
-        availableRewards: 2, 
-        lastVisit: '2 days ago',
-        rewardHistory: [
-            { type: 'earned', date: '2024-12-07', desc: 'Free drink earned' },
-            { type: 'earned', date: '2024-12-03', desc: 'Free drink earned' }
-        ]
-    },
-    { 
-        id: 5, 
-        name: 'Lisa Park', 
-        email: 'lisa.p@email.com', 
-        memberId: 'CREAM-567890',
-        stamps: 0, 
-        totalRewards: 0,
-        availableRewards: 0, 
-        lastVisit: '1 week ago',
-        rewardHistory: []
-    },
-    { 
-        id: 6, 
-        name: 'James Brown', 
-        email: 'james.b@email.com', 
-        memberId: 'CREAM-678901',
-        stamps: 3, 
-        totalRewards: 4,
-        availableRewards: 1, 
-        lastVisit: '3 days ago',
-        rewardHistory: [
-            { type: 'earned', date: '2024-12-04', desc: 'Free drink earned' }
-        ]
-    },
-    { 
-        id: 7, 
-        name: 'Maria Garcia', 
-        email: 'maria.g@email.com', 
-        memberId: 'CREAM-789012',
-        stamps: 5, 
-        totalRewards: 12,
-        availableRewards: 3, 
-        lastVisit: 'Today',
-        rewardHistory: [
-            { type: 'earned', date: '2024-12-10', desc: 'Free drink earned' },
-            { type: 'earned', date: '2024-12-08', desc: 'Free drink earned' },
-            { type: 'earned', date: '2024-12-05', desc: 'Free drink earned' }
-        ]
-    },
-    { 
-        id: 8, 
-        name: 'Robert Taylor', 
-        email: 'robert.t@email.com', 
-        memberId: 'CREAM-890123',
-        stamps: 0, 
-        totalRewards: 1,
-        availableRewards: 0, 
-        lastVisit: '2 weeks ago',
-        rewardHistory: [
-            { type: 'used', date: '2024-11-25', desc: 'Free latte redeemed' }
-        ]
-    },
-    { 
-        id: 9, 
-        name: 'Jennifer Lee', 
-        email: 'jennifer.l@email.com', 
-        memberId: 'CREAM-901234',
-        stamps: 4, 
-        totalRewards: 6,
-        availableRewards: 1, 
-        lastVisit: 'Yesterday',
-        rewardHistory: [
-            { type: 'earned', date: '2024-12-09', desc: 'Free drink earned' }
-        ]
-    },
-    { 
-        id: 10, 
-        name: 'William Chen', 
-        email: 'william.c@email.com', 
-        memberId: 'CREAM-012345',
-        stamps: 2, 
-        totalRewards: 2,
-        availableRewards: 0, 
-        lastVisit: '5 days ago',
-        rewardHistory: [
-            { type: 'used', date: '2024-12-04', desc: 'Free americano redeemed' }
-        ]
+// Members array - populated from API
+let members = [];
+
+// Load members from database API
+async function loadMembersFromAPI() {
+    try {
+        const response = await fetch('/api/members');
+        const data = await response.json();
+        members = data.map(m => ({
+            id: m.id,
+            name: m.name,
+            email: m.email,
+            memberId: m.member_id,
+            stamps: m.stamps || 0,
+            totalRewards: m.total_rewards || 0,
+            availableRewards: m.available_rewards || 0,
+            lastVisit: 'Recently',
+            rewardHistory: []
+        }));
+        initMembersTable();
+        console.log('✅ Loaded', members.length, 'members from database');
+    } catch (error) {
+        console.error('Failed to load members:', error);
+        initMembersTable();
     }
-];
+}
+
+
 
 // Navigation
 function initNavigation() {
@@ -284,7 +173,7 @@ function renderTopMembers() {
     if (!list) return;
 
     const sorted = [...members].sort((a, b) => b.totalRewards - a.totalRewards).slice(0, 5);
-    
+
     sorted.forEach((m, i) => {
         const initials = m.name.split(' ').map(n => n[0]).join('');
         const item = document.createElement('div');
@@ -302,12 +191,12 @@ function renderTopMembers() {
 }
 
 // View Member Detail
-window.viewMember = function(id) {
+window.viewMember = function (id) {
     const member = members.find(m => m.id === id);
     if (!member) return;
 
     const initials = member.name.split(' ').map(n => n[0]).join('');
-    
+
     openModal(`${member.name}`, `
         <div class="member-detail">
             <div class="member-header">
@@ -371,7 +260,7 @@ function renderRewardHistory(history) {
     if (!history || history.length === 0) {
         return '<p class="no-history">No reward history yet</p>';
     }
-    
+
     return history.slice(0, 5).map(h => `
         <div class="history-item ${h.type}">
             <span class="material-icons-round">${h.type === 'earned' ? 'card_giftcard' : 'redeem'}</span>
@@ -384,12 +273,12 @@ function renderRewardHistory(history) {
 }
 
 // Add Stamp
-window.addStampToMember = function(id) {
+window.addStampToMember = function (id) {
     const member = members.find(m => m.id === id);
     if (!member) return;
 
     member.stamps++;
-    
+
     if (member.stamps >= 6) {
         member.stamps = 0;
         member.totalRewards++;
@@ -413,7 +302,7 @@ window.addStampToMember = function(id) {
 };
 
 // Redeem Reward
-window.redeemReward = function(id) {
+window.redeemReward = function (id) {
     const member = members.find(m => m.id === id);
     if (!member || member.availableRewards <= 0) return;
 
@@ -423,7 +312,7 @@ window.redeemReward = function(id) {
         date: new Date().toISOString().split('T')[0],
         desc: 'Free drink redeemed'
     });
-    
+
     showToast('success', 'Reward Redeemed', `Free drink applied for ${member.name}!`);
 
     // Refresh table
@@ -558,11 +447,11 @@ function openModal(title, content) {
     overlay?.classList.remove('hidden');
 }
 
-window.closeModal = function() {
+window.closeModal = function () {
     document.getElementById('modalOverlay')?.classList.add('hidden');
 };
 
-window.openAddMemberModal = function() {
+window.openAddMemberModal = function () {
     openModal('Add New Member', `
         <div class="form-group">
             <label>Full Name</label>
@@ -576,12 +465,6 @@ window.openAddMemberModal = function() {
             <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
             <button class="btn btn-primary" onclick="closeModal(); showToast('success', 'Member Added', 'New member created successfully');">Add Member</button>
         </div>
-    `);
-};
-
-window.openPassDesigner = function() {
-    openModal('Pass Designer', `
-        <p style="text-align: center; padding: 40px 0;">Pass Designer coming soon!</p>
     `);
 };
 
@@ -638,7 +521,7 @@ function initCampaignTabs() {
 
 function populateMemberSelects() {
     const selects = ['memberSelect', 'rewardMemberSelect'];
-    
+
     selects.forEach(selectId => {
         const select = document.getElementById(selectId);
         if (!select) return;
@@ -653,10 +536,10 @@ function populateMemberSelects() {
 }
 
 // Toggle recipient select visibility
-window.toggleRecipientSelect = function() {
+window.toggleRecipientSelect = function () {
     const specific = document.querySelector('input[name="recipient"][value="specific"]');
     const selectGroup = document.getElementById('memberSelectGroup');
-    
+
     if (specific?.checked) {
         selectGroup.style.display = 'block';
     } else {
@@ -664,10 +547,10 @@ window.toggleRecipientSelect = function() {
     }
 };
 
-window.toggleRewardRecipientSelect = function() {
+window.toggleRewardRecipientSelect = function () {
     const specific = document.querySelector('input[name="rewardRecipient"][value="specific"]');
     const selectGroup = document.getElementById('rewardMemberSelectGroup');
-    
+
     if (specific?.checked) {
         selectGroup.style.display = 'block';
     } else {
@@ -676,7 +559,7 @@ window.toggleRewardRecipientSelect = function() {
 };
 
 // Character count
-window.updateCharCount = function() {
+window.updateCharCount = function () {
     const textarea = document.getElementById('msgBody');
     const counter = document.getElementById('charCount');
     if (!textarea || !counter) return;
@@ -687,11 +570,11 @@ window.updateCharCount = function() {
 };
 
 // Preview message
-window.previewMessage = function() {
+window.previewMessage = function () {
     const title = document.getElementById('msgTitle')?.value || 'No title';
     const body = document.getElementById('msgBody')?.value || 'No message';
     const isAll = document.querySelector('input[name="recipient"][value="all"]')?.checked;
-    const recipient = isAll ? 'All Members (2,847)' : 
+    const recipient = isAll ? 'All Members (2,847)' :
         document.getElementById('memberSelect')?.selectedOptions[0]?.text || 'Selected member';
 
     openModal('Message Preview', `
@@ -710,10 +593,10 @@ window.previewMessage = function() {
 };
 
 // Send message
-window.sendMessage = function() {
+window.sendMessage = function () {
     const title = document.getElementById('msgTitle')?.value;
     const body = document.getElementById('msgBody')?.value;
-    
+
     if (!title || !body) {
         showToast('error', 'Missing Info', 'Please enter a title and message');
         return;
@@ -723,7 +606,7 @@ window.sendMessage = function() {
     const count = isAll ? '2,847' : '1';
 
     showToast('success', 'Message Sent!', `Message delivered to ${count} member(s)`);
-    
+
     // Clear form
     document.getElementById('msgTitle').value = '';
     document.getElementById('msgBody').value = '';
@@ -731,10 +614,10 @@ window.sendMessage = function() {
 };
 
 // Send reward
-window.sendReward = function() {
+window.sendReward = function () {
     const rewardType = document.getElementById('rewardType')?.value;
     const isAll = document.querySelector('input[name="rewardRecipient"][value="all"]')?.checked;
-    
+
     const rewardNames = {
         'free_drink': 'Free Drink',
         'bonus_stamp': 'Bonus Stamp',
@@ -748,7 +631,7 @@ window.sendReward = function() {
 };
 
 // New campaign modal
-window.openNewCampaignModal = function() {
+window.openNewCampaignModal = function () {
     openModal('New Campaign', `
         <div class="form-group">
             <label>Campaign Name</label>
@@ -782,7 +665,7 @@ window.openNewCampaignModal = function() {
 };
 
 // Send message to specific member from stamp card
-window.openMessageToMember = function(id) {
+window.openMessageToMember = function (id) {
     const member = members.find(m => m.id === id);
     if (!member) return;
 
@@ -823,10 +706,10 @@ window.openMessageToMember = function(id) {
     `);
 };
 
-window.useTemplate = function(type) {
+window.useTemplate = function (type) {
     const titleInput = document.getElementById('memberMsgTitle');
     const bodyInput = document.getElementById('memberMsgBody');
-    
+
     const templates = {
         reward: {
             title: 'Your Free Drink is Waiting! 🎉',
@@ -848,11 +731,11 @@ window.useTemplate = function(type) {
     }
 };
 
-window.sendMessageToMember = function(id) {
+window.sendMessageToMember = function (id) {
     const member = members.find(m => m.id === id);
     const title = document.getElementById('memberMsgTitle')?.value;
     const body = document.getElementById('memberMsgBody')?.value;
-    
+
     if (!title || !body) {
         showToast('error', 'Missing Info', 'Please enter a title and message');
         return;
@@ -888,13 +771,13 @@ document.addEventListener('DOMContentLoaded', () => {
 function checkBirthdays() {
     const today = new Date();
     const todayStr = `${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
-    
+
     const birthdayMembers = [];
-    
+
     Object.entries(memberBirthdays).forEach(([id, date]) => {
         const [year, month, day] = date.split('-');
         const memberDate = `${month}-${day}`;
-        
+
         if (memberDate === todayStr) {
             const member = members.find(m => m.id === parseInt(id));
             if (member) {
@@ -910,7 +793,7 @@ function checkBirthdays() {
             }
         }
     });
-    
+
     if (birthdayMembers.length > 0) {
         showBirthdayNotification(birthdayMembers);
     }
@@ -918,7 +801,7 @@ function checkBirthdays() {
 
 function showBirthdayNotification(birthdayMembers) {
     const names = birthdayMembers.map(m => m.name).join(', ');
-    
+
     openModal('🎂 Birthday Rewards Sent!', `
         <div class="birthday-notification">
             <div class="birthday-icon">🎉</div>
@@ -942,7 +825,7 @@ function showBirthdayNotification(birthdayMembers) {
             </button>
         </div>
     `);
-    
+
     // Refresh the table
     const tbody = document.getElementById('membersTableBody');
     if (tbody) {
@@ -950,3 +833,402 @@ function showBirthdayNotification(birthdayMembers) {
         initMembersTable();
     }
 }
+
+// ====================
+// USER MANAGEMENT SYSTEM
+// ====================
+
+// Staff Users Data
+const staffUsers = [
+    {
+        id: 1,
+        name: 'Admin',
+        surname: 'Manager',
+        email: 'admin@creamcoffee.com',
+        phone: '+1 555-0100',
+        type: 'owner'
+    },
+    {
+        id: 2,
+        name: 'John',
+        surname: 'Doe',
+        email: 'john@creamcoffee.com',
+        phone: '+1 555-0101',
+        type: 'barista'
+    }
+];
+
+// Open User Modal
+window.openUserModal = function () {
+    const overlay = document.getElementById('userModalOverlay');
+    overlay?.classList.remove('hidden');
+
+    // Reset form
+    document.getElementById('addUserForm')?.reset();
+};
+
+// Toggle Password Visibility
+window.togglePasswordVisibility = function () {
+    const passwordInput = document.getElementById('userPassword');
+    const toggleBtn = document.querySelector('.password-toggle .material-icons-round');
+
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleBtn.textContent = 'visibility';
+    } else {
+        passwordInput.type = 'password';
+        toggleBtn.textContent = 'visibility_off';
+    }
+};
+
+// Update Users List UI
+function updateUsersList() {
+    const usersList = document.getElementById('usersList');
+    if (!usersList) return;
+
+    const usersCount = staffUsers.length;
+
+    let html = `
+        <div class="user-list-header">
+            <span class="users-count">Staff Members (${usersCount})</span>
+        </div>
+    `;
+
+    staffUsers.forEach(user => {
+        const initials = user.name[0] + user.surname[0];
+        const fullName = `${user.name} ${user.surname}`;
+        const typeClass = user.type;
+        const typeLabel = user.type === 'owner' ? 'Owner' : 'Barista';
+
+        html += `
+            <div class="user-item">
+                <div class="user-item-avatar ${typeClass}">${initials}</div>
+                <div class="user-item-info">
+                    <span class="user-item-name">${fullName}</span>
+                    <span class="user-item-email">${user.email}</span>
+                </div>
+                <span class="user-type-badge ${typeClass}">${typeLabel}</span>
+                <div class="user-actions">
+                    <button class="btn-edit-user" onclick="editUser(${user.id})" title="Edit user">
+                        <span class="material-icons-round">edit</span>
+                    </button>
+                    <button class="btn-delete-user" onclick="deleteUser(${user.id})" title="Delete user">
+                        <span class="material-icons-round">delete</span>
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+
+    usersList.innerHTML = html;
+}
+
+// Track editing state
+let editingUserId = null;
+
+// Edit User - Opens modal with pre-filled data
+window.editUser = function (id) {
+    const user = staffUsers.find(u => u.id === id);
+    if (!user) return;
+
+    editingUserId = id;
+
+    // Pre-fill form
+    document.getElementById('userName').value = user.name;
+    document.getElementById('userSurname').value = user.surname;
+    document.getElementById('userEmail').value = user.email;
+    document.getElementById('userPassword').value = '';
+    document.getElementById('userPhone').value = user.phone;
+    document.getElementById('userType').value = user.type;
+
+    // Update modal title and button
+    const modalHeader = document.querySelector('#userModalOverlay .modal-header h2');
+    const submitBtn = document.querySelector('#addUserForm button[type="submit"]');
+
+    if (modalHeader) modalHeader.textContent = 'Edit User';
+    if (submitBtn) {
+        submitBtn.innerHTML = '<span class="material-icons-round">save</span> Save Changes';
+    }
+
+    // Open modal
+    document.getElementById('userModalOverlay')?.classList.remove('hidden');
+};
+
+// Modified Add User to handle both add and edit
+window.addUser = function (event) {
+    event.preventDefault();
+
+    const name = document.getElementById('userName')?.value;
+    const surname = document.getElementById('userSurname')?.value;
+    const email = document.getElementById('userEmail')?.value;
+    const password = document.getElementById('userPassword')?.value;
+    const phone = document.getElementById('userPhone')?.value;
+    const type = document.getElementById('userType')?.value;
+
+    // Validation (password not required when editing)
+    if (!name || !surname || !email || !phone || !type) {
+        showToast('error', 'Missing Information', 'Please fill in all required fields');
+        return;
+    }
+
+    if (!editingUserId && !password) {
+        showToast('error', 'Missing Password', 'Please enter a password for the new user');
+        return;
+    }
+
+    if (editingUserId) {
+        // Update existing user
+        const user = staffUsers.find(u => u.id === editingUserId);
+        if (user) {
+            user.name = name;
+            user.surname = surname;
+            user.email = email;
+            user.phone = phone;
+            user.type = type;
+            showToast('success', 'User Updated', `${name} ${surname}'s info has been updated`);
+        }
+        editingUserId = null;
+    } else {
+        // Create new user
+        const newUser = {
+            id: staffUsers.length > 0 ? Math.max(...staffUsers.map(u => u.id)) + 1 : 1,
+            name: name,
+            surname: surname,
+            email: email,
+            phone: phone,
+            type: type
+        };
+        staffUsers.push(newUser);
+        showToast('success', 'User Added', `${name} ${surname} has been added as ${type === 'owner' ? 'an Owner' : 'a Barista'}`);
+    }
+
+    updateUsersList();
+    closeUserModal();
+};
+
+// Modified closeUserModal to reset state
+window.closeUserModal = function () {
+    const overlay = document.getElementById('userModalOverlay');
+    overlay?.classList.add('hidden');
+
+    // Reset editing state
+    editingUserId = null;
+
+    // Reset modal title and button
+    const modalHeader = document.querySelector('#userModalOverlay .modal-header h2');
+    const submitBtn = document.querySelector('#addUserForm button[type="submit"]');
+
+    if (modalHeader) modalHeader.textContent = 'Add New User';
+    if (submitBtn) {
+        submitBtn.innerHTML = '<span class="material-icons-round">person_add</span> Add User';
+    }
+
+    // Reset form
+    document.getElementById('addUserForm')?.reset();
+};
+
+// Delete User
+window.deleteUser = function (id) {
+    const userIndex = staffUsers.findIndex(u => u.id === id);
+    if (userIndex === -1) return;
+
+    const user = staffUsers[userIndex];
+    const fullName = `${user.name} ${user.surname}`;
+
+    // Confirm deletion
+    if (confirm(`Are you sure you want to delete ${fullName}?`)) {
+        staffUsers.splice(userIndex, 1);
+        updateUsersList();
+        showToast('success', 'User Deleted', `${fullName} has been removed`);
+    }
+};
+
+// Close user modal when clicking outside
+document.addEventListener('click', function (e) {
+    const overlay = document.getElementById('userModalOverlay');
+    if (e.target === overlay) {
+        closeUserModal();
+    }
+    const qrOverlay = document.getElementById('qrCodesModalOverlay');
+    if (e.target === qrOverlay) {
+        closeQRCodesModal();
+    }
+});
+
+// ====================
+// QR CODES MODAL
+// ====================
+
+// Open QR Codes Modal
+window.openQRCodesModal = function () {
+    const overlay = document.getElementById('qrCodesModalOverlay');
+    overlay?.classList.remove('hidden');
+};
+
+// Close QR Codes Modal
+window.closeQRCodesModal = function () {
+    const overlay = document.getElementById('qrCodesModalOverlay');
+    overlay?.classList.add('hidden');
+};
+
+// Download QR Code
+window.downloadQR = function (type) {
+    const urls = {
+        member: 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https://cream-coffee.com/member-survey',
+        elite: 'https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=https://cream-coffee.com/elite-member-survey'
+    };
+
+    const filename = type === 'member' ? 'cream-member-survey-qr.png' : 'cream-elite-member-survey-qr.png';
+
+    // Open in new tab (for download)
+    const link = document.createElement('a');
+    link.href = urls[type];
+    link.download = filename;
+    link.target = '_blank';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    showToast('success', 'Downloading QR Code', `${type === 'member' ? 'Member' : 'Elite Member'} survey QR code`);
+};
+
+// ====================
+// STORE MANAGEMENT
+// ====================
+
+// Stores Data
+const stores = [
+    {
+        id: 1,
+        name: 'C.R.E.A.M. Paspatur',
+        address: 'Cumhuriyet Mah 38. Sokak No:4',
+        manager: 'Ece Diler Türedi',
+        phone: '05336892009'
+    }
+];
+
+let editingStoreId = null;
+
+// Open Store Modal
+window.openStoreModal = function () {
+    const overlay = document.getElementById('storeModalOverlay');
+    overlay?.classList.remove('hidden');
+    document.getElementById('addStoreForm')?.reset();
+};
+
+// Close Store Modal
+window.closeStoreModal = function () {
+    const overlay = document.getElementById('storeModalOverlay');
+    overlay?.classList.add('hidden');
+    editingStoreId = null;
+
+    const modalHeader = document.querySelector('#storeModalOverlay .modal-header h2');
+    const submitBtn = document.querySelector('#addStoreForm button[type="submit"]');
+    if (modalHeader) modalHeader.textContent = 'Add New Store';
+    if (submitBtn) submitBtn.innerHTML = '<span class="material-icons-round">add_business</span> Add Store';
+
+    document.getElementById('addStoreForm')?.reset();
+};
+
+// Add/Edit Store
+window.addStore = function (event) {
+    event.preventDefault();
+
+    const name = document.getElementById('storeName')?.value;
+    const address = document.getElementById('storeAddress')?.value;
+    const manager = document.getElementById('storeManager')?.value;
+    const phone = document.getElementById('storePhone')?.value;
+
+    if (!name || !address || !manager || !phone) {
+        showToast('error', 'Missing Information', 'Please fill in all fields');
+        return;
+    }
+
+    if (editingStoreId) {
+        const store = stores.find(s => s.id === editingStoreId);
+        if (store) {
+            store.name = name;
+            store.address = address;
+            store.manager = manager;
+            store.phone = phone;
+            showToast('success', 'Store Updated', `${name} has been updated`);
+        }
+        editingStoreId = null;
+    } else {
+        const newStore = {
+            id: stores.length > 0 ? Math.max(...stores.map(s => s.id)) + 1 : 1,
+            name, address, manager, phone
+        };
+        stores.push(newStore);
+        showToast('success', 'Store Added', `${name} has been added`);
+    }
+
+    updateStoresList();
+    closeStoreModal();
+};
+
+// Edit Store
+window.editStore = function (id) {
+    const store = stores.find(s => s.id === id);
+    if (!store) return;
+
+    editingStoreId = id;
+    document.getElementById('storeName').value = store.name;
+    document.getElementById('storeAddress').value = store.address;
+    document.getElementById('storeManager').value = store.manager;
+    document.getElementById('storePhone').value = store.phone;
+
+    const modalHeader = document.querySelector('#storeModalOverlay .modal-header h2');
+    const submitBtn = document.querySelector('#addStoreForm button[type="submit"]');
+    if (modalHeader) modalHeader.textContent = 'Edit Store';
+    if (submitBtn) submitBtn.innerHTML = '<span class="material-icons-round">save</span> Save Changes';
+
+    document.getElementById('storeModalOverlay')?.classList.remove('hidden');
+};
+
+// Delete Store
+window.deleteStore = function (id) {
+    const storeIndex = stores.findIndex(s => s.id === id);
+    if (storeIndex === -1) return;
+
+    const store = stores[storeIndex];
+    if (confirm(`Are you sure you want to delete ${store.name}?`)) {
+        stores.splice(storeIndex, 1);
+        updateStoresList();
+        showToast('success', 'Store Deleted', `${store.name} has been removed`);
+    }
+};
+
+// Update Stores List
+function updateStoresList() {
+    const storesList = document.getElementById('storesList');
+    if (!storesList) return;
+
+    let html = `<div class="store-list-header"><span class="stores-count">Locations (${stores.length})</span></div>`;
+
+    stores.forEach(store => {
+        html += `
+            <div class="store-item">
+                <div class="store-item-icon"><span class="material-icons-round">store</span></div>
+                <div class="store-item-info">
+                    <span class="store-item-name">${store.name}</span>
+                    <span class="store-item-address">${store.address}</span>
+                    <span class="store-item-manager"><span class="material-icons-round">person</span>${store.manager}</span>
+                    <span class="store-item-phone"><span class="material-icons-round">phone</span>${store.phone}</span>
+                </div>
+                <div class="store-actions">
+                    <button class="btn-edit-store" onclick="editStore(${store.id})" title="Edit store"><span class="material-icons-round">edit</span></button>
+                    <button class="btn-delete-store" onclick="deleteStore(${store.id})" title="Delete store"><span class="material-icons-round">delete</span></button>
+                </div>
+            </div>
+        `;
+    });
+
+    storesList.innerHTML = html;
+}
+
+// Close store modal when clicking outside
+document.addEventListener('click', function (e) {
+    const storeOverlay = document.getElementById('storeModalOverlay');
+    if (e.target === storeOverlay) closeStoreModal();
+});

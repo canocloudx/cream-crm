@@ -213,3 +213,38 @@ app.get('/api/search', async (req, res) => {
 });
 
 console.log('✅ Additional API endpoints loaded');
+
+// Apple Wallet Pass Generation
+const { generatePass } = require('./wallet-pass');
+
+app.get('/api/pass/:memberId', async (req, res) => {
+    try {
+        const { memberId } = req.params;
+        
+        // Get member from database
+        const result = await pool.query('SELECT * FROM members WHERE member_id = $1', [memberId]);
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Member not found' });
+        }
+        
+        const member = result.rows[0];
+        
+        // Generate the pass
+        const passBuffer = await generatePass(member);
+        
+        // Send the pass file
+        res.set({
+            'Content-Type': 'application/vnd.apple.pkpass',
+            'Content-Disposition': `attachment; filename="${memberId}.pkpass"`
+        });
+        res.send(passBuffer);
+        
+        console.log('Generated pass for:', memberId);
+    } catch (error) {
+        console.error('Pass generation error:', error);
+        res.status(500).json({ error: 'Failed to generate pass', details: error.message });
+    }
+});
+
+console.log('🍎 Apple Wallet pass endpoint: /api/pass/:memberId');
