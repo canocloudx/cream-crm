@@ -499,6 +499,8 @@ function showToast(type, title, message) {
 // Initialize Campaign Tabs
 document.addEventListener('DOMContentLoaded', () => {
     initCampaignTabs();
+    updateStoresList();
+    updateUsersList();
     populateMemberSelects();
 });
 
@@ -838,8 +840,8 @@ function showBirthdayNotification(birthdayMembers) {
 // USER MANAGEMENT SYSTEM
 // ====================
 
-// Staff Users Data
-const staffUsers = [
+// Staff Users Data - Load from localStorage if available
+const defaultStaffUsers = [
     {
         id: 1,
         name: 'Admin',
@@ -857,6 +859,12 @@ const staffUsers = [
         type: 'barista'
     }
 ];
+
+let staffUsers = JSON.parse(localStorage.getItem('cream_users')) || defaultStaffUsers;
+
+function saveUsers() {
+    localStorage.setItem('cream_users', JSON.stringify(staffUsers));
+}
 
 // Open User Modal
 window.openUserModal = function () {
@@ -985,6 +993,7 @@ window.addUser = function (event) {
             user.email = email;
             user.phone = phone;
             user.type = type;
+            saveUsers();
             showToast('success', 'User Updated', `${name} ${surname}'s info has been updated`);
         }
         editingUserId = null;
@@ -999,6 +1008,7 @@ window.addUser = function (event) {
             type: type
         };
         staffUsers.push(newUser);
+        saveUsers();
         showToast('success', 'User Added', `${name} ${surname} has been added as ${type === 'owner' ? 'an Owner' : 'a Barista'}`);
     }
 
@@ -1038,6 +1048,7 @@ window.deleteUser = function (id) {
     // Confirm deletion
     if (confirm(`Are you sure you want to delete ${fullName}?`)) {
         staffUsers.splice(userIndex, 1);
+        saveUsers();
         updateUsersList();
         showToast('success', 'User Deleted', `${fullName} has been removed`);
     }
@@ -1097,7 +1108,8 @@ window.downloadQR = function (type) {
 // ====================
 
 // Stores Data
-const stores = [
+// Stores Data - Load from localStorage if available
+const defaultStores = [
     {
         id: 1,
         name: 'C.R.E.A.M. Paspatur',
@@ -1106,6 +1118,12 @@ const stores = [
         phone: '05336892009'
     }
 ];
+
+let stores = JSON.parse(localStorage.getItem('cream_stores')) || defaultStores;
+
+function saveStores() {
+    localStorage.setItem('cream_stores', JSON.stringify(stores));
+}
 
 let editingStoreId = null;
 
@@ -1151,6 +1169,7 @@ window.addStore = function (event) {
             store.address = address;
             store.manager = manager;
             store.phone = phone;
+            saveStores();
             showToast('success', 'Store Updated', `${name} has been updated`);
         }
         editingStoreId = null;
@@ -1160,10 +1179,12 @@ window.addStore = function (event) {
             name, address, manager, phone
         };
         stores.push(newStore);
+        saveStores();
         showToast('success', 'Store Added', `${name} has been added`);
     }
 
     updateStoresList();
+    updateUsersList();
     closeStoreModal();
 };
 
@@ -1194,7 +1215,9 @@ window.deleteStore = function (id) {
     const store = stores[storeIndex];
     if (confirm(`Are you sure you want to delete ${store.name}?`)) {
         stores.splice(storeIndex, 1);
+        saveStores();
         updateStoresList();
+    updateUsersList();
         showToast('success', 'Store Deleted', `${store.name} has been removed`);
     }
 };
