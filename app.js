@@ -135,11 +135,17 @@ function initMembersTable() {
             </td>
             <td>${m.lastVisit}</td>
             <td>
-                <button class="btn-icon" onclick="viewMember(${m.id})">
+                <button class="btn-icon" onclick="viewMember(${m.id})" title="View details">
                     <span class="material-icons-round">visibility</span>
                 </button>
-                <button class="btn-icon" onclick="addStampToMember(${m.id})">
+                <button class="btn-icon" onclick="editMember(${m.id})" title="Edit member">
+                    <span class="material-icons-round">edit</span>
+                </button>
+                <button class="btn-icon" onclick="addStampToMember(${m.id})" title="Add stamp">
                     <span class="material-icons-round">add_circle</span>
+                </button>
+                <button class="btn-icon btn-delete" onclick="deleteMember(${m.id})" title="Delete member">
+                    <span class="material-icons-round">delete</span>
                 </button>
             </td>
         `;
@@ -1255,3 +1261,115 @@ document.addEventListener('click', function (e) {
     const storeOverlay = document.getElementById('storeModalOverlay');
     if (e.target === storeOverlay) closeStoreModal();
 });
+
+
+// Edit Member
+window.editMember = function(id) {
+    const member = members.find(m => m.id === id);
+    if (!member) return;
+    
+    openModal('Edit Member', `
+        <form id="editMemberForm" onsubmit="saveMemberChanges(event, ${id})">
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-input" id="editMemberName" value="${member.name}" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-input" id="editMemberEmail" value="${member.email}" required>
+            </div>
+            <div class="form-group">
+                <label>Stamps (0-6)</label>
+                <input type="number" class="form-input" id="editMemberStamps" value="${member.stamps}" min="0" max="6">
+            </div>
+            <div class="form-group">
+                <label>Available Rewards</label>
+                <input type="number" class="form-input" id="editMemberRewards" value="${member.availableRewards}" min="0">
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <span class="material-icons-round">save</span>
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    `);
+};
+
+// Save Member Changes
+window.saveMemberChanges = async function(event, id) {
+    event.preventDefault();
+    
+    const name = document.getElementById('editMemberName').value;
+    const email = document.getElementById('editMemberEmail').value;
+    const stamps = parseInt(document.getElementById('editMemberStamps').value);
+    const availableRewards = parseInt(document.getElementById('editMemberRewards').value);
+    
+    try {
+        const response = await fetch(\`/api/members/\${id}\`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, stamps, availableRewards })
+        });
+        
+        if (response.ok) {
+            // Update local array
+            const member = members.find(m => m.id === id);
+            if (member) {
+                member.name = name;
+                member.email = email;
+                member.stamps = stamps;
+                member.availableRewards = availableRewards;
+            }
+            
+            // Refresh table
+            const tbody = document.getElementById('membersTableBody');
+            tbody.innerHTML = '';
+            initMembersTable();
+            
+            closeModal();
+            showToast('success', 'Member Updated', \`\${name}'s details have been saved\`);
+        } else {
+            const data = await response.json();
+            showToast('error', 'Update Failed', data.error || 'Could not update member');
+        }
+    } catch (error) {
+        console.error('Update error:', error);
+        showToast('error', 'Update Failed', 'Network error occurred');
+    }
+};
+
+// Delete Member
+window.deleteMember = async function(id) {
+    const member = members.find(m => m.id === id);
+    if (!member) return;
+    
+    if (!confirm(\`Are you sure you want to delete \${member.name}? This action cannot be undone.\`)) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(\`/api/members/\${id}\`, {
+            method: 'DELETE'
+        });
+        
+        if (response.ok) {
+            // Remove from local array
+            members = members.filter(m => m.id !== id);
+            
+            // Refresh table
+            const tbody = document.getElementById('membersTableBody');
+            tbody.innerHTML = '';
+            initMembersTable();
+            
+            showToast('success', 'Member Deleted', \`\${member.name} has been removed\`);
+        } else {
+            const data = await response.json();
+            showToast('error', 'Delete Failed', data.error || 'Could not delete member');
+        }
+    } catch (error) {
+        console.error('Delete error:', error);
+        showToast('error', 'Delete Failed', 'Network error occurred');
+    }
+};

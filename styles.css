@@ -2117,3 +2117,8 @@ input[type="radio"] {
         padding: 16px;
     }
 }
+/* Delete button styling */
+.btn-icon.btn-delete:hover {
+    background: rgba(111, 29, 27, 0.2);
+    color: #C27B7B;
+}
