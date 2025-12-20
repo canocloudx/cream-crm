@@ -243,6 +243,34 @@ app.get('/api/search', async (req, res) => {
 
 console.log('✅ Additional API endpoints loaded');
 
+// Delete member
+app.delete('/api/members/:memberId', async (req, res) => {
+    try {
+        const { memberId } = req.params;
+        
+        // First get the member's internal ID for cleanup
+        const member = await pool.query('SELECT id FROM members WHERE member_id = $1', [memberId]);
+        if (member.rows.length === 0) {
+            return res.status(404).json({ error: 'Member not found' });
+        }
+        
+        const internalId = member.rows[0].id;
+        
+        // Delete related records first (reward history)
+        await pool.query('DELETE FROM reward_history WHERE member_id = $1', [internalId]);
+        
+        // Delete the member
+        await pool.query('DELETE FROM members WHERE member_id = $1', [memberId]);
+        
+        console.log('Member deleted:', memberId);
+        res.json({ success: true, message: 'Member deleted successfully' });
+    } catch (error) {
+        console.error('Delete error:', error);
+        res.status(500).json({ error: 'Failed to delete member' });
+    }
+});
+
+
 // Apple Wallet Pass Generation
 app.get('/api/pass/:memberId', async (req, res) => {
     try {

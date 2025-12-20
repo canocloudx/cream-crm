@@ -141,6 +141,9 @@ function initMembersTable() {
                 <button class="btn-icon" onclick="addStampToMember(${m.id})">
                     <span class="material-icons-round">add_circle</span>
                 </button>
+                <button class="btn-icon btn-delete" onclick="deleteMember(${m.id}, '${m.name}')">
+                    <span class="material-icons-round">delete</span>
+                </button>
             </td>
         `;
         tbody.appendChild(row);
@@ -1281,3 +1284,39 @@ document.addEventListener('click', function (e) {
     const storeOverlay = document.getElementById('storeModalOverlay');
     if (e.target === storeOverlay) closeStoreModal();
 });
+
+// Delete Member - CALLS API
+window.deleteMember = async function (id, name) {
+    const member = members.find(m => m.id === id);
+    if (!member) return;
+
+    // Confirm deletion
+    if (!confirm(`Are you sure you want to delete ${name}? This action cannot be undone.`)) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/members/${member.memberId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            showToast('success', 'Member Deleted', `${name} has been removed from the system.`);
+            
+            // Refresh table
+            const tbody = document.getElementById('membersTableBody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                loadMembersFromAPI();
+            }
+        } else {
+            showToast('error', 'Error', result.error || 'Failed to delete member');
+        }
+    } catch (error) {
+        console.error('Delete API error:', error);
+        showToast('error', 'Error', 'Failed to delete member. Check connection.');
+    }
+};
