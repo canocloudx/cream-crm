@@ -17,6 +17,18 @@ const pool = new Pool({
     password: 'CreamCoffee2024!'
 });
 
+// Import wallet modules
+const { generatePass } = require('./wallet-pass');
+const { sendPassUpdate } = require('./apns-push');
+const { router: walletRouter, initWalletService, triggerPassUpdate } = require('./wallet-service');
+
+// Initialize wallet service with dependencies
+initWalletService(pool, generatePass, sendPassUpdate);
+
+// Mount wallet routes at /wallet
+app.use('/wallet', walletRouter);
+console.log('🍎 Apple Wallet web service mounted at /wallet');
+
 // Generate unique member ID
 function generateMemberId() {
     return 'CREAM-' + Math.floor(100000 + Math.random() * 900000);
@@ -73,7 +85,7 @@ app.get('/api/members/:memberId', async (req, res) => {
     }
 });
 
-// Add stamp to member
+// Add stamp to member - NOW WITH AUTOMATIC PASS UPDATE
 app.post('/api/members/:memberId/stamp', async (req, res) => {
     try {
         const { memberId } = req.params;
@@ -107,6 +119,15 @@ app.post('/api/members/:memberId/stamp', async (req, res) => {
             [stamps, availableRewards, totalRewards, memberId]
         );
         
+        // Trigger Apple Wallet pass update
+        try {
+            await triggerPassUpdate(memberId);
+            console.log(`📱 Pass update triggered for: ${memberId}`);
+        } catch (pushError) {
+            console.error('Pass update push failed:', pushError.message);
+            // Don't fail the stamp operation if push fails
+        }
+        
         res.json({ success: true, member: result.rows[0] });
     } catch (error) {
         console.error('Error adding stamp:', error);
@@ -114,7 +135,7 @@ app.post('/api/members/:memberId/stamp', async (req, res) => {
     }
 });
 
-// Redeem reward
+// Redeem reward - ALSO WITH PASS UPDATE
 app.post('/api/members/:memberId/redeem', async (req, res) => {
     try {
         const { memberId } = req.params;
@@ -139,6 +160,14 @@ app.post('/api/members/:memberId/redeem', async (req, res) => {
              WHERE member_id = $1 RETURNING *`,
             [memberId]
         );
+        
+        // Trigger Apple Wallet pass update
+        try {
+            await triggerPassUpdate(memberId);
+            console.log(`📱 Pass update triggered for: ${memberId}`);
+        } catch (pushError) {
+            console.error('Pass update push failed:', pushError.message);
+        }
         
         res.json({ success: true, member: result.rows[0] });
     } catch (error) {
@@ -215,8 +244,6 @@ app.get('/api/search', async (req, res) => {
 console.log('✅ Additional API endpoints loaded');
 
 // Apple Wallet Pass Generation
-const { generatePass } = require('./wallet-pass');
-
 app.get('/api/pass/:memberId', async (req, res) => {
     try {
         const { memberId } = req.params;
@@ -248,3 +275,4 @@ app.get('/api/pass/:memberId', async (req, res) => {
 });
 
 console.log('🍎 Apple Wallet pass endpoint: /api/pass/:memberId');
+console.log('📲 Automatic pass updates enabled!');

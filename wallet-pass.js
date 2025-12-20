@@ -2,8 +2,14 @@
 const { PKPass } = require("passkit-generator");
 const path = require("path");
 const fs = require("fs");
+const crypto = require("crypto");
 
 const certsPath = path.join(__dirname, "certs");
+
+// Generate a consistent auth token for a member (based on memberId)
+function generateAuthToken(memberId) {
+    return crypto.createHash('sha256').update(memberId + 'cream-secret-2024').digest('hex').substring(0, 32);
+}
 
 async function generatePass(member) {
     try {
@@ -15,6 +21,9 @@ async function generatePass(member) {
         
         console.log("Generating pass for:", memberName, memberId, "Stamps:", stamps);
         
+        // Generate authentication token for this pass
+        const authToken = generateAuthToken(memberId);
+        
         // Create pass with base configuration
         const pass = await PKPass.from({
             model: path.join(__dirname, "pass-template.pass"),
@@ -25,7 +34,8 @@ async function generatePass(member) {
                 signerKeyPassphrase: "creamcoff3669"
             }
         }, {
-            serialNumber: memberId
+            serialNumber: memberId,
+            authenticationToken: authToken
         });
 
         // Use the library's push methods to add fields
@@ -83,5 +93,5 @@ async function generatePass(member) {
     }
 }
 
-module.exports = { generatePass };
-console.log("✅ Apple Wallet pass generator loaded");
+module.exports = { generatePass, generateAuthToken };
+console.log("✅ Apple Wallet pass generator loaded (with update support)");
