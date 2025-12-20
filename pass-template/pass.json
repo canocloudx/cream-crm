@@ -9,6 +9,7 @@
     "backgroundColor": "rgb(156, 123, 107)",
     "labelColor": "rgb(255, 252, 242)",
     "webServiceURL": "https://crm.creamcoff.com/wallet",
+    "authenticationToken": "placeholder_will_be_replaced",
     "storeCard": {
         "headerFields": [],
         "primaryFields": [],
