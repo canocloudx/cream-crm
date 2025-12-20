@@ -272,56 +272,82 @@ function renderRewardHistory(history) {
     `).join('');
 }
 
-// Add Stamp
-window.addStampToMember = function (id) {
+
+// Add Stamp - NOW CALLS API
+window.addStampToMember = async function (id) {
     const member = members.find(m => m.id === id);
     if (!member) return;
 
-    member.stamps++;
-
-    if (member.stamps >= 6) {
-        member.stamps = 0;
-        member.totalRewards++;
-        member.availableRewards++;
-        member.rewardHistory.unshift({
-            type: 'earned',
-            date: new Date().toISOString().split('T')[0],
-            desc: 'Free drink earned'
+    try {
+        // Call API to add stamp
+        const response = await fetch(`/api/members/${member.memberId}/stamp`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
         });
-        showToast('success', '🎉 Reward Earned!', `${member.name} earned a free drink!`);
-    } else {
-        showToast('success', 'Stamp Added', `${member.name} now has ${member.stamps}/6 stamps`);
-    }
-
-    // Refresh table
-    const tbody = document.getElementById('membersTableBody');
-    if (tbody) {
-        tbody.innerHTML = '';
-        initMembersTable();
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            // Update local data with response
+            const prevStamps = member.stamps;
+            member.stamps = result.member.stamps;
+            member.totalRewards = result.member.total_rewards;
+            member.availableRewards = result.member.available_rewards;
+            
+            if (result.member.stamps === 0 && prevStamps > 0) {
+                // Just earned a reward (stamps reset to 0)
+                showToast('success', '🎉 Reward Earned!', `${member.name} earned a free drink!`);
+            } else {
+                showToast('success', 'Stamp Added', `${member.name} now has ${result.member.stamps}/6 stamps`);
+            }
+            
+            // Refresh table
+            const tbody = document.getElementById('membersTableBody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                loadMembersFromAPI();
+            }
+        } else {
+            showToast('error', 'Error', result.error || 'Failed to add stamp');
+        }
+    } catch (error) {
+        console.error('Stamp API error:', error);
+        showToast('error', 'Error', 'Failed to add stamp. Check connection.');
     }
 };
 
-// Redeem Reward
-window.redeemReward = function (id) {
+// Redeem Reward - NOW CALLS API  
+window.redeemReward = async function (id) {
     const member = members.find(m => m.id === id);
     if (!member || member.availableRewards <= 0) return;
 
-    member.availableRewards--;
-    member.rewardHistory.unshift({
-        type: 'used',
-        date: new Date().toISOString().split('T')[0],
-        desc: 'Free drink redeemed'
-    });
-
-    showToast('success', 'Reward Redeemed', `Free drink applied for ${member.name}!`);
-
-    // Refresh table
-    const tbody = document.getElementById('membersTableBody');
-    if (tbody) {
-        tbody.innerHTML = '';
-        initMembersTable();
+    try {
+        const response = await fetch(`/api/members/${member.memberId}/redeem`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            member.availableRewards = result.member.available_rewards;
+            showToast('success', 'Reward Redeemed', `Free drink applied for ${member.name}!`);
+            
+            // Refresh table
+            const tbody = document.getElementById('membersTableBody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                loadMembersFromAPI();
+            }
+        } else {
+            showToast('error', 'Error', result.error || 'Failed to redeem reward');
+        }
+    } catch (error) {
+        console.error('Redeem API error:', error);
+        showToast('error', 'Error', 'Failed to redeem. Check connection.');
     }
 };
+
 
 // Charts
 function initCharts() {
