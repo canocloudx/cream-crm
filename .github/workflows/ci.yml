@@ -131,16 +131,6 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
       
-      - name: Backup database before migration
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.STAGING_HOST }}
-          username: deploy
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /opt/cream-crm
-            ./scripts/backup-db.sh pre-migration-$(date +%Y%m%d-%H%M%S)
-      
       - name: Deploy to Staging
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -150,29 +140,20 @@ jobs:
           script: |
             cd /opt/cream-crm
             
-            # Pull latest image
-            docker compose pull
+            # Pull latest code
+            git pull origin develop
             
-            # Run migrations
-            docker compose run --rm app npm run migrate
+            # Install dependencies
+            npm install --production
             
-            # Deploy with zero downtime
-            docker compose up -d --remove-orphans
+            # Restart application
+            pm2 restart cream-crm || pm2 start server.js --name cream-crm
             
             # Health check
-            sleep 10
+            sleep 5
             curl -f http://localhost:3000/api/stats || exit 1
             
             echo "✅ Staging deployment complete!"
-      
-      - name: Notify Slack
-        if: always()
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          text: 'Staging deployment ${{ job.status }}'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-        continue-on-error: true
 
   # ============================================
   # DEPLOY PRODUCTION - Auto-deploy main branch
@@ -194,16 +175,6 @@ jobs:
           oauth-secret: ${{ secrets.TS_OAUTH_SECRET }}
           tags: tag:ci
       
-      - name: Backup database before migration
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.PROD_HOST }}
-          username: deploy
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /opt/cream-crm
-            ./scripts/backup-db.sh pre-migration-$(date +%Y%m%d-%H%M%S)
-      
       - name: Deploy to Production
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -213,26 +184,17 @@ jobs:
           script: |
             cd /opt/cream-crm
             
-            # Pull latest image
-            docker compose pull
+            # Pull latest code
+            git pull origin main
             
-            # Run migrations
-            docker compose run --rm app npm run migrate
+            # Install dependencies
+            npm install --production
             
-            # Deploy with zero downtime
-            docker compose up -d --remove-orphans
+            # Restart application
+            pm2 restart cream-crm || pm2 start server.js --name cream-crm
             
             # Health check
-            sleep 10
+            sleep 5
             curl -f http://localhost:3000/api/stats || exit 1
             
             echo "✅ Production deployment complete!"
-      
-      - name: Notify Slack
-        if: always()
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          text: 'Production deployment ${{ job.status }}'
-          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
-        continue-on-error: true
