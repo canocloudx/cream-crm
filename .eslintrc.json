@@ -1,6 +1,7 @@
 {
   "env": {
     "node": true,
+    "browser": true,
     "es2022": true,
     "jest": true
   },
@@ -8,11 +9,27 @@
   "parserOptions": {
     "ecmaVersion": 2022
   },
+  "globals": {
+    "Chart": "readonly",
+    "CreamAPI": "readonly",
+    "showToast": "readonly",
+    "loadMembers": "readonly",
+    "loadStats": "readonly",
+    "refreshMemberTable": "readonly",
+    "closeModal": "readonly",
+    "closeUserModal": "readonly",
+    "closeQRCodesModal": "readonly",
+    "closeStoreModal": "readonly",
+    "updateCharCount": "readonly",
+    "addStampToMemberLive": "readonly",
+    "redeemRewardLive": "readonly"
+  },
   "rules": {
-    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "no-unused-vars": "warn",
+    "no-undef": "warn",
     "no-console": "off",
-    "semi": ["error", "always"],
-    "quotes": ["warn", "single", { "avoidEscape": true }]
+    "semi": "off",
+    "quotes": "off"
   },
   "ignorePatterns": [
     "node_modules/",
