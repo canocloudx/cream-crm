@@ -305,3 +305,129 @@ app.get('/api/pass/:memberId', async (req, res) => {
 
 console.log('🍎 Apple Wallet pass endpoint: /api/pass/:memberId');
 console.log('📲 Automatic pass updates enabled!');
+
+// ============================================
+// CAMPAIGNS API
+// ============================================
+
+// Get all campaigns
+app.get('/api/campaigns', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM campaigns ORDER BY created_at DESC');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching campaigns:', error);
+        res.status(500).json({ error: 'Failed to fetch campaigns' });
+    }
+});
+
+// Create campaign
+app.post('/api/campaigns', async (req, res) => {
+    try {
+        const { name, description, campaign_type, start_date, end_date, is_active } = req.body;
+        const result = await pool.query(
+            `INSERT INTO campaigns (name, description, campaign_type, start_date, end_date, is_active)
+             VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+            [name, description, campaign_type || 'general', start_date || null, end_date || null, is_active !== false]
+        );
+        console.log('Campaign created:', result.rows[0]);
+        res.json({ success: true, campaign: result.rows[0] });
+    } catch (error) {
+        console.error('Error creating campaign:', error);
+        res.status(500).json({ error: 'Failed to create campaign' });
+    }
+});
+
+// Update campaign
+app.put('/api/campaigns/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, description, campaign_type, start_date, end_date, is_active } = req.body;
+        const result = await pool.query(
+            `UPDATE campaigns SET name = $1, description = $2, campaign_type = $3, 
+             start_date = $4, end_date = $5, is_active = $6 WHERE id = $7 RETURNING *`,
+            [name, description, campaign_type, start_date, end_date, is_active, id]
+        );
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Campaign not found' });
+        }
+        res.json({ success: true, campaign: result.rows[0] });
+    } catch (error) {
+        console.error('Error updating campaign:', error);
+        res.status(500).json({ error: 'Failed to update campaign' });
+    }
+});
+
+// Delete campaign
+app.delete('/api/campaigns/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query('DELETE FROM campaigns WHERE id = $1', [id]);
+        res.json({ success: true, message: 'Campaign deleted' });
+    } catch (error) {
+        console.error('Error deleting campaign:', error);
+        res.status(500).json({ error: 'Failed to delete campaign' });
+    }
+});
+
+console.log('✅ Campaigns API loaded');
+
+// ============================================
+// MESSAGES API
+// ============================================
+
+// Get all messages (recent)
+app.get('/api/messages', async (req, res) => {
+    try {
+        const result = await pool.query(
+            `SELECT m.*, mb.name as member_name, mb.member_id as member_code
+             FROM messages m
+             LEFT JOIN members mb ON m.member_id = mb.id
+             ORDER BY m.sent_at DESC LIMIT 50`
+        );
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching messages:', error);
+        res.status(500).json({ error: 'Failed to fetch messages' });
+    }
+});
+
+// Send message
+app.post('/api/messages', async (req, res) => {
+    try {
+        const { member_id, title, body } = req.body;
+        const result = await pool.query(
+            `INSERT INTO messages (member_id, title, body) VALUES ($1, $2, $3) RETURNING *`,
+            [member_id || null, title, body]
+        );
+        console.log('Message sent:', result.rows[0]);
+        res.json({ success: true, message: result.rows[0] });
+    } catch (error) {
+        console.error('Error sending message:', error);
+        res.status(500).json({ error: 'Failed to send message' });
+    }
+});
+
+console.log('✅ Messages API loaded');
+
+// ============================================
+// GLOBAL REWARD HISTORY API
+// ============================================
+
+// Get global reward history
+app.get('/api/rewards/history', async (req, res) => {
+    try {
+        const result = await pool.query(
+            `SELECT rh.*, m.name as member_name, m.member_id as member_code
+             FROM reward_history rh
+             JOIN members m ON rh.member_id = m.id
+             ORDER BY rh.created_at DESC LIMIT 50`
+        );
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching reward history:', error);
+        res.status(500).json({ error: 'Failed to fetch reward history' });
+    }
+});
+
+console.log('✅ Reward History API loaded');
