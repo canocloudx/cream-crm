@@ -2,19 +2,20 @@ const express = require('express');
 const { Pool } = require('pg');
 const cors = require('cors');
 const path = require('path');
+require('dotenv').config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('.'));
 
-// PostgreSQL connection to Hetzner
+// PostgreSQL connection - uses environment variables or defaults to localhost
 const pool = new Pool({
-    host: '46.224.113.138',
-    port: 5432,
-    database: 'cream_crm',
-    user: 'cream_admin',
-    password: 'CreamCoffee2024!'
+    host: process.env.DB_HOST || 'localhost',
+    port: process.env.DB_PORT || 5432,
+    database: process.env.DB_NAME || 'cream_crm',
+    user: process.env.DB_USER || 'cream_admin',
+    password: process.env.DB_PASSWORD || 'CreamCoffee2024!'
 });
 
 // Import wallet modules
