@@ -1,12 +1,52 @@
 // C.R.E.A.M. COFFEE CRM - Stamps & Rewards System
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initNavigation();
     initSidebar();
-    initCounters();
+    // Load stats FIRST, then animate counters
+    await loadStatsAndInitCounters();
     loadMembersFromAPI();
     initCharts();
     initModals();
 });
+
+// Load stats from API and then initialize counters
+async function loadStatsAndInitCounters() {
+    try {
+        const response = await fetch('/api/stats');
+        const stats = await response.json();
+        
+        // Update counters using data-stat attribute
+        document.querySelectorAll('[data-stat]').forEach(counter => {
+            const statType = counter.dataset.stat;
+            let value = 0;
+            
+            switch(statType) {
+                case 'totalMembers':
+                    value = stats.totalMembers || 0;
+                    break;
+                case 'totalStamps':
+                    value = stats.totalStamps || 0;
+                    break;
+                case 'totalRewards':
+                    value = stats.totalRewards || 0;
+                    break;
+                case 'redeemed':
+                    value = Math.floor((stats.totalRewards || 0) * 0.6);
+                    break;
+            }
+            
+            counter.dataset.count = value;
+        });
+        
+        console.log('📊 Stats loaded:', stats);
+    } catch (error) {
+        console.error('Error loading stats:', error);
+    }
+    
+    // Now animate the counters with correct values
+    initCounters();
+}
+
 
 // Members array - populated from API
 let members = [];
@@ -1488,57 +1528,3 @@ window.createCampaign = async function() {
             loadCampaigns();
         }
     } catch (error) {
-        showToast('error', 'Error', 'Failed to create campaign');
-    }
-};
-
-console.log('✅ Dynamic data loading initialized');
-
-
-// ============================================
-// DYNAMIC STATS FROM API
-// ============================================
-
-// Load stats from API and update counters
-async function loadStats() {
-    try {
-        const response = await fetch('/api/stats');
-        const stats = await response.json();
-        
-        // Update counters using data-stat attribute
-        document.querySelectorAll('[data-stat]').forEach(counter => {
-            const statType = counter.dataset.stat;
-            let value = 0;
-            
-            switch(statType) {
-                case 'totalMembers':
-                    value = stats.totalMembers || 0;
-                    break;
-                case 'totalStamps':
-                    value = stats.totalStamps || 0;
-                    break;
-                case 'totalRewards':
-                    value = stats.totalRewards || 0;
-                    break;
-                case 'redeemed':
-                    // Calculate redeemed from total - available (approximate)
-                    value = Math.floor((stats.totalRewards || 0) * 0.6);
-                    break;
-            }
-            
-            counter.dataset.count = value;
-            counter.textContent = value.toLocaleString();
-        });
-        
-        console.log('📊 Stats loaded:', stats);
-    } catch (error) {
-        console.error('Error loading stats:', error);
-    }
-}
-
-// Call loadStats on page load - before counter animation
-document.addEventListener('DOMContentLoaded', () => {
-    loadStats();
-});
-
-console.log('✅ Dynamic stats loading initialized');
