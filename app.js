@@ -1528,3 +1528,8 @@ window.createCampaign = async function() {
             loadCampaigns();
         }
     } catch (error) {
+        showToast('error', 'Error', 'Failed to create campaign');
+    }
+};
+
+console.log('✅ All CRM functions loaded');
