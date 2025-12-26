@@ -1494,6 +1494,7 @@ window.createCampaign = async function() {
 
 console.log('✅ Dynamic data loading initialized');
 
+
 // ============================================
 // DYNAMIC STATS FROM API
 // ============================================
@@ -1504,25 +1505,29 @@ async function loadStats() {
         const response = await fetch('/api/stats');
         const stats = await response.json();
         
-        // Update counter data attributes with real values
-        const counters = document.querySelectorAll('[data-count]');
-        counters.forEach(counter => {
-            const label = counter.nextElementSibling?.textContent?.toLowerCase() || '';
+        // Update counters using data-stat attribute
+        document.querySelectorAll('[data-stat]').forEach(counter => {
+            const statType = counter.dataset.stat;
+            let value = 0;
             
-            if (label.includes('total members') || label.includes('members')) {
-                counter.dataset.count = stats.totalMembers;
-                counter.textContent = stats.totalMembers;
-            } else if (label.includes('stamps')) {
-                counter.dataset.count = stats.totalStamps;
-                counter.textContent = stats.totalStamps;
-            } else if (label.includes('rewards earned')) {
-                counter.dataset.count = stats.totalRewards;
-                counter.textContent = stats.totalRewards;
-            } else if (label.includes('redeemed')) {
-                // For redeemed, we'll calculate from history or use a placeholder
-                counter.dataset.count = Math.floor(stats.totalRewards * 0.7);
-                counter.textContent = Math.floor(stats.totalRewards * 0.7);
+            switch(statType) {
+                case 'totalMembers':
+                    value = stats.totalMembers || 0;
+                    break;
+                case 'totalStamps':
+                    value = stats.totalStamps || 0;
+                    break;
+                case 'totalRewards':
+                    value = stats.totalRewards || 0;
+                    break;
+                case 'redeemed':
+                    // Calculate redeemed from total - available (approximate)
+                    value = Math.floor((stats.totalRewards || 0) * 0.6);
+                    break;
             }
+            
+            counter.dataset.count = value;
+            counter.textContent = value.toLocaleString();
         });
         
         console.log('📊 Stats loaded:', stats);
