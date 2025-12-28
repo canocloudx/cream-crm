@@ -14,13 +14,13 @@ async function loadStatsAndInitCounters() {
     try {
         const response = await fetch('/api/stats');
         const stats = await response.json();
-        
+
         // Update counters using data-stat attribute
         document.querySelectorAll('[data-stat]').forEach(counter => {
             const statType = counter.dataset.stat;
             let value = 0;
-            
-            switch(statType) {
+
+            switch (statType) {
                 case 'totalMembers':
                     value = stats.totalMembers || 0;
                     break;
@@ -34,15 +34,15 @@ async function loadStatsAndInitCounters() {
                     value = Math.floor((stats.totalRewards || 0) * 0.6);
                     break;
             }
-            
+
             counter.dataset.count = value;
         });
-        
+
         console.log('📊 Stats loaded:', stats);
     } catch (error) {
         console.error('Error loading stats:', error);
     }
-    
+
     // Now animate the counters with correct values
     initCounters();
 }
@@ -327,23 +327,23 @@ window.addStampToMember = async function (id) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             // Update local data with response
             const prevStamps = member.stamps;
             member.stamps = result.member.stamps;
             member.totalRewards = result.member.total_rewards;
             member.availableRewards = result.member.available_rewards;
-            
+
             if (result.member.stamps === 0 && prevStamps > 0) {
                 // Just earned a reward (stamps reset to 0)
                 showToast('success', '🎉 Reward Earned!', `${member.name} earned a free drink!`);
             } else {
                 showToast('success', 'Stamp Added', `${member.name} now has ${result.member.stamps}/6 stamps`);
             }
-            
+
             // Refresh table
             const tbody = document.getElementById('membersTableBody');
             if (tbody) {
@@ -369,13 +369,13 @@ window.redeemReward = async function (id) {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             member.availableRewards = result.member.available_rewards;
             showToast('success', 'Reward Redeemed', `Free drink applied for ${member.name}!`);
-            
+
             // Refresh table
             const tbody = document.getElementById('membersTableBody');
             if (tbody) {
@@ -593,7 +593,7 @@ function initCampaignTabs() {
 
 async function populateMemberSelects() {
     const selects = ['memberSelect', 'rewardMemberSelect'];
-    
+
     try {
         // Fetch members from API if not already loaded
         let membersList = members;
@@ -601,32 +601,32 @@ async function populateMemberSelects() {
             const response = await fetch('/api/members');
             membersList = await response.json();
         }
-        
+
         const memberCount = membersList.length;
-        
+
         // Update member count labels
         document.querySelectorAll('.radio-label').forEach(label => {
             if (label.textContent.includes('All Members (')) {
                 label.textContent = `All Members (${memberCount.toLocaleString()})`;
             }
         });
-        
+
         // Update reward preview text
         const previewText = document.querySelector('.reward-preview-text span');
         if (previewText && previewText.textContent.includes('Will be added to')) {
             previewText.textContent = `Will be added to ${memberCount.toLocaleString()} members`;
         }
-        
+
         // Populate select dropdowns
         selects.forEach(selectId => {
             const select = document.getElementById(selectId);
             if (!select) return;
-            
+
             // Clear existing options except the first one
             while (select.options.length > 1) {
                 select.remove(1);
             }
-            
+
             membersList.forEach(m => {
                 const option = document.createElement('option');
                 option.value = m.id;
@@ -634,7 +634,7 @@ async function populateMemberSelects() {
                 select.appendChild(option);
             });
         });
-        
+
         console.log('✅ Populated member selects with', memberCount, 'members');
     } catch (error) {
         console.error('Error populating member selects:', error);
@@ -709,7 +709,7 @@ window.sendMessage = function () {
     }
 
     const isAll = document.querySelector('input[name="recipient"][value="all"]')?.checked;
-    
+
     // Check if specific member is selected
     if (!isAll) {
         const selectedMemberId = document.getElementById('memberSelect')?.value;
@@ -718,7 +718,7 @@ window.sendMessage = function () {
             return;
         }
     }
-    
+
     const memberName = document.getElementById('memberSelect')?.dataset?.memberName;
     const count = isAll ? members.length.toLocaleString() : '1';
     const recipientText = isAll ? `${count} member(s)` : memberName;
@@ -729,7 +729,7 @@ window.sendMessage = function () {
     document.getElementById('msgTitle').value = '';
     document.getElementById('msgBody').value = '';
     updateCharCount();
-    
+
     // Clear member search if specific member was selected
     if (!isAll) {
         clearSelectedMember('message');
@@ -1338,7 +1338,7 @@ window.deleteStore = function (id) {
         stores.splice(storeIndex, 1);
         saveStores();
         updateStoresList();
-    updateUsersList();
+        updateUsersList();
         showToast('success', 'Store Deleted', `${store.name} has been removed`);
     }
 };
@@ -1392,12 +1392,12 @@ window.deleteMember = async function (id, name) {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' }
         });
-        
+
         const result = await response.json();
-        
+
         if (result.success) {
             showToast('success', 'Member Deleted', `${name} has been removed from the system.`);
-            
+
             // Refresh table
             const tbody = document.getElementById('membersTableBody');
             if (tbody) {
@@ -1462,7 +1462,7 @@ function renderCampaigns(campaigns) {
 }
 
 // Delete campaign
-window.deleteCampaign = async function(id) {
+window.deleteCampaign = async function (id) {
     if (!confirm('Delete this campaign?')) return;
     try {
         await fetch(`/api/campaigns/${id}`, { method: 'DELETE' });
@@ -1555,7 +1555,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Create campaign with API
-window.createCampaign = async function() {
+window.createCampaign = async function () {
     const name = document.getElementById('campaignName')?.value;
     const description = document.getElementById('campaignDesc')?.value;
     const campaign_type = document.getElementById('campaignType')?.value;
@@ -1609,41 +1609,41 @@ async function initMemberSearchData() {
 }
 
 // Filter and show member suggestions
-window.filterMembers = function(input, suggestionsId) {
+window.filterMembers = function (input, suggestionsId) {
     const query = input.value.toLowerCase().trim();
     const suggestionsContainer = document.getElementById(suggestionsId);
-    
+
     if (!suggestionsContainer) return;
-    
+
     // If query is empty, hide suggestions
     if (query.length === 0) {
         suggestionsContainer.classList.remove('active');
         suggestionsContainer.innerHTML = '';
         return;
     }
-    
+
     // Filter members by name
     const matches = memberSearchData.filter(m => {
         const name = (m.name || '').toLowerCase();
         const memberId = (m.member_id || m.memberId || '').toLowerCase();
         return name.includes(query) || memberId.includes(query);
     }).slice(0, 8); // Limit to 8 suggestions
-    
+
     if (matches.length === 0) {
         suggestionsContainer.innerHTML = '<div class="member-suggestions-empty">No members found</div>';
         suggestionsContainer.classList.add('active');
         return;
     }
-    
+
     // Render suggestions
     suggestionsContainer.innerHTML = matches.map(m => {
         const name = m.name || '';
         const memberId = m.member_id || m.memberId || '';
         const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
-        
+
         // Highlight matching text
         const highlightedName = highlightMatch(name, query);
-        
+
         return `
             <div class="member-suggestion-item" onclick="selectMember(${m.id}, '${name.replace(/'/g, "\\'")}', '${memberId}', '${suggestionsId}')">
                 <div class="member-suggestion-avatar">${initials}</div>
@@ -1654,7 +1654,7 @@ window.filterMembers = function(input, suggestionsId) {
             </div>
         `;
     }).join('');
-    
+
     suggestionsContainer.classList.add('active');
 };
 
@@ -1662,24 +1662,24 @@ window.filterMembers = function(input, suggestionsId) {
 function highlightMatch(text, query) {
     const index = text.toLowerCase().indexOf(query.toLowerCase());
     if (index === -1) return text;
-    
+
     const before = text.slice(0, index);
     const match = text.slice(index, index + query.length);
     const after = text.slice(index + query.length);
-    
+
     return `${before}<mark>${match}</mark>${after}`;
 }
 
 // Select a member from suggestions
-window.selectMember = function(id, name, memberId, suggestionsId) {
+window.selectMember = function (id, name, memberId, suggestionsId) {
     const suggestionsContainer = document.getElementById(suggestionsId);
     const isRewards = suggestionsId === 'rewardMemberSuggestions';
-    
-    // Get the corresponding elements
-    const searchInput = document.getElementById(isRewards ? 'rewardMemberSearch' : 'memberSearch');
+
+    // Get the corresponding elements - use campaignMemberSearch for messages
+    const searchInput = document.getElementById(isRewards ? 'rewardMemberSearch' : 'campaignMemberSearch');
     const hiddenInput = document.getElementById(isRewards ? 'rewardMemberSelect' : 'memberSelect');
     const container = document.getElementById(isRewards ? 'rewardMemberSelectGroup' : 'memberSelectGroup');
-    
+
     // Update inputs
     if (searchInput) searchInput.value = name;
     if (hiddenInput) {
@@ -1687,13 +1687,13 @@ window.selectMember = function(id, name, memberId, suggestionsId) {
         hiddenInput.dataset.memberName = name;
         hiddenInput.dataset.memberId = memberId;
     }
-    
+
     // Hide suggestions
     if (suggestionsContainer) suggestionsContainer.classList.remove('active');
-    
+
     // Show selected member chip
     showSelectedMemberChip(container, id, name, memberId, isRewards);
-    
+
     console.log('✅ Selected member:', name, '(ID:', id, ')');
 };
 
@@ -1702,9 +1702,9 @@ function showSelectedMemberChip(container, id, name, memberId, isRewards) {
     // Remove existing chip
     const existingChip = container.querySelector('.selected-member-chip');
     if (existingChip) existingChip.remove();
-    
+
     const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
-    
+
     const chip = document.createElement('div');
     chip.className = 'selected-member-chip';
     chip.innerHTML = `
@@ -1712,31 +1712,32 @@ function showSelectedMemberChip(container, id, name, memberId, isRewards) {
         <span>${name}</span>
         <span class="material-icons-round remove-member" onclick="clearSelectedMember('${isRewards ? 'reward' : 'message'}')">close</span>
     `;
-    
+
     container.appendChild(chip);
 }
 
 // Clear selected member
-window.clearSelectedMember = function(type) {
+window.clearSelectedMember = function (type) {
     const isRewards = type === 'reward';
-    const searchInput = document.getElementById(isRewards ? 'rewardMemberSearch' : 'memberSearch');
+    // Use campaignMemberSearch for messages
+    const searchInput = document.getElementById(isRewards ? 'rewardMemberSearch' : 'campaignMemberSearch');
     const hiddenInput = document.getElementById(isRewards ? 'rewardMemberSelect' : 'memberSelect');
     const container = document.getElementById(isRewards ? 'rewardMemberSelectGroup' : 'memberSelectGroup');
-    
+
     if (searchInput) searchInput.value = '';
     if (hiddenInput) {
         hiddenInput.value = '';
         delete hiddenInput.dataset.memberName;
         delete hiddenInput.dataset.memberId;
     }
-    
+
     // Remove chip
     const chip = container.querySelector('.selected-member-chip');
     if (chip) chip.remove();
 };
 
 // Close suggestions when clicking outside
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     if (!e.target.closest('.member-search-container')) {
         document.querySelectorAll('.member-suggestions').forEach(s => s.classList.remove('active'));
     }
