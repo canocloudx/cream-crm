@@ -590,20 +590,55 @@ function initCampaignTabs() {
     });
 }
 
-function populateMemberSelects() {
+
+async function populateMemberSelects() {
     const selects = ['memberSelect', 'rewardMemberSelect'];
-
-    selects.forEach(selectId => {
-        const select = document.getElementById(selectId);
-        if (!select) return;
-
-        members.forEach(m => {
-            const option = document.createElement('option');
-            option.value = m.id;
-            option.textContent = `${m.name} (${m.memberId})`;
-            select.appendChild(option);
+    
+    try {
+        // Fetch members from API if not already loaded
+        let membersList = members;
+        if (!membersList || membersList.length === 0) {
+            const response = await fetch('/api/members');
+            membersList = await response.json();
+        }
+        
+        const memberCount = membersList.length;
+        
+        // Update member count labels
+        document.querySelectorAll('.radio-label').forEach(label => {
+            if (label.textContent.includes('All Members (')) {
+                label.textContent = `All Members (${memberCount.toLocaleString()})`;
+            }
         });
-    });
+        
+        // Update reward preview text
+        const previewText = document.querySelector('.reward-preview-text span');
+        if (previewText && previewText.textContent.includes('Will be added to')) {
+            previewText.textContent = `Will be added to ${memberCount.toLocaleString()} members`;
+        }
+        
+        // Populate select dropdowns
+        selects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            
+            // Clear existing options except the first one
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            membersList.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m.id;
+                option.textContent = `${m.name} (${m.member_id || m.memberId})`;
+                select.appendChild(option);
+            });
+        });
+        
+        console.log('✅ Populated member selects with', memberCount, 'members');
+    } catch (error) {
+        console.error('Error populating member selects:', error);
+    }
 }
 
 // Toggle recipient select visibility
@@ -645,7 +680,7 @@ window.previewMessage = function () {
     const title = document.getElementById('msgTitle')?.value || 'No title';
     const body = document.getElementById('msgBody')?.value || 'No message';
     const isAll = document.querySelector('input[name="recipient"][value="all"]')?.checked;
-    const recipient = isAll ? 'All Members (2,847)' :
+    const recipient = isAll ? `All Members (${members.length.toLocaleString()})` :
         document.getElementById('memberSelect')?.selectedOptions[0]?.text || 'Selected member';
 
     openModal('Message Preview', `
@@ -674,7 +709,7 @@ window.sendMessage = function () {
     }
 
     const isAll = document.querySelector('input[name="recipient"][value="all"]')?.checked;
-    const count = isAll ? '2,847' : '1';
+    const count = isAll ? members.length.toLocaleString() : '1';
 
     showToast('success', 'Message Sent!', `Message delivered to ${count} member(s)`);
 
@@ -695,7 +730,7 @@ window.sendReward = function () {
         'double_stamps': 'Double Stamps'
     };
 
-    const count = isAll ? '2,847' : '1';
+    const count = isAll ? members.length.toLocaleString() : '1';
     const rewardName = rewardNames[rewardType] || 'Reward';
 
     showToast('success', 'Reward Sent!', `${rewardName} sent to ${count} member(s)`);
