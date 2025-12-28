@@ -276,10 +276,15 @@
                         </div>
 
                         <div class="form-group member-select-group" id="memberSelectGroup" style="display: none;">
-                            <label>Select Member</label>
-                            <select class="form-input" id="memberSelect">
-                                <option value="">Choose a member...</option>
-                            </select>
+                            <label>Search Member</label>
+                            <div class="member-search-container">
+                                <span class="material-icons-round search-icon">search</span>
+                                <input type="text" class="form-input member-search" id="memberSearch" 
+                                    placeholder="Type member name..." autocomplete="off"
+                                    oninput="filterMembers(this, 'memberSuggestions')">
+                                <input type="hidden" id="memberSelect" value="">
+                                <div class="member-suggestions" id="memberSuggestions"></div>
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -385,10 +390,15 @@
                         </div>
 
                         <div class="form-group member-select-group" id="rewardMemberSelectGroup" style="display: none;">
-                            <label>Select Member</label>
-                            <select class="form-input" id="rewardMemberSelect">
-                                <option value="">Choose a member...</option>
-                            </select>
+                            <label>Search Member</label>
+                            <div class="member-search-container">
+                                <span class="material-icons-round search-icon">search</span>
+                                <input type="text" class="form-input member-search" id="rewardMemberSearch" 
+                                    placeholder="Type member name..." autocomplete="off"
+                                    oninput="filterMembers(this, 'rewardMemberSuggestions')">
+                                <input type="hidden" id="rewardMemberSelect" value="">
+                                <div class="member-suggestions" id="rewardMemberSuggestions"></div>
+                            </div>
                         </div>
 
                         <div class="form-group">

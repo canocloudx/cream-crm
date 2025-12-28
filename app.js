@@ -681,7 +681,7 @@ window.previewMessage = function () {
     const body = document.getElementById('msgBody')?.value || 'No message';
     const isAll = document.querySelector('input[name="recipient"][value="all"]')?.checked;
     const recipient = isAll ? `All Members (${members.length.toLocaleString()})` :
-        document.getElementById('memberSelect')?.selectedOptions[0]?.text || 'Selected member';
+        document.getElementById('memberSelect')?.dataset?.memberName || 'No member selected';
 
     openModal('Message Preview', `
         <div class="message-preview">
@@ -709,14 +709,31 @@ window.sendMessage = function () {
     }
 
     const isAll = document.querySelector('input[name="recipient"][value="all"]')?.checked;
+    
+    // Check if specific member is selected
+    if (!isAll) {
+        const selectedMemberId = document.getElementById('memberSelect')?.value;
+        if (!selectedMemberId) {
+            showToast('error', 'No Member Selected', 'Please search and select a member');
+            return;
+        }
+    }
+    
+    const memberName = document.getElementById('memberSelect')?.dataset?.memberName;
     const count = isAll ? members.length.toLocaleString() : '1';
+    const recipientText = isAll ? `${count} member(s)` : memberName;
 
-    showToast('success', 'Message Sent!', `Message delivered to ${count} member(s)`);
+    showToast('success', 'Message Sent!', `Message delivered to ${recipientText}`);
 
     // Clear form
     document.getElementById('msgTitle').value = '';
     document.getElementById('msgBody').value = '';
     updateCharCount();
+    
+    // Clear member search if specific member was selected
+    if (!isAll) {
+        clearSelectedMember('message');
+    }
 };
 
 // Send reward
@@ -1568,3 +1585,164 @@ window.createCampaign = async function() {
 };
 
 console.log('✅ All CRM functions loaded');
+
+// ====================
+// MEMBER SEARCH AUTOCOMPLETE
+// ====================
+
+// Store for member data used in search
+let memberSearchData = [];
+
+// Initialize member search data
+async function initMemberSearchData() {
+    try {
+        if (members && members.length > 0) {
+            memberSearchData = members;
+        } else {
+            const response = await fetch('/api/members');
+            memberSearchData = await response.json();
+        }
+        console.log('✅ Member search data loaded:', memberSearchData.length, 'members');
+    } catch (error) {
+        console.error('Error loading member search data:', error);
+    }
+}
+
+// Filter and show member suggestions
+window.filterMembers = function(input, suggestionsId) {
+    const query = input.value.toLowerCase().trim();
+    const suggestionsContainer = document.getElementById(suggestionsId);
+    
+    if (!suggestionsContainer) return;
+    
+    // If query is empty, hide suggestions
+    if (query.length === 0) {
+        suggestionsContainer.classList.remove('active');
+        suggestionsContainer.innerHTML = '';
+        return;
+    }
+    
+    // Filter members by name
+    const matches = memberSearchData.filter(m => {
+        const name = (m.name || '').toLowerCase();
+        const memberId = (m.member_id || m.memberId || '').toLowerCase();
+        return name.includes(query) || memberId.includes(query);
+    }).slice(0, 8); // Limit to 8 suggestions
+    
+    if (matches.length === 0) {
+        suggestionsContainer.innerHTML = '<div class="member-suggestions-empty">No members found</div>';
+        suggestionsContainer.classList.add('active');
+        return;
+    }
+    
+    // Render suggestions
+    suggestionsContainer.innerHTML = matches.map(m => {
+        const name = m.name || '';
+        const memberId = m.member_id || m.memberId || '';
+        const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+        
+        // Highlight matching text
+        const highlightedName = highlightMatch(name, query);
+        
+        return `
+            <div class="member-suggestion-item" onclick="selectMember(${m.id}, '${name.replace(/'/g, "\\'")}', '${memberId}', '${suggestionsId}')">
+                <div class="member-suggestion-avatar">${initials}</div>
+                <div class="member-suggestion-info">
+                    <span class="member-suggestion-name">${highlightedName}</span>
+                    <span class="member-suggestion-id">${memberId}</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+    
+    suggestionsContainer.classList.add('active');
+};
+
+// Highlight matching text
+function highlightMatch(text, query) {
+    const index = text.toLowerCase().indexOf(query.toLowerCase());
+    if (index === -1) return text;
+    
+    const before = text.slice(0, index);
+    const match = text.slice(index, index + query.length);
+    const after = text.slice(index + query.length);
+    
+    return `${before}<mark>${match}</mark>${after}`;
+}
+
+// Select a member from suggestions
+window.selectMember = function(id, name, memberId, suggestionsId) {
+    const suggestionsContainer = document.getElementById(suggestionsId);
+    const isRewards = suggestionsId === 'rewardMemberSuggestions';
+    
+    // Get the corresponding elements
+    const searchInput = document.getElementById(isRewards ? 'rewardMemberSearch' : 'memberSearch');
+    const hiddenInput = document.getElementById(isRewards ? 'rewardMemberSelect' : 'memberSelect');
+    const container = document.getElementById(isRewards ? 'rewardMemberSelectGroup' : 'memberSelectGroup');
+    
+    // Update inputs
+    if (searchInput) searchInput.value = name;
+    if (hiddenInput) {
+        hiddenInput.value = id;
+        hiddenInput.dataset.memberName = name;
+        hiddenInput.dataset.memberId = memberId;
+    }
+    
+    // Hide suggestions
+    if (suggestionsContainer) suggestionsContainer.classList.remove('active');
+    
+    // Show selected member chip
+    showSelectedMemberChip(container, id, name, memberId, isRewards);
+    
+    console.log('✅ Selected member:', name, '(ID:', id, ')');
+};
+
+// Show selected member chip
+function showSelectedMemberChip(container, id, name, memberId, isRewards) {
+    // Remove existing chip
+    const existingChip = container.querySelector('.selected-member-chip');
+    if (existingChip) existingChip.remove();
+    
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase();
+    
+    const chip = document.createElement('div');
+    chip.className = 'selected-member-chip';
+    chip.innerHTML = `
+        <div class="member-suggestion-avatar">${initials}</div>
+        <span>${name}</span>
+        <span class="material-icons-round remove-member" onclick="clearSelectedMember('${isRewards ? 'reward' : 'message'}')">close</span>
+    `;
+    
+    container.appendChild(chip);
+}
+
+// Clear selected member
+window.clearSelectedMember = function(type) {
+    const isRewards = type === 'reward';
+    const searchInput = document.getElementById(isRewards ? 'rewardMemberSearch' : 'memberSearch');
+    const hiddenInput = document.getElementById(isRewards ? 'rewardMemberSelect' : 'memberSelect');
+    const container = document.getElementById(isRewards ? 'rewardMemberSelectGroup' : 'memberSelectGroup');
+    
+    if (searchInput) searchInput.value = '';
+    if (hiddenInput) {
+        hiddenInput.value = '';
+        delete hiddenInput.dataset.memberName;
+        delete hiddenInput.dataset.memberId;
+    }
+    
+    // Remove chip
+    const chip = container.querySelector('.selected-member-chip');
+    if (chip) chip.remove();
+};
+
+// Close suggestions when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('.member-search-container')) {
+        document.querySelectorAll('.member-suggestions').forEach(s => s.classList.remove('active'));
+    }
+});
+
+// Initialize member search data on page load
+document.addEventListener('DOMContentLoaded', () => {
+    setTimeout(initMemberSearchData, 500);
+});
