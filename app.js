@@ -1,12 +1,52 @@
 // C.R.E.A.M. COFFEE CRM - Stamps & Rewards System
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     initNavigation();
     initSidebar();
-    initCounters();
+    // Load stats FIRST, then animate counters
+    await loadStatsAndInitCounters();
     loadMembersFromAPI();
     initCharts();
     initModals();
 });
+
+// Load stats from API and then initialize counters
+async function loadStatsAndInitCounters() {
+    try {
+        const response = await fetch('/api/stats');
+        const stats = await response.json();
+        
+        // Update counters using data-stat attribute
+        document.querySelectorAll('[data-stat]').forEach(counter => {
+            const statType = counter.dataset.stat;
+            let value = 0;
+            
+            switch(statType) {
+                case 'totalMembers':
+                    value = stats.totalMembers || 0;
+                    break;
+                case 'totalStamps':
+                    value = stats.totalStamps || 0;
+                    break;
+                case 'totalRewards':
+                    value = stats.totalRewards || 0;
+                    break;
+                case 'redeemed':
+                    value = Math.floor((stats.totalRewards || 0) * 0.6);
+                    break;
+            }
+            
+            counter.dataset.count = value;
+        });
+        
+        console.log('📊 Stats loaded:', stats);
+    } catch (error) {
+        console.error('Error loading stats:', error);
+    }
+    
+    // Now animate the counters with correct values
+    initCounters();
+}
+
 
 // Members array - populated from API
 let members = [];
@@ -550,20 +590,55 @@ function initCampaignTabs() {
     });
 }
 
-function populateMemberSelects() {
+
+async function populateMemberSelects() {
     const selects = ['memberSelect', 'rewardMemberSelect'];
-
-    selects.forEach(selectId => {
-        const select = document.getElementById(selectId);
-        if (!select) return;
-
-        members.forEach(m => {
-            const option = document.createElement('option');
-            option.value = m.id;
-            option.textContent = `${m.name} (${m.memberId})`;
-            select.appendChild(option);
+    
+    try {
+        // Fetch members from API if not already loaded
+        let membersList = members;
+        if (!membersList || membersList.length === 0) {
+            const response = await fetch('/api/members');
+            membersList = await response.json();
+        }
+        
+        const memberCount = membersList.length;
+        
+        // Update member count labels
+        document.querySelectorAll('.radio-label').forEach(label => {
+            if (label.textContent.includes('All Members (')) {
+                label.textContent = `All Members (${memberCount.toLocaleString()})`;
+            }
         });
-    });
+        
+        // Update reward preview text
+        const previewText = document.querySelector('.reward-preview-text span');
+        if (previewText && previewText.textContent.includes('Will be added to')) {
+            previewText.textContent = `Will be added to ${memberCount.toLocaleString()} members`;
+        }
+        
+        // Populate select dropdowns
+        selects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            if (!select) return;
+            
+            // Clear existing options except the first one
+            while (select.options.length > 1) {
+                select.remove(1);
+            }
+            
+            membersList.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m.id;
+                option.textContent = `${m.name} (${m.member_id || m.memberId})`;
+                select.appendChild(option);
+            });
+        });
+        
+        console.log('✅ Populated member selects with', memberCount, 'members');
+    } catch (error) {
+        console.error('Error populating member selects:', error);
+    }
 }
 
 // Toggle recipient select visibility
@@ -605,7 +680,7 @@ window.previewMessage = function () {
     const title = document.getElementById('msgTitle')?.value || 'No title';
     const body = document.getElementById('msgBody')?.value || 'No message';
     const isAll = document.querySelector('input[name="recipient"][value="all"]')?.checked;
-    const recipient = isAll ? 'All Members (2,847)' :
+    const recipient = isAll ? `All Members (${members.length.toLocaleString()})` :
         document.getElementById('memberSelect')?.selectedOptions[0]?.text || 'Selected member';
 
     openModal('Message Preview', `
@@ -634,7 +709,7 @@ window.sendMessage = function () {
     }
 
     const isAll = document.querySelector('input[name="recipient"][value="all"]')?.checked;
-    const count = isAll ? '2,847' : '1';
+    const count = isAll ? members.length.toLocaleString() : '1';
 
     showToast('success', 'Message Sent!', `Message delivered to ${count} member(s)`);
 
@@ -655,7 +730,7 @@ window.sendReward = function () {
         'double_stamps': 'Double Stamps'
     };
 
-    const count = isAll ? '2,847' : '1';
+    const count = isAll ? members.length.toLocaleString() : '1';
     const rewardName = rewardNames[rewardType] || 'Reward';
 
     showToast('success', 'Reward Sent!', `${rewardName} sent to ${count} member(s)`);
@@ -1320,3 +1395,176 @@ window.deleteMember = async function (id, name) {
         showToast('error', 'Error', 'Failed to delete member. Check connection.');
     }
 };
+
+// ============================================
+// DYNAMIC DATA LOADING
+// ============================================
+
+// Load campaigns from API
+async function loadCampaigns() {
+    try {
+        const response = await fetch('/api/campaigns');
+        const campaigns = await response.json();
+        renderCampaigns(campaigns);
+    } catch (error) {
+        console.error('Error loading campaigns:', error);
+    }
+}
+
+// Render campaigns dynamically
+function renderCampaigns(campaigns) {
+    const container = document.getElementById('campaignsList');
+    if (!container) return;
+
+    if (campaigns.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <span class="material-icons-round">campaign</span>
+                <p>No active campaigns. Create one to get started!</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = campaigns.map(c => `
+        <div class="campaign-card ${c.is_active ? 'active' : 'inactive'}">
+            <div class="campaign-header">
+                <span class="campaign-status ${c.is_active ? 'active' : ''}">${c.is_active ? 'Active' : 'Inactive'}</span>
+                <button class="btn-icon" onclick="deleteCampaign(${c.id})">
+                    <span class="material-icons-round">delete</span>
+                </button>
+            </div>
+            <h3>${c.name}</h3>
+            <p>${c.description || 'No description'}</p>
+            <div class="campaign-meta">
+                <span class="campaign-type">${c.campaign_type || 'General'}</span>
+                ${c.start_date ? `<span class="campaign-date">${new Date(c.start_date).toLocaleDateString()}</span>` : ''}
+            </div>
+        </div>
+    `).join('');
+}
+
+// Delete campaign
+window.deleteCampaign = async function(id) {
+    if (!confirm('Delete this campaign?')) return;
+    try {
+        await fetch(`/api/campaigns/${id}`, { method: 'DELETE' });
+        showToast('success', 'Deleted', 'Campaign removed');
+        loadCampaigns();
+    } catch (error) {
+        showToast('error', 'Error', 'Failed to delete campaign');
+    }
+};
+
+// Load messages from API
+async function loadMessages() {
+    try {
+        const response = await fetch('/api/messages');
+        const messages = await response.json();
+        renderMessages(messages);
+    } catch (error) {
+        console.error('Error loading messages:', error);
+    }
+}
+
+// Render messages dynamically
+function renderMessages(messages) {
+    const container = document.getElementById('messagesList');
+    if (!container) return;
+
+    if (messages.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <span class="material-icons-round">message</span>
+                <p>No messages sent yet.</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = messages.slice(0, 10).map(m => `
+        <div class="message-item">
+            <span class="material-icons-round">email</span>
+            <div class="message-content">
+                <span class="message-title">${m.title}</span>
+                <span class="message-meta">${m.member_name || 'All Members'} • ${new Date(m.sent_at).toLocaleDateString()}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Load global reward history from API
+async function loadRewardHistory() {
+    try {
+        const response = await fetch('/api/rewards/history');
+        const history = await response.json();
+        renderGlobalRewardHistory(history);
+    } catch (error) {
+        console.error('Error loading reward history:', error);
+    }
+}
+
+// Render global reward history
+function renderGlobalRewardHistory(history) {
+    const container = document.getElementById('rewardHistoryList');
+    if (!container) return;
+
+    if (history.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <span class="material-icons-round">card_giftcard</span>
+                <p>No reward activity yet.</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = history.slice(0, 10).map(h => `
+        <div class="reward-history-item ${h.type}">
+            <span class="material-icons-round">${h.type === 'earned' ? 'card_giftcard' : 'redeem'}</span>
+            <div class="reward-history-content">
+                <span class="reward-history-title">${h.description}</span>
+                <span class="reward-history-meta">${h.member_name} • ${new Date(h.created_at).toLocaleDateString()}</span>
+            </div>
+        </div>
+    `).join('');
+}
+
+// Initialize dynamic data on page load
+document.addEventListener('DOMContentLoaded', () => {
+    loadCampaigns();
+    loadMessages();
+    loadRewardHistory();
+});
+
+// Create campaign with API
+window.createCampaign = async function() {
+    const name = document.getElementById('campaignName')?.value;
+    const description = document.getElementById('campaignDesc')?.value;
+    const campaign_type = document.getElementById('campaignType')?.value;
+    const start_date = document.getElementById('campaignStart')?.value;
+    const end_date = document.getElementById('campaignEnd')?.value;
+
+    if (!name) {
+        showToast('error', 'Error', 'Please enter a campaign name');
+        return;
+    }
+
+    try {
+        const response = await fetch('/api/campaigns', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, description, campaign_type, start_date, end_date, is_active: true })
+        });
+        const result = await response.json();
+        if (result.success) {
+            closeModal();
+            showToast('success', 'Campaign Created', 'Your campaign is now active');
+            loadCampaigns();
+        }
+    } catch (error) {
+        showToast('error', 'Error', 'Failed to create campaign');
+    }
+};
+
+console.log('✅ All CRM functions loaded');

@@ -1,0 +1,73 @@
+# ============================================
+# C.R.E.A.M. CRM .gitignore
+# ============================================
+
+# Dependencies
+node_modules/
+.npm
+.pnpm-store/
+
+# Environment files (contain secrets!)
+.env
+.env.local
+.env.*.local
+.env.production
+.env.staging
+
+# Keep example
+!.env.example
+!.env.test
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Coverage
+coverage/
+.nyc_output/
+
+# Build artifacts
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Certificates (sensitive!)
+certs/*.p12
+certs/*.p8
+certs/*.pem
+!certs/.gitkeep
+
+# Docker
+.docker/
+
+# Backups (local only)
+backups/
+*.sql
+*.sql.gz
+
+# Test artifacts
+junit.xml
+test-results/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Apple Wallet passes (generated)
+*.pkpass
+
+# Tailscale credentials
+.tailscale/
