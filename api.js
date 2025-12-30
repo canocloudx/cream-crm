@@ -1,4 +1,4 @@
-// C.R.E.A.M. CRM API Client
+ // C.R.E.A.M. CRM API Client
 // Connects frontend to Hetzner PostgreSQL via Node.js server
 
 const API_BASE = '';  // Same origin
