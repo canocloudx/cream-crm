@@ -177,12 +177,8 @@ jobs:
           tags: tag:ci
       
       - name: Deploy to Production
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.PROD_HOST }}
-          username: deploy
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
+        run: |
+          ssh -o StrictHostKeyChecking=no deploy@cream-crm << 'EOF'
             cd /opt/cream-crm
             
             # Pull latest code
@@ -199,3 +195,4 @@ jobs:
             curl -f http://localhost:3000/api/stats || exit 1
             
             echo "✅ Production deployment complete!"
+          EOF
