@@ -392,15 +392,43 @@ app.get('/api/messages', async (req, res) => {
     }
 });
 
-// Send message
+// Send message - with Apple Wallet notification
 app.post('/api/messages', async (req, res) => {
     try {
         const { member_id, title, body } = req.body;
+        
+        // Store the message
         const result = await pool.query(
             `INSERT INTO messages (member_id, title, body) VALUES ($1, $2, $3) RETURNING *`,
             [member_id || null, title, body]
         );
         console.log('Message sent:', result.rows[0]);
+        
+        // If sending to a specific member, update their pass and trigger notification
+        if (member_id) {
+            // Update member's latest message and trigger pass update
+            const memberResult = await pool.query(
+                `UPDATE members SET 
+                    latest_message_title = $1, 
+                    latest_message_body = $2,
+                    updated_at = NOW()
+                 WHERE id = $3 
+                 RETURNING member_id`,
+                [title, body, member_id]
+            );
+            
+            if (memberResult.rows.length > 0) {
+                const memberId = memberResult.rows[0].member_id;
+                try {
+                    await triggerPassUpdate(memberId);
+                    console.log(`📱 Wallet notification triggered for: ${memberId}`);
+                } catch (pushError) {
+                    console.error('Wallet push failed:', pushError.message);
+                    // Don't fail the message operation if push fails
+                }
+            }
+        }
+        
         res.json({ success: true, message: result.rows[0] });
     } catch (error) {
         console.error('Error sending message:', error);

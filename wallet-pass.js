@@ -63,6 +63,16 @@ async function generatePass(member) {
             value: memberId
         });
 
+        // Add latest message if available
+        if (member.latest_message_title && member.latest_message_body) {
+            pass.backFields.push({
+                key: "message",
+                label: member.latest_message_title,
+                value: member.latest_message_body,
+                changeMessage: "📬 New message: %@"
+            });
+        }
+
         pass.backFields.push({
             key: "terms",
             label: "How It Works",
