@@ -699,7 +699,7 @@ window.previewMessage = function () {
 };
 
 // Send message
-window.sendMessage = function () {
+window.sendMessage = async function () {
     const title = document.getElementById('msgTitle')?.value;
     const body = document.getElementById('msgBody')?.value;
 
@@ -709,10 +709,11 @@ window.sendMessage = function () {
     }
 
     const isAll = document.querySelector('input[name="recipient"][value="all"]')?.checked;
+    let selectedMemberId = null;
 
     // Check if specific member is selected
     if (!isAll) {
-        const selectedMemberId = document.getElementById('memberSelect')?.value;
+        selectedMemberId = document.getElementById('memberSelect')?.value;
         if (!selectedMemberId) {
             showToast('error', 'No Member Selected', 'Please search and select a member');
             return;
@@ -723,16 +724,44 @@ window.sendMessage = function () {
     const count = isAll ? members.length.toLocaleString() : '1';
     const recipientText = isAll ? `${count} member(s)` : memberName;
 
-    showToast('success', 'Message Sent!', `Message delivered to ${recipientText}`);
+    try {
+        // Send to all members or specific member
+        if (isAll) {
+            // Send to all members
+            for (const member of members) {
+                await fetch('/api/messages', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ member_id: member.id, title, body })
+                });
+            }
+        } else {
+            // Send to specific member
+            const response = await fetch('/api/messages', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ member_id: parseInt(selectedMemberId), title, body })
+            });
 
-    // Clear form
-    document.getElementById('msgTitle').value = '';
-    document.getElementById('msgBody').value = '';
-    updateCharCount();
+            if (!response.ok) {
+                throw new Error('Failed to send message');
+            }
+        }
 
-    // Clear member search if specific member was selected
-    if (!isAll) {
-        clearSelectedMember('message');
+        showToast('success', 'Message Sent!', `Message delivered to ${recipientText}`);
+
+        // Clear form
+        document.getElementById('msgTitle').value = '';
+        document.getElementById('msgBody').value = '';
+        updateCharCount();
+
+        // Clear member search if specific member was selected
+        if (!isAll) {
+            clearSelectedMember('message');
+        }
+    } catch (error) {
+        console.error('Message send error:', error);
+        showToast('error', 'Send Failed', 'Could not send message. Please try again.');
     }
 };
 
@@ -854,7 +883,7 @@ window.useTemplate = function (type) {
     }
 };
 
-window.sendMessageToMember = function (id) {
+window.sendMessageToMember = async function (id) {
     const member = members.find(m => m.id === id);
     const title = document.getElementById('memberMsgTitle')?.value;
     const body = document.getElementById('memberMsgBody')?.value;
@@ -864,8 +893,23 @@ window.sendMessageToMember = function (id) {
         return;
     }
 
-    closeModal();
-    showToast('success', 'Message Sent!', `Message delivered to ${member.name}`);
+    try {
+        const response = await fetch('/api/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ member_id: member.id, title, body })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to send message');
+        }
+
+        closeModal();
+        showToast('success', 'Message Sent!', `Message delivered to ${member.name}`);
+    } catch (error) {
+        console.error('Message send error:', error);
+        showToast('error', 'Send Failed', 'Could not send message. Please try again.');
+    }
 };
 
 // ==================== 
