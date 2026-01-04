@@ -1799,27 +1799,60 @@ document.addEventListener('DOMContentLoaded', () => {
 // EXPORT DATA TO CSV
 // ============================================
 
+// Updated export function with all data points
 window.exportData = function() {
     if (!members || members.length === 0) {
         showToast('error', 'No Data', 'No members to export');
         return;
     }
     
-    // CSV headers
-    const headers = ['Member ID', 'Name', 'Email', 'Phone', 'Birthday', 'Gender', 'Stamps', 'Total Rewards', 'Available Rewards', 'Created At'];
+    // Calculate age from birthday
+    const calculateAge = (birthday) => {
+        if (!birthday) return '';
+        const today = new Date();
+        const birth = new Date(birthday);
+        let age = today.getFullYear() - birth.getFullYear();
+        const monthDiff = today.getMonth() - birth.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birth.getDate())) {
+            age--;
+        }
+        return age;
+    };
+    
+    // CSV headers matching user requirements
+    const headers = [
+        'Member ID',
+        'Name', 
+        'Date of Birth',
+        'Age',
+        'Gender',
+        'Email',
+        'Phone Number',
+        'Member Since',
+        'Language',
+        'Device Type',
+        'Stamps',
+        'Rewards',
+        'Consent',
+        'Deleted At'
+    ];
     
     // Convert members to CSV rows
     const rows = members.map(m => [
         m.member_id || '',
         m.name || '',
+        m.birthday ? new Date(m.birthday).toLocaleDateString() : '',
+        calculateAge(m.birthday),
+        m.gender || '',
         m.email || '',
         m.phone || '',
-        m.birthday ? new Date(m.birthday).toLocaleDateString() : '',
-        m.gender || '',
+        m.created_at ? new Date(m.created_at).toLocaleDateString() : '',
+        m.language || 'en',
+        m.device_type || '',
         m.stamps || 0,
-        m.total_rewards || 0,
         m.available_rewards || 0,
-        m.created_at ? new Date(m.created_at).toLocaleDateString() : ''
+        m.consent !== false ? 'Yes' : 'No',
+        m.deleted_at ? new Date(m.deleted_at).toLocaleDateString() : ''
     ]);
     
     // Create CSV content
