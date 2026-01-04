@@ -63,7 +63,7 @@ async function loadMembersFromAPI() {
             memberId: m.member_id,
             stamps: m.stamps || 0,
             totalRewards: m.total_rewards || 0,
-            availableRewards: m.availableRewards || 0,
+            availableRewards: m.available_rewards || 0,
             lastVisit: 'Recently',
             rewardHistory: []
         }));
