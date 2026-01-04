@@ -63,7 +63,7 @@ async function loadMembersFromAPI() {
             memberId: m.member_id,
             stamps: m.stamps || 0,
             totalRewards: m.total_rewards || 0,
-            availableRewards: m.available_rewards || 0,
+            availableRewards: m.availableRewards || 0,
             lastVisit: 'Recently',
             rewardHistory: []
         }));
@@ -1850,7 +1850,7 @@ window.exportData = function() {
         m.language || 'en',
         m.device_type || '',
         m.stamps || 0,
-        m.available_rewards || 0,
+        m.availableRewards || 0,
         m.consent !== false ? 'Yes' : 'No',
         m.deleted_at ? new Date(m.deleted_at).toLocaleDateString() : ''
     ]);
