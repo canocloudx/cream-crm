@@ -1794,3 +1794,50 @@ document.addEventListener('click', function (e) {
 document.addEventListener('DOMContentLoaded', () => {
     setTimeout(initMemberSearchData, 500);
 });
+
+// ============================================
+// EXPORT DATA TO CSV
+// ============================================
+
+window.exportData = function() {
+    if (!members || members.length === 0) {
+        showToast('error', 'No Data', 'No members to export');
+        return;
+    }
+    
+    // CSV headers
+    const headers = ['Member ID', 'Name', 'Email', 'Phone', 'Birthday', 'Gender', 'Stamps', 'Total Rewards', 'Available Rewards', 'Created At'];
+    
+    // Convert members to CSV rows
+    const rows = members.map(m => [
+        m.member_id || '',
+        m.name || '',
+        m.email || '',
+        m.phone || '',
+        m.birthday ? new Date(m.birthday).toLocaleDateString() : '',
+        m.gender || '',
+        m.stamps || 0,
+        m.total_rewards || 0,
+        m.available_rewards || 0,
+        m.created_at ? new Date(m.created_at).toLocaleDateString() : ''
+    ]);
+    
+    // Create CSV content
+    const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `cream-members-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    showToast('success', 'Export Complete', `${members.length} members exported to CSV`);
+};
