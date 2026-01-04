@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/762</span>
+                <span class='fraction'>0/760</span>
             </div>
         
             
@@ -39,14 +39,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/137</span>
+                <span class='fraction'>0/135</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/688</span>
+                <span class='fraction'>0/685</span>
             </div>
         
             
@@ -1856,7 +1856,10 @@
 <a name='L1791'></a><a href='#L1791'>1791</a>
 <a name='L1792'></a><a href='#L1792'>1792</a>
 <a name='L1793'></a><a href='#L1793'>1793</a>
-<a name='L1794'></a><a href='#L1794'>1794</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L1794'></a><a href='#L1794'>1794</a>
+<a name='L1795'></a><a href='#L1795'>1795</a>
+<a name='L1796'></a><a href='#L1796'>1796</a>
+<a name='L1797'></a><a href='#L1797'>1797</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -3188,27 +3191,30 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -4965,7 +4971,7 @@ let editingStoreId = <span class="cstat-no" title="statement not covered" >null;
 };
 &nbsp;
 // Add/Edit Store
-<span class="cstat-no" title="statement not covered" >window.addStore = <span class="fstat-no" title="function not covered" >fu</span>nction (event) {</span>
+<span class="cstat-no" title="statement not covered" >window.addStore = <span class="fstat-no" title="function not covered" >as</span>ync function (event) {</span>
 <span class="cstat-no" title="statement not covered" >    event.preventDefault();</span>
 &nbsp;
     const name = <span class="cstat-no" title="statement not covered" >document.getElementById('storeName')?.value;</span>
@@ -4978,30 +4984,33 @@ let editingStoreId = <span class="cstat-no" title="statement not covered" >null;
 <span class="cstat-no" title="statement not covered" >        return;</span>
     }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >    if (editingStoreId) {</span>
-        const store = <span class="cstat-no" title="statement not covered" >stores.find(<span class="fstat-no" title="function not covered" >s </span>=&gt; <span class="cstat-no" title="statement not covered" >s.id === editingStoreId)</span>;</span>
-<span class="cstat-no" title="statement not covered" >        if (store) {</span>
-<span class="cstat-no" title="statement not covered" >            store.name = name;</span>
-<span class="cstat-no" title="statement not covered" >            store.address = address;</span>
-<span class="cstat-no" title="statement not covered" >            store.manager = manager;</span>
-<span class="cstat-no" title="statement not covered" >            store.phone = phone;</span>
-<span class="cstat-no" title="statement not covered" >            saveStores();</span>
+<span class="cstat-no" title="statement not covered" >    try {</span>
+<span class="cstat-no" title="statement not covered" >        if (editingStoreId) {</span>
+            const response = <span class="cstat-no" title="statement not covered" >await fetch(`/api/stores/${editingStoreId}`, {</span>
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, address, manager, phone })
+            });
+<span class="cstat-no" title="statement not covered" >            if (!response.ok) <span class="cstat-no" title="statement not covered" >throw new Error('Failed to update store');</span></span>
 <span class="cstat-no" title="statement not covered" >            showToast('success', 'Store Updated', `${name} has been updated`);</span>
+<span class="cstat-no" title="statement not covered" >            editingStoreId = null;</span>
+        } else {
+            const response = <span class="cstat-no" title="statement not covered" >await fetch('/api/stores', {</span>
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, address, manager, phone })
+            });
+<span class="cstat-no" title="statement not covered" >            if (!response.ok) <span class="cstat-no" title="statement not covered" >throw new Error('Failed to add store');</span></span>
+<span class="cstat-no" title="statement not covered" >            showToast('success', 'Store Added', `${name} has been added`);</span>
         }
-<span class="cstat-no" title="statement not covered" >        editingStoreId = null;</span>
-    } else {
-        const newStore = <span class="cstat-no" title="statement not covered" >{</span>
-            id: stores.length &gt; 0 ? Math.max(...stores.map(<span class="fstat-no" title="function not covered" >s </span>=&gt; <span class="cstat-no" title="statement not covered" >s.id)</span>) + 1 : 1,
-            name, address, manager, phone
-        };
-<span class="cstat-no" title="statement not covered" >        stores.push(newStore);</span>
-<span class="cstat-no" title="statement not covered" >        saveStores();</span>
-<span class="cstat-no" title="statement not covered" >        showToast('success', 'Store Added', `${name} has been added`);</span>
+<span class="cstat-no" title="statement not covered" >        await loadStores();</span>
+<span class="cstat-no" title="statement not covered" >        updateStoresList();</span>
+<span class="cstat-no" title="statement not covered" >        updateUsersList();</span>
+<span class="cstat-no" title="statement not covered" >        closeStoreModal();</span>
+    } catch (error) {
+<span class="cstat-no" title="statement not covered" >        console.error('Store error:', error);</span>
+<span class="cstat-no" title="statement not covered" >        showToast('error', 'Error', error.message);</span>
     }
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    updateStoresList();</span>
-<span class="cstat-no" title="statement not covered" >    updateUsersList();</span>
-<span class="cstat-no" title="statement not covered" >    closeStoreModal();</span>
 };
 &nbsp;
 // Edit Store
@@ -5449,7 +5458,7 @@ function <span class="fstat-no" title="function not covered" >showSelectedMember
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-04T08:37:41.248Z
+                at 2026-01-04T09:24:01.700Z
             </div>
         <script src="prettify.js"></script>
         <script>

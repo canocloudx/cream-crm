@@ -1314,7 +1314,7 @@ window.closeStoreModal = function () {
 };
 
 // Add/Edit Store
-window.addStore = function (event) {
+window.addStore = async function (event) {
     event.preventDefault();
 
     const name = document.getElementById('storeName')?.value;
@@ -1327,30 +1327,33 @@ window.addStore = function (event) {
         return;
     }
 
-    if (editingStoreId) {
-        const store = stores.find(s => s.id === editingStoreId);
-        if (store) {
-            store.name = name;
-            store.address = address;
-            store.manager = manager;
-            store.phone = phone;
-            saveStores();
+    try {
+        if (editingStoreId) {
+            const response = await fetch(`/api/stores/${editingStoreId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, address, manager, phone })
+            });
+            if (!response.ok) throw new Error('Failed to update store');
             showToast('success', 'Store Updated', `${name} has been updated`);
+            editingStoreId = null;
+        } else {
+            const response = await fetch('/api/stores', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, address, manager, phone })
+            });
+            if (!response.ok) throw new Error('Failed to add store');
+            showToast('success', 'Store Added', `${name} has been added`);
         }
-        editingStoreId = null;
-    } else {
-        const newStore = {
-            id: stores.length > 0 ? Math.max(...stores.map(s => s.id)) + 1 : 1,
-            name, address, manager, phone
-        };
-        stores.push(newStore);
-        saveStores();
-        showToast('success', 'Store Added', `${name} has been added`);
+        await loadStores();
+        updateStoresList();
+        updateUsersList();
+        closeStoreModal();
+    } catch (error) {
+        console.error('Store error:', error);
+        showToast('error', 'Error', error.message);
     }
-
-    updateStoresList();
-    updateUsersList();
-    closeStoreModal();
 };
 
 // Edit Store

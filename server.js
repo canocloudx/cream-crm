@@ -459,3 +459,149 @@ app.get('/api/rewards/history', async (req, res) => {
 });
 
 console.log('✅ Reward History API loaded');
+
+// ============================================
+// STORES API
+// ============================================
+
+app.get('/api/stores', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT * FROM stores ORDER BY name');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching stores:', error);
+        res.status(500).json({ error: 'Failed to fetch stores' });
+    }
+});
+
+app.post('/api/stores', async (req, res) => {
+    try {
+        const { name, address, manager, phone } = req.body;
+        const result = await pool.query(
+            'INSERT INTO stores (name, address, manager, phone) VALUES ($1, $2, $3, $4) RETURNING *',
+            [name, address, manager, phone]
+        );
+        res.json({ success: true, store: result.rows[0] });
+    } catch (error) {
+        console.error('Error creating store:', error);
+        res.status(500).json({ error: 'Failed to create store' });
+    }
+});
+
+app.put('/api/stores/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, address, manager, phone } = req.body;
+        const result = await pool.query(
+            'UPDATE stores SET name=$1, address=$2, manager=$3, phone=$4, updated_at=NOW() WHERE id=$5 RETURNING *',
+            [name, address, manager, phone, id]
+        );
+        res.json({ success: true, store: result.rows[0] });
+    } catch (error) {
+        console.error('Error updating store:', error);
+        res.status(500).json({ error: 'Failed to update store' });
+    }
+});
+
+app.delete('/api/stores/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query('DELETE FROM stores WHERE id=$1', [id]);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting store:', error);
+        res.status(500).json({ error: 'Failed to delete store' });
+    }
+});
+
+console.log('✅ Stores API loaded');
+
+// ============================================
+// STAFF USERS API
+// ============================================
+
+app.get('/api/users', async (req, res) => {
+    try {
+        const result = await pool.query('SELECT id, name, surname, email, phone, role, store_id FROM staff_users ORDER BY name');
+        res.json(result.rows);
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        res.status(500).json({ error: 'Failed to fetch users' });
+    }
+});
+
+app.post('/api/users', async (req, res) => {
+    try {
+        const { name, surname, email, phone, role, store_id, password } = req.body;
+        const result = await pool.query(
+            'INSERT INTO staff_users (name, surname, email, phone, role, store_id, password_hash) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name, surname, email, phone, role',
+            [name, surname, email, phone, role || 'barista', store_id || null, password]
+        );
+        res.json({ success: true, user: result.rows[0] });
+    } catch (error) {
+        console.error('Error creating user:', error);
+        res.status(500).json({ error: 'Failed to create user' });
+    }
+});
+
+app.put('/api/users/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, surname, email, phone, role, store_id } = req.body;
+        const result = await pool.query(
+            'UPDATE staff_users SET name=$1, surname=$2, email=$3, phone=$4, role=$5, store_id=$6, updated_at=NOW() WHERE id=$7 RETURNING *',
+            [name, surname, email, phone, role, store_id || null, id]
+        );
+        res.json({ success: true, user: result.rows[0] });
+    } catch (error) {
+        console.error('Error updating user:', error);
+        res.status(500).json({ error: 'Failed to update user' });
+    }
+});
+
+app.delete('/api/users/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await pool.query('DELETE FROM staff_users WHERE id=$1', [id]);
+        res.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting user:', error);
+        res.status(500).json({ error: 'Failed to delete user' });
+    }
+});
+
+console.log('✅ Staff Users API loaded');
+
+// ============================================
+// SEND REWARD API
+// ============================================
+
+app.post('/api/rewards/send', async (req, res) => {
+    try {
+        const { member_id, reward_type, send_to_all } = req.body;
+        let count = 0;
+        
+        if (send_to_all) {
+            const members = await pool.query('SELECT id, member_id FROM members');
+            for (const member of members.rows) {
+                await pool.query('INSERT INTO reward_history (member_id, reward_type, status) VALUES ($1, $2, $3)', 
+                    [member.id, reward_type, 'sent']);
+                try { await triggerPassUpdate(member.member_id); } catch(e) {}
+                count++;
+            }
+        } else if (member_id) {
+            await pool.query('INSERT INTO reward_history (member_id, reward_type, status) VALUES ($1, $2, $3)', 
+                [member_id, reward_type, 'sent']);
+            const m = await pool.query('SELECT member_id FROM members WHERE id=$1', [member_id]);
+            if (m.rows.length) try { await triggerPassUpdate(m.rows[0].member_id); } catch(e) {}
+            count = 1;
+        }
+        
+        res.json({ success: true, count });
+    } catch (error) {
+        console.error('Error sending reward:', error);
+        res.status(500).json({ error: 'Failed to send reward' });
+    }
+});
+
+console.log('✅ Rewards Send API loaded');
