@@ -6,14 +6,12 @@ const crypto = require("crypto");
 
 const certsPath = path.join(__dirname, "certs");
 
-// Generate a consistent auth token for a member (based on memberId)
 function generateAuthToken(memberId) {
     return crypto.createHash('sha256').update(memberId + 'cream-secret-2024').digest('hex').substring(0, 32);
 }
 
 async function generatePass(member) {
     try {
-        // Get member data with defaults
         const memberName = member.name || "Member";
         const stamps = member.stamps || 0;
         const rewards = member.available_rewards || member.availableRewards || 0;
@@ -21,10 +19,19 @@ async function generatePass(member) {
         
         console.log("Generating pass for:", memberName, memberId, "Stamps:", stamps);
         
-        // Generate authentication token for this pass
         const authToken = generateAuthToken(memberId);
         
-        // Create pass with base configuration
+        // DYNAMIC STRIP
+        const safeStamps = Math.min(Math.max(stamps, 0), 6);
+        const stripPath = path.join(__dirname, "punch-cards", "strip_" + safeStamps + ".png");
+        let stripBuffer;
+        if (fs.existsSync(stripPath)) {
+            stripBuffer = fs.readFileSync(stripPath);
+        } else {
+            const defaultStrip = path.join(__dirname, "punch-cards", "strip_0.png");
+            if (fs.existsSync(defaultStrip)) stripBuffer = fs.readFileSync(defaultStrip);
+        }
+
         const pass = await PKPass.from({
             model: path.join(__dirname, "pass-template.pass"),
             certificates: {
@@ -38,32 +45,53 @@ async function generatePass(member) {
             authenticationToken: authToken
         });
 
-        // Use the library's push methods to add fields
+        if (stripBuffer) {
+            pass.addBuffer("strip.png", stripBuffer);
+            pass.addBuffer("strip@2x.png", stripBuffer);
+        }
+
+        // --- LAYOUT CONFIGURATION ---
+
+        // 1. Header: Stamps (Top Right)
         pass.headerFields.push({
             key: "stamps",
             label: "STAMPS",
-            value: `${stamps}/6`
+            value: stamps + "/6",
+            textAlignment: "PKTextAlignmentRight"
         });
 
-        pass.primaryFields.push({
+        // 2. Primary: EMPTY (User wanted Name moved down)
+        // pass.primaryFields.push(...) 
+
+        // 3. Secondary: THE BOTTOM ROW (Left, Center, Right)
+        // Item 1: Member Name (Left)
+        pass.secondaryFields.push({
             key: "member",
             label: "MEMBER",
-            value: memberName
+            value: memberName,
+            textAlignment: "PKTextAlignmentLeft"
         });
 
+        // Item 2: Free Drinks (Center)
         pass.secondaryFields.push({
             key: "rewards",
             label: "FREE DRINKS",
-            value: String(rewards)
+            value: String(rewards),
+            textAlignment: "PKTextAlignmentCenter"
         });
 
-        pass.auxiliaryFields.push({
+        // Item 3: Member ID (Right)
+        pass.secondaryFields.push({
             key: "memberId",
             label: "MEMBER ID",
-            value: memberId
+            value: memberId,
+            textAlignment: "PKTextAlignmentRight"
         });
+        
+        // 4. Auxiliary: Empty (Using Secondary for the main bottom row)
+        // If we put them in Auxiliary, they are smaller. Secondary is better for "Name".
 
-        // Add latest message if available
+        // Back Fields
         if (member.latest_message_title && member.latest_message_body) {
             pass.backFields.push({
                 key: "message",
@@ -85,16 +113,12 @@ async function generatePass(member) {
             value: "📍 C.R.E.A.M. Paspatur\n📱 05336892009"
         });
 
-        // Set barcode with member ID
         pass.setBarcodes({
             format: "PKBarcodeFormatQR",
             message: memberId,
             messageEncoding: "iso-8859-1"
         });
 
-        console.log("Pass created for:", memberName, "ID:", memberId);
-
-        // Generate the pass buffer
         const buffer = pass.getAsBuffer();
         return buffer;
     } catch (error) {
@@ -104,4 +128,4 @@ async function generatePass(member) {
 }
 
 module.exports = { generatePass, generateAuthToken };
-console.log("✅ Apple Wallet pass generator loaded (with update support)");
+console.log("✅ Wallet: Layout updated (Name Left, Rewards Center, ID Right)");

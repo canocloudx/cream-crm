@@ -1,22 +1,29 @@
 /* C.R.E.A.M. COFFEE CRM - Styles */
 /* Autumn Harvest Color Palette */
 :root {
-    --bg-dark: #432818;
-    --bg-medium: #99582A;
-    --bg-light: #BB9457;
-    --text-light: #FFE6A7;
-    --accent: #6F1D1B;
-    --accent-hover: #8a2422;
-    --success: #4a7c59;
-    --warning: #BB9457;
-    --error: #6F1D1B;
+    /* CMYK CYBERPUNK PALETTE - NEON & VOID */
+    --bg-dark: #050505;
+    --bg-medium: #121212;
+    --bg-light: #1E1E1E;
+    --text-light: #F0F0F0;
+    
+    /* NEON CYAN ACCENT */
+    --accent: #00FFFF;
+    --accent-hover: #00CCCC;
+    
+    /* SEMANTIC COLORS */
+    --success: #39FF14; /* Neon Green */
+    --warning: #FFFF00; /* Neon Yellow */
+    --error: #FF00FF;   /* Neon Magenta */
+    
+    /* LAYOUT & EFFECTS */
     --sidebar-width: 260px;
     --sidebar-collapsed: 72px;
     --header-height: 80px;
-    --radius: 12px;
-    --radius-sm: 8px;
-    --shadow: 0 4px 24px rgba(67, 40, 24, 0.35);
-    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius: 8px;
+    --radius-sm: 4px;
+    --shadow: 0 0 25px rgba(0, 255, 255, 0.15); /* Cyan Glow */
+    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -30,20 +37,25 @@ html {
 }
 
 body {
-    font-family: 'Inter', -apple-system, sans-serif;
-    background: linear-gradient(135deg, #2d1810 0%, #432818 100%);
+    font-family: "Onest", "Inter", -apple-system, sans-serif;
+    background: #050505;
     color: var(--text-light);
     min-height: 100vh;
     display: flex;
     overflow-x: hidden;
+    /* Grid Pattern */
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
 }
 
 /* Sidebar */
 .sidebar {
     width: var(--sidebar-width);
-    background: rgba(67, 40, 24, 0.95);
+    background: rgba(10, 10, 12, 0.9);
     backdrop-filter: blur(20px);
-    border-right: 1px solid rgba(255, 230, 167, 0.08);
+    border-right: 1px solid rgba(0, 255, 255, 0.15);
     display: flex;
     flex-direction: column;
     position: fixed;
@@ -67,7 +79,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    border-bottom: 1px solid rgba(255, 230, 167, 0.08);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
 }
 
 .logo {
@@ -97,7 +109,7 @@ body {
 }
 
 .sidebar-toggle:hover {
-    background: rgba(255, 230, 167, 0.1);
+    background: rgba(0, 255, 255, 0.15);
 }
 
 .sidebar-nav {
@@ -121,7 +133,7 @@ body {
 }
 
 .nav-item:hover {
-    background: rgba(255, 230, 167, 0.08);
+    background: rgba(0, 255, 255, 0.1);
     color: var(--text-light);
 }
 
@@ -137,7 +149,7 @@ body {
 
 .sidebar-footer {
     padding: 16px;
-    border-top: 1px solid rgba(255, 230, 167, 0.08);
+    border-top: 1px solid rgba(0, 255, 255, 0.1);
 }
 
 .user-info {
@@ -166,7 +178,7 @@ body {
 
 .user-role {
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 /* Main Content */
@@ -216,7 +228,7 @@ body {
 }
 
 .subtitle {
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
     margin-top: 4px;
 }
 
@@ -278,7 +290,7 @@ body {
 .btn-icon {
     background: none;
     border: none;
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
     padding: 8px;
     border-radius: var(--radius-sm);
     cursor: pointer;
@@ -286,7 +298,7 @@ body {
 }
 
 .btn-icon:hover {
-    background: rgba(255, 230, 167, 0.1);
+    background: rgba(0, 255, 255, 0.15);
     color: var(--text-light);
 }
 
@@ -297,8 +309,8 @@ body {
 
 /* Cards */
 .card {
-    background: rgba(153, 88, 42, 0.5);
-    border: 1px solid rgba(255, 230, 167, 0.08);
+    background: rgba(20, 20, 22, 0.7);
+    border: 1px solid rgba(0, 255, 255, 0.1);
     border-radius: var(--radius);
     padding: 24px;
     backdrop-filter: blur(10px);
@@ -336,8 +348,8 @@ body {
 }
 
 .stat-card {
-    background: rgba(153, 88, 42, 0.5);
-    border: 1px solid rgba(255, 230, 167, 0.08);
+    background: rgba(20, 20, 22, 0.7);
+    border: 1px solid rgba(0, 255, 255, 0.1);
     border-radius: var(--radius);
     padding: 20px;
     display: flex;
@@ -375,7 +387,7 @@ body {
 
 .stat-label {
     font-size: 13px;
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .stat-trend {
@@ -476,7 +488,7 @@ body {
 
 .activity-time {
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 /* Tables */
@@ -493,14 +505,14 @@ body {
 .data-table td {
     padding: 14px 16px;
     text-align: left;
-    border-bottom: 1px solid rgba(255, 230, 167, 0.08);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
 }
 
 .data-table th {
     font-size: 12px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
     font-weight: 600;
 }
 
@@ -536,7 +548,7 @@ body {
 
 .customer-email {
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .tier-badge {
@@ -577,7 +589,7 @@ body {
 
 .pagination-info {
     font-size: 13px;
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .pagination-controls {
@@ -591,7 +603,7 @@ body {
     height: 32px;
     border: none;
     background: none;
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
     border-radius: var(--radius-sm);
     cursor: pointer;
     font-weight: 500;
@@ -608,7 +620,7 @@ body {
 .select-styled {
     padding: 8px 12px;
     background: var(--bg-medium);
-    border: 1px solid rgba(255, 230, 167, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.15);
     border-radius: var(--radius-sm);
     color: var(--text-light);
     font-size: 13px;
@@ -619,7 +631,7 @@ body {
 .form-textarea {
     width: 100%;
     padding: 12px 16px;
-    background: rgba(37, 36, 34, 0.8);
+    background: rgba(15, 15, 18, 0.9);
     border: 1px solid rgba(255, 230, 167, 0.12);
     border-radius: var(--radius-sm);
     color: var(--text-light);
@@ -658,14 +670,14 @@ body {
     align-items: center;
     gap: 10px;
     padding: 10px 16px;
-    background: rgba(37, 36, 34, 0.8);
-    border: 1px solid rgba(255, 230, 167, 0.1);
+    background: rgba(15, 15, 18, 0.9);
+    border: 1px solid rgba(0, 255, 255, 0.15);
     border-radius: var(--radius-sm);
     width: 280px;
 }
 
 .search-box .material-icons-round {
-    color: rgba(255, 230, 167, 0.4);
+    color: rgba(255, 255, 255, 0.4);
     font-size: 20px;
 }
 
@@ -678,7 +690,7 @@ body {
 }
 
 .search-box input::placeholder {
-    color: rgba(255, 230, 167, 0.4);
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .card-toolbar {
@@ -718,7 +730,7 @@ input[type="radio"] {
 
 .char-count {
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
     display: block;
     text-align: right;
     margin-top: 6px;
@@ -783,7 +795,7 @@ input[type="radio"] {
 
 .preview-hint {
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.4);
+    color: rgba(255, 255, 255, 0.4);
 }
 
 .phone-frame {
@@ -870,7 +882,7 @@ input[type="radio"] {
 
 .points-label {
     font-size: 10px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
     letter-spacing: 1px;
     margin-bottom: 4px;
 }
@@ -887,7 +899,7 @@ input[type="radio"] {
 
 .progress-bar {
     height: 6px;
-    background: rgba(255, 230, 167, 0.1);
+    background: rgba(0, 255, 255, 0.15);
     border-radius: 3px;
     overflow: hidden;
 }
@@ -901,7 +913,7 @@ input[type="radio"] {
 
 .progress-label {
     font-size: 11px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
     text-align: center;
     margin-top: 8px;
 }
@@ -938,8 +950,8 @@ input[type="radio"] {
 }
 
 .control-section {
-    background: rgba(153, 88, 42, 0.5);
-    border: 1px solid rgba(255, 230, 167, 0.08);
+    background: rgba(20, 20, 22, 0.7);
+    border: 1px solid rgba(0, 255, 255, 0.1);
     border-radius: var(--radius);
     padding: 20px;
 }
@@ -984,7 +996,7 @@ input[type="radio"] {
 .color-hex {
     font-family: monospace;
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .tier-config {
@@ -1002,8 +1014,8 @@ input[type="radio"] {
 .tier-points {
     width: 80px;
     padding: 6px 10px;
-    background: rgba(37, 36, 34, 0.8);
-    border: 1px solid rgba(255, 230, 167, 0.1);
+    background: rgba(15, 15, 18, 0.9);
+    border: 1px solid rgba(0, 255, 255, 0.15);
     border-radius: var(--radius-sm);
     color: var(--text-light);
     font-size: 13px;
@@ -1031,12 +1043,12 @@ input[type="radio"] {
 
 .upload-zone p {
     font-size: 14px;
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .upload-hint {
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.4);
+    color: rgba(255, 255, 255, 0.4);
     display: block;
     margin-top: 8px;
 }
@@ -1151,7 +1163,7 @@ input[type="radio"] {
 }
 
 .scanner-placeholder p {
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .scanner-actions {
@@ -1188,7 +1200,7 @@ input[type="radio"] {
 }
 
 .customer-not-found p {
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
     font-size: 14px;
 }
 
@@ -1226,7 +1238,7 @@ input[type="radio"] {
 
 .points-display {
     display: flex;
-    background: rgba(153, 88, 42, 0.5);
+    background: rgba(20, 20, 22, 0.7);
     border-radius: var(--radius);
     padding: 20px;
     gap: 20px;
@@ -1241,7 +1253,7 @@ input[type="radio"] {
 
 .points-divider {
     width: 1px;
-    background: rgba(255, 230, 167, 0.1);
+    background: rgba(0, 255, 255, 0.15);
 }
 
 .points-number {
@@ -1253,7 +1265,7 @@ input[type="radio"] {
 
 .points-text {
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -1266,8 +1278,8 @@ input[type="radio"] {
 }
 
 .quick-action {
-    background: rgba(153, 88, 42, 0.5);
-    border: 1px solid rgba(255, 230, 167, 0.08);
+    background: rgba(20, 20, 22, 0.7);
+    border: 1px solid rgba(0, 255, 255, 0.1);
     border-radius: var(--radius);
     padding: 16px;
     text-align: center;
@@ -1316,7 +1328,7 @@ input[type="radio"] {
 }
 
 .available-rewards {
-    background: rgba(153, 88, 42, 0.5);
+    background: rgba(20, 20, 22, 0.7);
     border-radius: var(--radius);
     padding: 20px;
 }
@@ -1376,8 +1388,8 @@ input[type="radio"] {
 }
 
 .template-card {
-    background: rgba(153, 88, 42, 0.5);
-    border: 1px solid rgba(255, 230, 167, 0.08);
+    background: rgba(20, 20, 22, 0.7);
+    border: 1px solid rgba(0, 255, 255, 0.1);
     border-radius: var(--radius);
     padding: 20px;
     text-align: center;
@@ -1409,7 +1421,7 @@ input[type="radio"] {
 
 .template-card p {
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .campaigns-list {
@@ -1453,7 +1465,7 @@ input[type="radio"] {
 
 .campaign-info p {
     font-size: 13px;
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
     margin-bottom: 8px;
 }
 
@@ -1461,7 +1473,7 @@ input[type="radio"] {
     display: flex;
     gap: 20px;
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .campaign-meta span {
@@ -1488,7 +1500,7 @@ input[type="radio"] {
 
 .campaign-stats .stat-label {
     font-size: 11px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
     display: block;
 }
 
@@ -1506,7 +1518,7 @@ input[type="radio"] {
     padding: 8px 16px;
     background: none;
     border: none;
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
     border-radius: var(--radius-sm);
     cursor: pointer;
     font-weight: 500;
@@ -1597,7 +1609,7 @@ input[type="radio"] {
 
 .reward-bar {
     height: 6px;
-    background: rgba(255, 230, 167, 0.1);
+    background: rgba(0, 255, 255, 0.15);
     border-radius: 3px;
     overflow: hidden;
 }
@@ -1610,7 +1622,7 @@ input[type="radio"] {
 
 .reward-count {
     font-size: 11px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
     white-space: nowrap;
 }
 
@@ -1674,7 +1686,7 @@ input[type="radio"] {
     display: flex;
     justify-content: space-between;
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .notif-stats {
@@ -1828,7 +1840,7 @@ input[type="radio"] {
 
 .location-info p {
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
     margin-bottom: 6px;
 }
 
@@ -1839,7 +1851,7 @@ input[type="radio"] {
 
 .geofence-radius {
     font-size: 11px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .geofence-status {
@@ -1856,8 +1868,8 @@ input[type="radio"] {
 }
 
 .geofence-status.inactive {
-    background: rgba(255, 230, 167, 0.1);
-    color: rgba(255, 230, 167, 0.5);
+    background: rgba(0, 255, 255, 0.15);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .trigger-settings {
@@ -1883,7 +1895,7 @@ input[type="radio"] {
 
 .trigger-info p {
     font-size: 12px;
-    color: rgba(255, 230, 167, 0.5);
+    color: rgba(255, 255, 255, 0.5);
 }
 
 /* Modal */
@@ -1900,7 +1912,7 @@ input[type="radio"] {
 
 .modal {
     background: var(--bg-dark);
-    border: 1px solid rgba(255, 230, 167, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.15);
     border-radius: var(--radius);
     width: 90%;
     max-width: 500px;
@@ -1926,7 +1938,7 @@ input[type="radio"] {
     justify-content: space-between;
     align-items: center;
     padding: 20px 24px;
-    border-bottom: 1px solid rgba(255, 230, 167, 0.08);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.1);
 }
 
 .modal-header h3 {
@@ -1936,7 +1948,7 @@ input[type="radio"] {
 .modal-close {
     background: none;
     border: none;
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
     cursor: pointer;
     padding: 4px;
     display: flex;
@@ -1969,7 +1981,7 @@ input[type="radio"] {
     gap: 12px;
     padding: 16px 20px;
     background: var(--bg-dark);
-    border: 1px solid rgba(255, 230, 167, 0.1);
+    border: 1px solid rgba(0, 255, 255, 0.15);
     border-radius: var(--radius-sm);
     box-shadow: var(--shadow);
     animation: toastIn 0.3s ease;
@@ -2041,7 +2053,7 @@ input[type="radio"] {
 
 .date-range-picker .material-icons-round {
     font-size: 18px;
-    color: rgba(255, 230, 167, 0.6);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 /* Responsive */
@@ -2631,3 +2643,4 @@ input[type="radio"] {
     top: 0;
     animation-delay: 0.2s;
 }
+.logo-img { height: 50px; width: auto; }

@@ -122,7 +122,7 @@ app.post('/api/members/:memberId/stamp', async (req, res) => {
         
         // Trigger Apple Wallet pass update
         try {
-            await triggerPassUpdate(memberId);
+            triggerPassUpdate(memberId);
             console.log(`📱 Pass update triggered for: ${memberId}`);
         } catch (pushError) {
             console.error('Pass update push failed:', pushError.message);
@@ -164,7 +164,7 @@ app.post('/api/members/:memberId/redeem', async (req, res) => {
         
         // Trigger Apple Wallet pass update
         try {
-            await triggerPassUpdate(memberId);
+            triggerPassUpdate(memberId);
             console.log(`📱 Pass update triggered for: ${memberId}`);
         } catch (pushError) {
             console.error('Pass update push failed:', pushError.message);
@@ -420,7 +420,7 @@ app.post('/api/messages', async (req, res) => {
             if (memberResult.rows.length > 0) {
                 const memberId = memberResult.rows[0].member_id;
                 try {
-                    await triggerPassUpdate(memberId);
+                    triggerPassUpdate(memberId);
                     console.log(`📱 Wallet notification triggered for: ${memberId}`);
                 } catch (pushError) {
                     console.error('Wallet push failed:', pushError.message);
@@ -586,14 +586,14 @@ app.post('/api/rewards/send', async (req, res) => {
             for (const member of members.rows) {
                 await pool.query('INSERT INTO reward_history (member_id, reward_type, status) VALUES ($1, $2, $3)', 
                     [member.id, reward_type, 'sent']);
-                try { await triggerPassUpdate(member.member_id); } catch(e) {}
+                try { triggerPassUpdate(member.member_id); } catch(e) {}
                 count++;
             }
         } else if (member_id) {
             await pool.query('INSERT INTO reward_history (member_id, reward_type, status) VALUES ($1, $2, $3)', 
                 [member_id, reward_type, 'sent']);
             const m = await pool.query('SELECT member_id FROM members WHERE id=$1', [member_id]);
-            if (m.rows.length) try { await triggerPassUpdate(m.rows[0].member_id); } catch(e) {}
+            if (m.rows.length) try { triggerPassUpdate(m.rows[0].member_id); } catch(e) {}
             count = 1;
         }
         

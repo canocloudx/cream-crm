@@ -152,7 +152,7 @@ function initMembersTable() {
 
     members.forEach(m => {
         const initials = m.name.split(' ').map(n => n[0]).join('');
-        const row = document.createElement('tr');
+        const row = document.createElement('tr'); row.id = 'member-row-' + m.id;
         row.innerHTML = `
             <td><input type="checkbox" class="checkbox"></td>
             <td>
@@ -317,45 +317,87 @@ function renderRewardHistory(history) {
 
 
 // Add Stamp - NOW CALLS API
+// Add Stamp - OPTIMIZED: INSTANT UI UPDATE
+// Add Stamp - OPTIMIZED: INSTANT UI UPDATE
+// Add Stamp - ROBUST OPTIMISTIC UPDATE
 window.addStampToMember = async function (id) {
     const member = members.find(m => m.id === id);
     if (!member) return;
 
+    // OPTIMISTIC UPDATE HELPER
+    const updateMemberRow = (mem) => {
+        const row = document.getElementById("member-row-" + mem.id);
+        if (row) {
+            console.log("Updating row " + mem.id + " optimistically");
+            
+            // Stamps Cell (3nd td, index 3)
+            const stampsCell = row.children[3];
+            if (stampsCell) {
+                let dotsHtml = "";
+                for (let i = 0; i < 6; i++) {
+                    dotsHtml += `<span class="stamp-dot ${i < mem.stamps ? "filled" : ""}"></span>`;
+                }
+                stampsCell.innerHTML = `<div class="stamps-display">${dotsHtml}</div>`;
+            }
+            
+            // Rewards Badge (4th td, index 4)
+            const rewardsCell = row.children[4];
+            if (rewardsCell) {
+                rewardsCell.innerHTML = `<span class="rewards-badge ${mem.availableRewards > 0 ? "has-rewards" : ""}">${mem.availableRewards}</span>`;
+            }
+        } else {
+            console.warn("Row not found: member-row-" + mem.id);
+        }
+    };
+
     try {
-        // Call API to add stamp
+        const originalStamps = member.stamps;
+        const originalRewards = member.availableRewards;
+        
+        // PREDICT
+        let predictedStamps = member.stamps + 1;
+        let predictedRewards = member.availableRewards;
+        if (predictedStamps >= 6) {
+            predictedStamps = 0;
+            predictedRewards++;
+        }
+        
+        // APPLY LOCAL
+        member.stamps = predictedStamps;
+        member.availableRewards = predictedRewards;
+        updateMemberRow(member); // INSTANT VISUAL CHANGE
+
+        // NETWORK
         const response = await fetch(`/api/members/${member.memberId}/stamp`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            method: "POST",
+            headers: { "Content-Type": "application/json" }
         });
 
         const result = await response.json();
 
         if (result.success) {
-            // Update local data with response
-            const prevStamps = member.stamps;
+            // CONFIRM
             member.stamps = result.member.stamps;
             member.totalRewards = result.member.total_rewards;
             member.availableRewards = result.member.available_rewards;
+            updateMemberRow(member);
 
-            if (result.member.stamps === 0 && prevStamps > 0) {
-                // Just earned a reward (stamps reset to 0)
-                showToast('success', '🎉 Reward Earned!', `${member.name} earned a free drink!`);
+            if (result.member.stamps === 0 && originalStamps > 0) {
+                showToast("success", "🎉 Reward Earned!", `${member.name} earned a free drink!`);
             } else {
-                showToast('success', 'Stamp Added', `${member.name} now has ${result.member.stamps}/6 stamps`);
+                showToast("success", "Stamp Added", `${member.name} now has ${result.member.stamps}/6 stamps`);
             }
-
-            // Refresh table
-            const tbody = document.getElementById('membersTableBody');
-            if (tbody) {
-                tbody.innerHTML = '';
-                loadMembersFromAPI();
-            }
+            // CRITICAL: NO TABLE RELOAD
         } else {
-            showToast('error', 'Error', result.error || 'Failed to add stamp');
+            // REVERT
+            member.stamps = originalStamps;
+            member.availableRewards = originalRewards;
+            updateMemberRow(member);
+            showToast("error", "Error", result.error || "Failed to add stamp");
         }
     } catch (error) {
-        console.error('Stamp API error:', error);
-        showToast('error', 'Error', 'Failed to add stamp. Check connection.');
+        console.error("Stamp API error:", error);
+        showToast("error", "Error", "Failed to add stamp. Check connection.");
     }
 };
 
@@ -379,7 +421,6 @@ window.redeemReward = async function (id) {
             // Refresh table
             const tbody = document.getElementById('membersTableBody');
             if (tbody) {
-                tbody.innerHTML = '';
                 loadMembersFromAPI();
             }
         } else {
@@ -996,7 +1037,6 @@ function showBirthdayNotification(birthdayMembers) {
     // Refresh the table
     const tbody = document.getElementById('membersTableBody');
     if (tbody) {
-        tbody.innerHTML = '';
         initMembersTable();
     }
 }
@@ -1448,7 +1488,6 @@ window.deleteMember = async function (id, name) {
             // Refresh table
             const tbody = document.getElementById('membersTableBody');
             if (tbody) {
-                tbody.innerHTML = '';
                 loadMembersFromAPI();
             }
         } else {
