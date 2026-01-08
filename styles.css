@@ -2716,7 +2716,7 @@ input[type="radio"] {
     top: 0;
     animation-delay: 0.2s;
 }
-.logo-img { height: 50px; width: auto; }
+.logo-img { height: 120px; width: auto; max-width: 200px; filter: drop-shadow(0 0 15px rgba(0, 255, 255, 0.8)); }
 
 /* ============================================= */
 /* CYBERPUNK ENHANCEMENTS - NEON GLOW EFFECTS   */
