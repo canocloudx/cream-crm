@@ -586,14 +586,14 @@ app.post('/api/rewards/send', async (req, res) => {
             for (const member of members.rows) {
                 await pool.query('INSERT INTO reward_history (member_id, reward_type, status) VALUES ($1, $2, $3)', 
                     [member.id, reward_type, 'sent']);
-                try { await triggerPassUpdate(member.member_id); } catch(e) {}
+                try { await triggerPassUpdate(member.member_id); } catch(e) { console.error('Pass update failed:', e.message); }
                 count++;
             }
         } else if (member_id) {
             await pool.query('INSERT INTO reward_history (member_id, reward_type, status) VALUES ($1, $2, $3)', 
                 [member_id, reward_type, 'sent']);
             const m = await pool.query('SELECT member_id FROM members WHERE id=$1', [member_id]);
-            if (m.rows.length) try { await triggerPassUpdate(m.rows[0].member_id); } catch(e) {}
+            if (m.rows.length) try { await triggerPassUpdate(m.rows[0].member_id); } catch(e) { console.error('Pass update failed:', e.message); }
             count = 1;
         }
         
