@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C.R.E.A.M. COFFEE - Merchant App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <style>
+        :root {
+            --bg-lightest: #EDEDE9;
+            --bg-light: #F5EBE0;
+            --bg-medium: #E3D5CA;
+            --bg-dark: #D6CCC2;
+            --bg-accent: #D5BDAF;
+            --text-dark: #2D2926;
+            --text-medium: #5D534B;
+            --text-light: #8B7F74;
+            --accent: #9C7B6B;
+            --accent-hover: #B08E7D;
+            --accent-glow: rgba(156, 123, 107, 0.35);
+            --success: #6B9080;
+            --glass-bg: rgba(255, 255, 255, 0.6);
+            --glass-border: rgba(45, 41, 38, 0.08);
+            --radius: 20px;
+            --radius-sm: 12px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, var(--bg-lightest) 0%, var(--bg-light) 50%, var(--bg-medium) 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text-dark);
+        }
+
+        .merchant-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-icon { font-size: 48px; }
+        
+        .logo-img {
+            height: 120px;
+            width: 480px;
+            max-width: 100%;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--text-dark);
+        }
+
+        .logo-subtitle {
+            font-size: 14px;
+            color: var(--text-medium);
+            margin-top: 4px;
+        }
+
+        /* Screens */
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.3s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* PIN Screen */
+        .pin-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: 0 8px 32px rgba(45, 41, 38, 0.1);
+        }
+
+        .pin-card h2 {
+            text-align: center;
+            margin-bottom: 24px;
+            font-size: 20px;
+        }
+
+        .pin-display {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .pin-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--glass-border);
+            transition: all 0.2s ease;
+        }
+
+        .pin-dot.filled {
+            background: var(--accent);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .pin-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .pin-key {
+            padding: 20px;
+            font-size: 24px;
+            font-weight: 600;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: var(--text-dark);
+        }
+
+        .pin-key:hover {
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(1.05);
+        }
+
+        .pin-key:active {
+            transform: scale(0.95);
+        }
+
+        .pin-key.special {
+            font-size: 18px;
+            color: var(--text-medium);
+        }
+
+        .pin-error {
+            text-align: center;
+            color: #C27B7B;
+            font-size: 14px;
+            margin-top: 16px;
+            min-height: 20px;
+        }
+
+        /* Main App Screen */
+        .app-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: 0 8px 32px rgba(45, 41, 38, 0.1);
+        }
+
+        .scan-section {
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: var(--radius-sm);
+            margin-bottom: 20px;
+        }
+
+        .scan-section .material-icons-round {
+            font-size: 64px;
+            color: var(--text-light);
+            margin-bottom: 16px;
+        }
+
+        .scan-section p {
+            color: var(--text-medium);
+            font-size: 14px;
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px var(--accent-glow);
+        }
+
+        .btn-secondary {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-dark);
+            margin-top: 12px;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Customer Panel */
+        .customer-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .customer-panel.active {
+            display: block;
+        }
+
+        .customer-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .customer-avatar {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .customer-info h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .member-id {
+            font-size: 12px;
+            color: var(--text-light);
+            font-family: monospace;
+        }
+
+        /* Stamp Card */
+        .stamp-card {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .stamp-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .stamp-header h4 {
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .stamp-count {
+            font-size: 14px;
+            color: var(--text-medium);
+        }
+
+        .stamps-grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .stamp {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            transition: all 0.3s ease;
+        }
+
+        .stamp.empty {
+            background: var(--glass-border);
+            border: 2px dashed rgba(45, 41, 38, 0.15);
+        }
+
+        .stamp.filled {
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .stamp-progress {
+            text-align: center;
+            font-size: 13px;
+            color: var(--text-medium);
+            margin-bottom: 12px;
+        }
+
+        .add-stamp-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        .add-stamp-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Rewards Wallet */
+        .rewards-section {
+            background: rgba(107, 144, 128, 0.1);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .rewards-section.active {
+            display: block;
+        }
+
+        .rewards-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .rewards-header h4 {
+            font-size: 14px;
+            color: var(--success);
+        }
+
+        .reward-badge {
+            background: var(--success);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .reward-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .reward-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reward-icon { font-size: 24px; }
+
+        .reward-name {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .reward-date {
+            font-size: 11px;
+            color: var(--text-light);
+        }
+
+        .use-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .use-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--text-dark);
+            color: white;
+            padding: 16px 24px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        .toast.success { background: var(--success); }
+        
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--text-medium);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 16px;
+        }
+
+        .back-btn:hover {
+            color: var(--text-dark);
+        }
+
+        /* Manual Entry */
+        .manual-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid var(--glass-border);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            text-align: center;
+            font-family: monospace;
+            letter-spacing: 2px;
+            background: rgba(255, 255, 255, 0.5);
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .manual-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <div class="merchant-container">
+        <div class="logo">
+            <img src="logo.png" alt="C.R.E.A.M. Coffee" class="logo-img">
+            
+            <div class="logo-subtitle">Merchant App</div>
+        </div>
+
+        <!-- PIN Screen -->
+        <div class="screen active" id="pinScreen">
+            <div class="pin-card">
+                <h2>Enter PIN</h2>
+                <div class="pin-display">
+                    <div class="pin-dot" id="dot1"></div>
+                    <div class="pin-dot" id="dot2"></div>
+                    <div class="pin-dot" id="dot3"></div>
+                    <div class="pin-dot" id="dot4"></div>
+                </div>
+                <div class="pin-keypad">
+                    <button class="pin-key" onclick="enterPin('1')">1</button>
+                    <button class="pin-key" onclick="enterPin('2')">2</button>
+                    <button class="pin-key" onclick="enterPin('3')">3</button>
+                    <button class="pin-key" onclick="enterPin('4')">4</button>
+                    <button class="pin-key" onclick="enterPin('5')">5</button>
+                    <button class="pin-key" onclick="enterPin('6')">6</button>
+                    <button class="pin-key" onclick="enterPin('7')">7</button>
+                    <button class="pin-key" onclick="enterPin('8')">8</button>
+                    <button class="pin-key" onclick="enterPin('9')">9</button>
+                    <button class="pin-key special" onclick="clearPin()">Clear</button>
+                    <button class="pin-key" onclick="enterPin('0')">0</button>
+                    <button class="pin-key special" onclick="backspace()">⌫</button>
+                </div>
+                <div class="pin-error" id="pinError"></div>
+            </div>
+        </div>
+
+        <!-- Main App Screen -->
+        <div class="screen" id="appScreen">
+            <div class="app-card">
+                <!-- Scan Section (shown when no customer) -->
+                <div id="scanSection">
+                    <div class="scan-section">
+                        <span class="material-icons-round">qr_code_scanner</span>
+                        <p>Scan customer's loyalty card</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="simulateScan()">
+                        <span class="material-icons-round">qr_code_scanner</span>
+                        Simulate Scan
+                    </button>
+                    <button class="btn btn-secondary" onclick="showManualEntry()">
+                        <span class="material-icons-round">keyboard</span>
+                        Manual Entry
+                    </button>
+                </div>
+
+                <!-- Manual Entry -->
+                <div id="manualSection" style="display: none;">
+                    <input type="text" class="manual-input" id="memberIdInput" placeholder="CREAM-XXXXXX">
+                    <button class="btn btn-primary" onclick="lookupMember()">
+                        <span class="material-icons-round">search</span>
+                        Look Up
+                    </button>
+                    <button class="back-btn" onclick="hideManualEntry()">
+                        <span class="material-icons-round">arrow_back</span>
+                        Back
+                    </button>
+                </div>
+
+                <!-- Customer Panel -->
+                <div class="customer-panel" id="customerPanel">
+                    <div class="customer-header">
+                        <div class="customer-avatar" id="custAvatar">SC</div>
+                        <div class="customer-info">
+                            <h3 id="custName">Sarah Chen</h3>
+                            <div class="member-id" id="custMemberId">CREAM-123456</div>
+                        </div>
+                    </div>
+
+                    <!-- Stamp Card -->
+                    <div class="stamp-card">
+                        <div class="stamp-header">
+                            <h4>☕ Stamp Card</h4>
+                            <span class="stamp-count" id="stampCount">0/6</span>
+                        </div>
+                        <div class="stamps-grid" id="stampsGrid"></div>
+                        <p class="stamp-progress" id="stampProgress">6 more stamps for a FREE drink!</p>
+                        <button class="add-stamp-btn" onclick="addStamp()">
+                            <span class="material-icons-round">add_circle</span>
+                            Add Stamp
+                        </button>
+                    </div>
+
+                    <!-- Rewards Section -->
+                    <div class="rewards-section" id="rewardsSection">
+                        <div class="rewards-header">
+                            <span class="material-icons-round" style="color: var(--success);">card_giftcard</span>
+                            <h4>My Rewards</h4>
+                            <span class="reward-badge" id="rewardCount">0</span>
+                        </div>
+                        <div id="rewardsList"></div>
+                    </div>
+
+                    <!-- Reward History -->
+                    <div class="history-section" id="historySection">
+                        <div class="history-header">
+                            <span class="material-icons-round">history</span>
+                            <h4>Reward History</h4>
+                        </div>
+                        <div id="historyList"></div>
+                    </div>
+
+                    <button class="btn btn-secondary" onclick="clearCustomer()">
+                        <span class="material-icons-round">person_search</span>
+                        Scan Another Customer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span class="material-icons-round">check_circle</span>
+        <span id="toastMessage">Success!</span>
+    </div>
+
+    <style>
+        /* History Section */
+        .history-section {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: var(--text-medium);
+        }
+
+        .history-header h4 {
+            font-size: 14px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 13px;
+        }
+
+        .history-item.earned .material-icons-round {
+            color: var(--success);
+            font-size: 18px;
+        }
+
+        .history-item.used .material-icons-round {
+            color: var(--accent);
+            font-size: 18px;
+        }
+
+        .history-item .desc {
+            flex: 1;
+            color: var(--text-dark);
+        }
+
+        .history-item .date {
+            color: var(--text-light);
+            font-size: 11px;
+        }
+
+        .no-history {
+            text-align: center;
+            color: var(--text-light);
+            font-size: 13px;
+            padding: 12px;
+        }
+    </style>
+
+    <script>
+        // PIN System
+        const CORRECT_PIN = '1234';
+        let currentPin = '';
+
+        function enterPin(digit) {
+            if (currentPin.length >= 4) return;
+            currentPin += digit;
+            updatePinDisplay();
+            
+            if (currentPin.length === 4) {
+                setTimeout(validatePin, 200);
+            }
+        }
+
+        function clearPin() {
+            currentPin = '';
+            updatePinDisplay();
+            document.getElementById('pinError').textContent = '';
+        }
+
+        function backspace() {
+            currentPin = currentPin.slice(0, -1);
+            updatePinDisplay();
+        }
+
+        function updatePinDisplay() {
+            for (let i = 1; i <= 4; i++) {
+                const dot = document.getElementById(\`dot\${i}\`);
+                dot.classList.toggle('filled', i <= currentPin.length);
+            }
+        }
+
+        function validatePin() {
+            if (currentPin === CORRECT_PIN) {
+                document.getElementById('pinScreen').classList.remove('active');
+                document.getElementById('appScreen').classList.add('active');
+            } else {
+                document.getElementById('pinError').textContent = 'Incorrect PIN. Try again.';
+                currentPin = '';
+                updatePinDisplay();
+            }
+        }
+
+        // Customer Data with History
+        const customers = {
+            'CREAM-123456': { 
+                name: 'Sarah Chen', 
+                stamps: 4, 
+                rewards: 1,
+                history: [
+                    { type: 'earned', date: '2024-12-08', desc: 'Free drink earned' },
+                    { type: 'used', date: '2024-12-05', desc: 'Free latte redeemed' }
+                ]
+            },
+            'CREAM-234567': { 
+                name: 'Mike Johnson', 
+                stamps: 2, 
+                rewards: 0,
+                history: [
+                    { type: 'used', date: '2024-12-06', desc: 'Free americano redeemed' }
+                ]
+            },
+            'CREAM-345678': { 
+                name: 'Emma Wilson', 
+                stamps: 5, 
+                rewards: 0,
+                history: [
+                    { type: 'used', date: '2024-11-29', desc: 'Free mocha redeemed' }
+                ]
+            },
+            'CREAM-456789': { 
+                name: 'David Kim', 
+                stamps: 1, 
+                rewards: 2,
+                history: [
+                    { type: 'earned', date: '2024-12-07', desc: 'Free drink earned' },
+                    { type: 'earned', date: '2024-12-03', desc: 'Free drink earned' }
+                ]
+            },
+            'CREAM-567890': { 
+                name: 'Lisa Park', 
+                stamps: 0, 
+                rewards: 0,
+                history: []
+            }
+        };
+
+        let currentCustomer = null;
+        let currentMemberId = null;
+
+        function simulateScan() {
+            const ids = Object.keys(customers);
+            const randomId = ids[Math.floor(Math.random() * ids.length)];
+            loadCustomer(randomId);
+        }
+
+        function showManualEntry() {
+            document.getElementById('scanSection').style.display = 'none';
+            document.getElementById('manualSection').style.display = 'block';
+        }
+
+        function hideManualEntry() {
+            document.getElementById('scanSection').style.display = 'block';
+            document.getElementById('manualSection').style.display = 'none';
+        }
+
+        function lookupMember() {
+            const memberId = document.getElementById('memberIdInput').value.toUpperCase();
+            if (customers[memberId]) {
+                loadCustomer(memberId);
+                hideManualEntry();
+            } else {
+                showToast('Customer not found', 'error');
+            }
+        }
+
+        function loadCustomer(memberId) {
+            currentMemberId = memberId;
+            currentCustomer = customers[memberId];
+            
+            const initials = currentCustomer.name.split(' ').map(n => n[0]).join('');
+            document.getElementById('custAvatar').textContent = initials;
+            document.getElementById('custName').textContent = currentCustomer.name;
+            document.getElementById('custMemberId').textContent = memberId;
+            
+            document.getElementById('scanSection').style.display = 'none';
+            document.getElementById('customerPanel').classList.add('active');
+            
+            updateStampDisplay();
+            updateRewardsDisplay();
+            updateHistoryDisplay();
+            
+            showToast(\`Welcome, \${currentCustomer.name}!\`);
+        }
+
+        function clearCustomer() {
+            currentCustomer = null;
+            currentMemberId = null;
+            document.getElementById('customerPanel').classList.remove('active');
+            document.getElementById('scanSection').style.display = 'block';
+        }
+
+        function updateStampDisplay() {
+            const stamps = currentCustomer.stamps;
+            const grid = document.getElementById('stampsGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 0; i < 6; i++) {
+                const stamp = document.createElement('div');
+                stamp.className = \`stamp \${i < stamps ? 'filled' : 'empty'}\`;
+                stamp.innerHTML = i < stamps ? '☕' : '';
+                grid.appendChild(stamp);
+            }
+            
+            document.getElementById('stampCount').textContent = \`\${stamps}/6\`;
+            
+            const remaining = 6 - stamps;
+            document.getElementById('stampProgress').textContent = 
+                remaining > 0 
+                    ? \`\${remaining} more stamp\${remaining > 1 ? 's' : ''} for a FREE drink!\`
+                    : 'Reward ready!';
+        }
+
+        function updateRewardsDisplay() {
+            const rewards = currentCustomer.rewards;
+            const section = document.getElementById('rewardsSection');
+            const list = document.getElementById('rewardsList');
+            
+            if (rewards > 0) {
+                section.classList.add('active');
+                document.getElementById('rewardCount').textContent = rewards;
+                
+                list.innerHTML = '';
+                for (let i = 0; i < rewards; i++) {
+                    const item = document.createElement('div');
+                    item.className = 'reward-item';
+                    item.innerHTML = \`
+                        <div class="reward-info">
+                            <span class="reward-icon">🎉</span>
+                            <div>
+                                <div class="reward-name">Free Drink</div>
+                                <div class="reward-date">Ready to use</div>
+                            </div>
+                        </div>
+                        <button class="use-btn" onclick="useReward()">Use</button>
+                    \`;
+                    list.appendChild(item);
+                }
+            } else {
+                section.classList.remove('active');
+            }
+        }
+
+        function updateHistoryDisplay() {
+            const history = currentCustomer.history || [];
+            const list = document.getElementById('historyList');
+            
+            if (history.length === 0) {
+                list.innerHTML = '<p class="no-history">No reward history yet</p>';
+            } else {
+                list.innerHTML = history.slice(0, 5).map(h => \`
+                    <div class="history-item \${h.type}">
+                        <span class="material-icons-round">\${h.type === 'earned' ? 'card_giftcard' : 'redeem'}</span>
+                        <span class="desc">\${h.desc}</span>
+                        <span class="date">\${h.date}</span>
+                    </div>
+                \`).join('');
+            }
+        }
+
+        function addStamp() {
+            if (!currentCustomer) return;
+            
+            currentCustomer.stamps++;
+            
+            if (currentCustomer.stamps >= 6) {
+                currentCustomer.stamps = 0;
+                currentCustomer.rewards++;
+                currentCustomer.history.unshift({
+                    type: 'earned',
+                    date: new Date().toISOString().split('T')[0],
+                    desc: 'Free drink earned'
+                });
+                showToast('🎉 FREE DRINK EARNED!');
+            } else {
+                showToast(\`Stamp added! \${currentCustomer.stamps}/6\`);
+            }
+            
+            updateStampDisplay();
+            updateRewardsDisplay();
+            updateHistoryDisplay();
+        }
+
+        function useReward() {
+            if (!currentCustomer || currentCustomer.rewards <= 0) return;
+            
+            currentCustomer.rewards--;
+            currentCustomer.history.unshift({
+                type: 'used',
+                date: new Date().toISOString().split('T')[0],
+                desc: 'Free drink redeemed'
+            });
+            showToast('Free drink applied! ☕');
+            updateRewardsDisplay();
+            updateHistoryDisplay();
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            
+            toast.className = \`toast \${type} show\`;
+            toastMessage.textContent = message;
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

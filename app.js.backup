@@ -401,43 +401,33 @@ window.addStampToMember = async function (id) {
     }
 };
 
-// Redeem Reward - NOW WITH OPTIMISTIC UPDATE
+// Redeem Reward - NOW CALLS API  
 window.redeemReward = async function (id) {
     const member = members.find(m => m.id === id);
     if (!member || member.availableRewards <= 0) return;
-
-    const updateMemberRow = (mem) => {
-        const row = document.getElementById("member-row-" + mem.id);
-        if (row) {
-            const rewardsCell = row.children[4];
-            if (rewardsCell) {
-                rewardsCell.innerHTML = `<span class="rewards-badge ${mem.availableRewards > 0 ? "has-rewards" : ""}">${mem.availableRewards}</span>`;
-            }
-        }
-    };
-
-    const originalRewards = member.availableRewards;
-    member.availableRewards = originalRewards - 1;
-    updateMemberRow(member);
-    showToast('success', 'Reward Redeemed', `Free drink applied for ${member.name}!`);
 
     try {
         const response = await fetch(`/api/members/${member.memberId}/redeem`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
+
         const result = await response.json();
+
         if (result.success) {
             member.availableRewards = result.member.available_rewards;
-            updateMemberRow(member);
+            showToast('success', 'Reward Redeemed', `Free drink applied for ${member.name}!`);
+
+            // Refresh table
+            const tbody = document.getElementById('membersTableBody');
+            if (tbody) {
+                loadMembersFromAPI();
+            }
         } else {
-            member.availableRewards = originalRewards;
-            updateMemberRow(member);
             showToast('error', 'Error', result.error || 'Failed to redeem reward');
         }
     } catch (error) {
-        member.availableRewards = originalRewards;
-        updateMemberRow(member);
+        console.error('Redeem API error:', error);
         showToast('error', 'Error', 'Failed to redeem. Check connection.');
     }
 };
@@ -1923,102 +1913,3 @@ window.exportData = function() {
     
     showToast('success', 'Export Complete', `${members.length} members exported to CSV`);
 };
-
-// ============================================
-// TRANSACTIONS FEED
-// ============================================
-
-let transactionsInterval = null;
-
-window.loadTransactions = async function() {
-    try {
-        const response = await fetch('/api/transactions?limit=100');
-        const transactions = await response.json();
-        
-        const tbody = document.getElementById('transactionsTableBody');
-        if (!tbody) return;
-        
-        if (transactions.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; padding: 40px; color: var(--text-light);">No transactions yet</td></tr>';
-            return;
-        }
-        
-        tbody.innerHTML = transactions.map(t => {
-            // Format timestamp: DD MMM YYYY HH:MM
-            const date = new Date(t.created_at);
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            const formattedDate = `${String(date.getDate()).padStart(2, '0')} ${months[date.getMonth()]} ${date.getFullYear()} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
-            
-            // Format transaction data
-            let transactionText = '';
-            const data = t.transaction_data || {};
-            if (t.transaction_type === 'stamp') {
-                transactionText = `Stamps: ${data.stamps_added || 1}`;
-            } else if (t.transaction_type === 'redeem') {
-                transactionText = 'Reward Redeemed';
-            } else if (t.transaction_type === 'message') {
-                transactionText = 'Message Sent';
-            } else {
-                transactionText = t.transaction_type;
-            }
-            
-            // Transaction type badge color
-            const typeColors = {
-                stamp: '#4CAF50',
-                redeem: '#9C27B0', 
-                message: '#2196F3',
-                birthday: '#FF9800',
-                coupon: '#E91E63'
-            };
-            const typeColor = typeColors[t.transaction_type] || '#757575';
-            
-            return `
-                <tr>
-                    <td><code style="background: var(--glass-bg); padding: 4px 8px; border-radius: 4px;">${t.member_code || '-'}</code></td>
-                    <td>${t.member_name || '-'}</td>
-                    <td>${transactionText}</td>
-                    <td>${t.campaign_id ? `Campaign #${t.campaign_id}` : '-'}</td>
-                    <td><span style="background: ${typeColor}; color: white; padding: 4px 10px; border-radius: 12px; font-size: 11px; text-transform: uppercase;">${t.transaction_type}</span></td>
-                    <td style="white-space: nowrap;">${formattedDate}</td>
-                    <td>Active</td>
-                    <td>${t.shop || '-'}</td>
-                    <td>${t.user_name || '-'}</td>
-                    <td><span style="background: var(--glass-bg); padding: 4px 8px; border-radius: 4px; font-size: 11px;">${t.panel || 'crm'}</span></td>
-                </tr>
-            `;
-        }).join('');
-        
-    } catch (error) {
-        console.error('Error loading transactions:', error);
-    }
-};
-
-// Start auto-refresh when on transactions page
-function startTransactionsAutoRefresh() {
-    if (transactionsInterval) clearInterval(transactionsInterval);
-    loadTransactions();
-    transactionsInterval = setInterval(loadTransactions, 10000); // Refresh every 10 seconds
-}
-
-function stopTransactionsAutoRefresh() {
-    if (transactionsInterval) {
-        clearInterval(transactionsInterval);
-        transactionsInterval = null;
-    }
-}
-
-// Hook into page navigation
-const originalShowPage = window.showPage;
-window.showPage = function(pageId) {
-    if (typeof originalShowPage === 'function') {
-        originalShowPage(pageId);
-    }
-    
-    if (pageId === 'transactions') {
-        startTransactionsAutoRefresh();
-    } else {
-        stopTransactionsAutoRefresh();
-    }
-};
-
-console.log('✅ Transactions feed loaded');

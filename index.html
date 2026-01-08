@@ -38,9 +38,9 @@
                 <span class="material-icons-round">campaign</span>
                 <span class="nav-text">Campaigns</span>
             </a>
-            <a href="#" class="nav-item" data-page="reports">
-                <span class="material-icons-round">assessment</span>
-                <span class="nav-text">Reports</span>
+            <a href="#" class="nav-item" data-page="transactions">
+                <span class="material-icons-round">receipt_long</span>
+                <span class="nav-text">Transactions</span>
             </a>
             <a href="#" class="nav-item" data-page="settings">
                 <span class="material-icons-round">settings</span>
@@ -454,53 +454,42 @@
                 </div>
             </div>
         </section>
-        <!-- Reports Page -->
-        <section class="page" id="page-reports">
+        <!-- Transactions Page -->
+        <section class="page" id="page-transactions">
             <header class="page-header">
                 <div>
-                    <h1>Reports</h1>
-                    <p class="subtitle">Analytics and performance insights</p>
+                    <h1>Transactions</h1>
+                    <p class="subtitle">Live feed of all member activity</p>
                 </div>
                 <div class="header-actions">
-                    <select class="select-styled" id="reportPeriod">
-                        <option value="7d">Last 7 Days</option>
-                        <option value="30d" selected>Last 30 Days</option>
-                        <option value="90d">Last 90 Days</option>
-                        <option value="1y">Last Year</option>
-                    </select>
+                    <button class="btn btn-secondary" onclick="loadTransactions()">
+                        <span class="material-icons-round">refresh</span>
+                        Refresh
+                    </button>
                 </div>
             </header>
 
-            <div class="dashboard-grid">
-                <div class="card chart-card">
-                    <div class="card-header">
-                        <h3>Stamps Activity</h3>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="stampsChart"></canvas>
-                    </div>
-                </div>
-                <div class="card chart-card">
-                    <div class="card-header">
-                        <h3>Rewards Earned vs Redeemed</h3>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="rewardsChart"></canvas>
-                    </div>
-                </div>
-                <div class="card chart-card">
-                    <div class="card-header">
-                        <h3>Member Growth</h3>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="growthChart"></canvas>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h3>Top Performers</h3>
-                    </div>
-                    <div class="top-members-list" id="topMembersList"></div>
+            <div class="card">
+                <div class="table-container">
+                    <table class="data-table" id="transactionsTable">
+                        <thead>
+                            <tr>
+                                <th>Member ID</th>
+                                <th>Member Name</th>
+                                <th>Transaction</th>
+                                <th>Campaign</th>
+                                <th>Type</th>
+                                <th>Time</th>
+                                <th>Pass</th>
+                                <th>Shop</th>
+                                <th>User</th>
+                                <th>Panel</th>
+                            </tr>
+                        </thead>
+                        <tbody id="transactionsTableBody">
+                            <tr><td colspan="10" style="text-align: center; padding: 40px;">Loading transactions...</td></tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
