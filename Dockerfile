@@ -40,7 +40,6 @@ COPY --chown=nodejs:nodejs package*.json ./
 COPY --chown=nodejs:nodejs server.js ./
 COPY --chown=nodejs:nodejs wallet-*.js ./
 COPY --chown=nodejs:nodejs apns-push.js ./
-COPY --chown=nodejs:nodejs api.js ./
 COPY --chown=nodejs:nodejs database ./database
 COPY --chown=nodejs:nodejs certs ./certs
 COPY --chown=nodejs:nodejs pass-template ./pass-template
