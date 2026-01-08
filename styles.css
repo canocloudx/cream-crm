@@ -1,29 +1,58 @@
 /* C.R.E.A.M. COFFEE CRM - Styles */
-/* Autumn Harvest Color Palette */
+/* CYBERPUNK CMYK VAPORWAVE THEME */
 :root {
-    /* CMYK CYBERPUNK PALETTE - NEON & VOID */
-    --bg-dark: #050505;
-    --bg-medium: #121212;
-    --bg-light: #1E1E1E;
-    --text-light: #F0F0F0;
+    /* VOID BACKGROUNDS */
+    --bg-void: #050508;
+    --bg-dark: #0a0a10;
+    --bg-medium: #12121a;
+    --bg-light: #1a1a28;
+    --bg-card: rgba(15, 15, 25, 0.85);
     
-    /* NEON CYAN ACCENT */
-    --accent: #00FFFF;
-    --accent-hover: #00CCCC;
+    /* TEXT */
+    --text-light: #F0F0F5;
+    --text-muted: rgba(240, 240, 245, 0.6);
+    
+    /* NEON CMYK PALETTE */
+    --neon-cyan: #00FFFF;
+    --neon-magenta: #FF00FF;
+    --neon-yellow: #FFFF00;
+    --neon-green: #39FF14;
+    
+    /* ACCENT COLORS */
+    --accent: var(--neon-cyan);
+    --accent-hover: #00E5E5;
+    --accent-secondary: var(--neon-magenta);
+    --accent-tertiary: var(--neon-yellow);
     
     /* SEMANTIC COLORS */
-    --success: #39FF14; /* Neon Green */
-    --warning: #FFFF00; /* Neon Yellow */
-    --error: #FF00FF;   /* Neon Magenta */
+    --success: var(--neon-green);
+    --warning: var(--neon-yellow);
+    --error: var(--neon-magenta);
     
-    /* LAYOUT & EFFECTS */
+    /* BLOOM GLOW EFFECTS */
+    --glow-cyan: 0 0 10px rgba(0, 255, 255, 0.6), 0 0 20px rgba(0, 255, 255, 0.4), 0 0 40px rgba(0, 255, 255, 0.2);
+    --glow-magenta: 0 0 10px rgba(255, 0, 255, 0.6), 0 0 20px rgba(255, 0, 255, 0.4), 0 0 40px rgba(255, 0, 255, 0.2);
+    --glow-yellow: 0 0 10px rgba(255, 255, 0, 0.6), 0 0 20px rgba(255, 255, 0, 0.4), 0 0 40px rgba(255, 255, 0, 0.2);
+    --glow-green: 0 0 10px rgba(57, 255, 20, 0.6), 0 0 20px rgba(57, 255, 20, 0.4), 0 0 40px rgba(57, 255, 20, 0.2);
+    
+    /* SUBTLE GLOWS */
+    --glow-cyan-subtle: 0 0 15px rgba(0, 255, 255, 0.15), 0 0 30px rgba(0, 255, 255, 0.1);
+    --glow-magenta-subtle: 0 0 15px rgba(255, 0, 255, 0.15), 0 0 30px rgba(255, 0, 255, 0.1);
+    
+    /* LAYOUT */
     --sidebar-width: 260px;
     --sidebar-collapsed: 72px;
     --header-height: 80px;
-    --radius: 8px;
-    --radius-sm: 4px;
-    --shadow: 0 0 25px rgba(0, 255, 255, 0.15); /* Cyan Glow */
-    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    --radius: 12px;
+    --radius-sm: 6px;
+    
+    /* SHADOWS */
+    --shadow: var(--glow-cyan-subtle);
+    --shadow-hover: var(--glow-cyan);
+    
+    /* TRANSITIONS */
+    --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-glow: all 0.4s ease;
 }
 
 * {
@@ -38,17 +67,61 @@ html {
 
 body {
     font-family: "Onest", "Inter", -apple-system, sans-serif;
-    background: #050505;
+    background: var(--bg-void);
     color: var(--text-light);
     min-height: 100vh;
     display: flex;
     overflow-x: hidden;
-    /* Grid Pattern */
-    background-image: 
-        linear-gradient(rgba(0, 255, 255, 0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 40px 40px;
+    position: relative;
+    
+    /* Vaporwave Gradient Background */
+    background: 
+        radial-gradient(ellipse at 20% 80%, rgba(255, 0, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(0, 255, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(255, 255, 0, 0.03) 0%, transparent 60%),
+        var(--bg-void);
 }
+
+/* Grid Pattern Overlay */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: 
+        linear-gradient(rgba(0, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* Scanline Effect */
+body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.15) 2px,
+        rgba(0, 0, 0, 0.15) 4px
+    );
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.4;
+}
+
+/* CRT Vignette Effect */
+.main-content::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 60%, rgba(0, 0, 0, 0.4) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
 
 /* Sidebar */
 .sidebar {
@@ -2644,3 +2717,367 @@ input[type="radio"] {
     animation-delay: 0.2s;
 }
 .logo-img { height: 50px; width: auto; }
+
+/* ============================================= */
+/* CYBERPUNK ENHANCEMENTS - NEON GLOW EFFECTS   */
+/* ============================================= */
+
+/* Enhanced Sidebar with Neon Border Glow */
+.sidebar {
+    background: rgba(10, 10, 15, 0.95);
+    border-right: 1px solid rgba(0, 255, 255, 0.3);
+    box-shadow: 
+        inset -1px 0 0 rgba(0, 255, 255, 0.1),
+        5px 0 30px rgba(0, 255, 255, 0.1);
+}
+
+.sidebar-header {
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.sidebar-footer {
+    border-top: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+/* Neon Logo Text */
+.logo-text {
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-magenta) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: none;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+}
+
+/* Nav Item Glow Effects */
+.nav-item {
+    color: rgba(240, 240, 245, 0.7);
+    position: relative;
+    overflow: hidden;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--neon-cyan);
+    opacity: 0;
+    transition: var(--transition-glow);
+    box-shadow: var(--glow-cyan);
+}
+
+.nav-item:hover {
+    background: rgba(0, 255, 255, 0.08);
+    color: var(--neon-cyan);
+}
+
+.nav-item:hover::before {
+    opacity: 1;
+}
+
+.nav-item.active {
+    background: linear-gradient(90deg, rgba(0, 255, 255, 0.15) 0%, transparent 100%);
+    color: var(--neon-cyan);
+    box-shadow: none;
+}
+
+.nav-item.active::before {
+    opacity: 1;
+}
+
+/* Cyberpunk Cards with Neon Borders */
+.card {
+    background: var(--bg-card);
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    box-shadow: var(--glow-cyan-subtle);
+    transition: var(--transition-glow);
+    position: relative;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.3), transparent 50%, rgba(255, 0, 255, 0.3));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: var(--transition-glow);
+    pointer-events: none;
+}
+
+.card:hover {
+    border-color: rgba(0, 255, 255, 0.4);
+    box-shadow: var(--glow-cyan);
+}
+
+.card:hover::before {
+    opacity: 1;
+}
+
+/* Stat Cards with Color-coded Glows */
+.stat-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(0, 255, 255, 0.12);
+    transition: var(--transition-glow);
+}
+
+.stat-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0, 255, 255, 0.5);
+    box-shadow: var(--glow-cyan);
+}
+
+/* Stat Icons with Neon Backgrounds */
+.stat-icon {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.2), rgba(255, 0, 255, 0.1));
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.2);
+}
+
+/* Neon Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--accent-hover) 100%);
+    color: var(--bg-void);
+    font-weight: 600;
+    box-shadow: var(--glow-cyan);
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--glow-cyan), 0 10px 30px rgba(0, 255, 255, 0.3);
+}
+
+/* Secondary Button with Magenta */
+.btn-secondary {
+    background: rgba(255, 0, 255, 0.1);
+    border: 1px solid rgba(255, 0, 255, 0.3);
+    color: var(--neon-magenta);
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 0, 255, 0.2);
+    border-color: var(--neon-magenta);
+    box-shadow: var(--glow-magenta-subtle);
+}
+
+/* Outline Button */
+.btn-outline {
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: var(--neon-cyan);
+}
+
+.btn-outline:hover {
+    background: rgba(0, 255, 255, 0.1);
+    border-color: var(--neon-cyan);
+    box-shadow: var(--glow-cyan-subtle);
+}
+
+/* Icon Buttons */
+.btn-icon:hover {
+    background: rgba(0, 255, 255, 0.15);
+    box-shadow: var(--glow-cyan-subtle);
+}
+
+/* Tables with Neon Accents */
+.data-table th {
+    color: var(--neon-cyan);
+    border-bottom: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.data-table td {
+    border-bottom: 1px solid rgba(0, 255, 255, 0.08);
+}
+
+.data-table tbody tr:hover {
+    background: rgba(0, 255, 255, 0.05);
+    box-shadow: inset 3px 0 0 var(--neon-cyan);
+}
+
+/* Pagination with Glow */
+.pagination-page.active {
+    background: var(--neon-cyan);
+    color: var(--bg-void);
+    box-shadow: var(--glow-cyan);
+}
+
+.pagination-page:hover:not(.active) {
+    color: var(--neon-cyan);
+    background: rgba(0, 255, 255, 0.1);
+}
+
+/* Form Inputs with Neon Focus */
+.form-input:focus,
+.form-textarea:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: 0 0 0 3px rgba(0, 255, 255, 0.15), var(--glow-cyan-subtle);
+}
+
+.search-box {
+    border: 1px solid rgba(0, 255, 255, 0.15);
+    transition: var(--transition-glow);
+}
+
+.search-box:focus-within {
+    border-color: var(--neon-cyan);
+    box-shadow: var(--glow-cyan-subtle);
+}
+
+/* Tier Badges with Neon Colors */
+.tier-badge.bronze {
+    background: rgba(255, 140, 0, 0.2);
+    color: #FF8C00;
+    box-shadow: 0 0 10px rgba(255, 140, 0, 0.2);
+}
+
+.tier-badge.silver {
+    background: rgba(192, 192, 192, 0.2);
+    color: #E0E0E0;
+    box-shadow: 0 0 10px rgba(192, 192, 192, 0.2);
+}
+
+.tier-badge.gold {
+    background: rgba(255, 255, 0, 0.2);
+    color: var(--neon-yellow);
+    box-shadow: 0 0 10px rgba(255, 255, 0, 0.2);
+}
+
+.tier-badge.platinum {
+    background: rgba(0, 255, 255, 0.2);
+    color: var(--neon-cyan);
+    box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+/* Activity Icons with Color Glows */
+.activity-icon.redeem {
+    background: rgba(255, 0, 255, 0.15);
+    color: var(--neon-magenta);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.2);
+}
+
+.activity-icon.points {
+    background: rgba(57, 255, 20, 0.15);
+    color: var(--neon-green);
+    box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+}
+
+.activity-icon.new {
+    background: rgba(0, 255, 255, 0.15);
+    color: var(--neon-cyan);
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+}
+
+.activity-icon.tier {
+    background: rgba(255, 255, 0, 0.15);
+    color: var(--neon-yellow);
+    box-shadow: 0 0 15px rgba(255, 255, 0, 0.2);
+}
+
+/* Page Headers with Glow */
+.page-header h1 {
+    text-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+}
+
+/* Stat Values with Glow */
+.stat-value {
+    color: var(--text-light);
+    text-shadow: 0 0 20px rgba(240, 240, 245, 0.3);
+}
+
+/* Link Glow */
+.link-text {
+    color: var(--neon-cyan);
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.link-text:hover {
+    text-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+/* Chart Cards */
+.chart-card {
+    background: var(--bg-card);
+    border: 1px solid rgba(0, 255, 255, 0.12);
+}
+
+/* Switch Toggle Neon */
+.switch input:checked + .slider {
+    background: var(--neon-cyan);
+    box-shadow: var(--glow-cyan);
+}
+
+/* Customer Avatar Gradient */
+.customer-avatar {
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+}
+
+.user-avatar {
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+    box-shadow: var(--glow-cyan-subtle);
+}
+
+/* Select Dropdowns */
+.select-minimal,
+.select-styled {
+    border: 1px solid rgba(0, 255, 255, 0.2);
+    background: var(--bg-card);
+}
+
+.select-minimal:focus,
+.select-styled:focus {
+    border-color: var(--neon-cyan);
+    box-shadow: var(--glow-cyan-subtle);
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-dark);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 255, 255, 0.5);
+}
+
+/* Chromatic Aberration Hover Effect */
+@keyframes chromatic-shift {
+    0%, 100% {
+        text-shadow: -1px 0 rgba(255, 0, 255, 0.5), 1px 0 rgba(0, 255, 255, 0.5);
+    }
+    50% {
+        text-shadow: 1px 0 rgba(255, 0, 255, 0.5), -1px 0 rgba(0, 255, 255, 0.5);
+    }
+}
+
+.page-header h1:hover {
+    animation: chromatic-shift 0.3s ease;
+}
+
+/* Neon Pulse Animation for Active States */
+@keyframes neon-pulse {
+    0%, 100% {
+        box-shadow: var(--glow-cyan-subtle);
+    }
+    50% {
+        box-shadow: var(--glow-cyan);
+    }
+}
+
+.btn-primary:active {
+    animation: neon-pulse 0.5s ease;
+}
