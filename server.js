@@ -40,8 +40,8 @@ async function logTransaction(memberId, type, data = {}, options = {}) {
     try {
         const { campaign_id, shop, user_name, panel } = options;
         await pool.query(
-            \`INSERT INTO transactions (member_id, transaction_type, transaction_data, campaign_id, shop, user_name, panel)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)\`,
+            `INSERT INTO transactions (member_id, transaction_type, transaction_data, campaign_id, shop, user_name, panel)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
             [memberId, type, JSON.stringify(data), campaign_id || null, shop || 'C.R.E.A.M. Paspatur', user_name || 'Admin', panel || 'crm']
         );
     } catch (err) {
@@ -207,11 +207,11 @@ app.get('/api/transactions', async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 50;
         const result = await pool.query(
-            \`SELECT t.*, m.member_id as member_code, m.name as member_name
+            `SELECT t.*, m.member_id as member_code, m.name as member_name
              FROM transactions t
              LEFT JOIN members m ON t.member_id = m.id
              ORDER BY t.created_at DESC
-             LIMIT $1\`,
+             LIMIT $1`,
             [limit]
         );
         res.json(result.rows);
