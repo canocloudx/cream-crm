@@ -40,7 +40,7 @@ async function sendPassUpdate(pushToken) {
             ":path": "/3/device/" + pushToken,
             "apns-topic": PASS_TYPE_ID,
             "apns-push-type": "background",
-            "apns-priority": "10" 
+            "apns-priority": "5" 
         };
         // Removed apns-expiration to ensure stability as requested
 
