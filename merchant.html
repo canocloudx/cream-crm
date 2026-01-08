@@ -890,27 +890,62 @@
             }
         }
 
-        function addStamp() {
-            if (!currentCustomer) return;
+        async function addStamp() {
+            if (!currentCustomer || !currentMemberId) return;
             
+            const originalStamps = currentCustomer.stamps;
+            const originalRewards = currentCustomer.rewards;
+            
+            // Optimistic update - instant UI change
             currentCustomer.stamps++;
-            
             if (currentCustomer.stamps >= 6) {
                 currentCustomer.stamps = 0;
                 currentCustomer.rewards++;
-                currentCustomer.history.unshift({
-                    type: 'earned',
-                    date: new Date().toISOString().split('T')[0],
-                    desc: 'Free drink earned'
-                });
-                showToast('🎉 FREE DRINK EARNED!');
-            } else {
-                showToast(\`Stamp added! \${currentCustomer.stamps}/6\`);
             }
-            
             updateStampDisplay();
             updateRewardsDisplay();
-            updateHistoryDisplay();
+
+            try {
+                const response = await fetch(\`/api/members/\${currentMemberId}/stamp\`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                const result = await response.json();
+                
+                if (result.success) {
+                    currentCustomer.stamps = result.member.stamps;
+                    currentCustomer.rewards = result.member.available_rewards;
+                    updateStampDisplay();
+                    updateRewardsDisplay();
+                    
+                    if (result.member.stamps === 0 && originalStamps > 0) {
+                        currentCustomer.history.unshift({
+                            type: 'earned',
+                            date: new Date().toISOString().split('T')[0],
+                            desc: 'Free drink earned'
+                        });
+                        updateHistoryDisplay();
+                        showToast('🎉 FREE DRINK EARNED!');
+                    } else {
+                        showToast(\`Stamp added! \${result.member.stamps}/6\`);
+                    }
+                } else {
+                    // Revert on failure
+                    currentCustomer.stamps = originalStamps;
+                    currentCustomer.rewards = originalRewards;
+                    updateStampDisplay();
+                    updateRewardsDisplay();
+                    showToast('Failed to add stamp', 'error');
+                }
+            } catch (error) {
+                console.error('Stamp API error:', error);
+                // Revert on error
+                currentCustomer.stamps = originalStamps;
+                currentCustomer.rewards = originalRewards;
+                updateStampDisplay();
+                updateRewardsDisplay();
+                showToast('Connection error', 'error');
+            }
         }
 
         function useReward() {

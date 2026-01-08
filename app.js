@@ -401,33 +401,43 @@ window.addStampToMember = async function (id) {
     }
 };
 
-// Redeem Reward - NOW CALLS API  
+// Redeem Reward - NOW WITH OPTIMISTIC UPDATE
 window.redeemReward = async function (id) {
     const member = members.find(m => m.id === id);
     if (!member || member.availableRewards <= 0) return;
+
+    const updateMemberRow = (mem) => {
+        const row = document.getElementById("member-row-" + mem.id);
+        if (row) {
+            const rewardsCell = row.children[4];
+            if (rewardsCell) {
+                rewardsCell.innerHTML = `<span class="rewards-badge ${mem.availableRewards > 0 ? "has-rewards" : ""}">${mem.availableRewards}</span>`;
+            }
+        }
+    };
+
+    const originalRewards = member.availableRewards;
+    member.availableRewards = originalRewards - 1;
+    updateMemberRow(member);
+    showToast('success', 'Reward Redeemed', `Free drink applied for ${member.name}!`);
 
     try {
         const response = await fetch(`/api/members/${member.memberId}/redeem`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' }
         });
-
         const result = await response.json();
-
         if (result.success) {
             member.availableRewards = result.member.available_rewards;
-            showToast('success', 'Reward Redeemed', `Free drink applied for ${member.name}!`);
-
-            // Refresh table
-            const tbody = document.getElementById('membersTableBody');
-            if (tbody) {
-                loadMembersFromAPI();
-            }
+            updateMemberRow(member);
         } else {
+            member.availableRewards = originalRewards;
+            updateMemberRow(member);
             showToast('error', 'Error', result.error || 'Failed to redeem reward');
         }
     } catch (error) {
-        console.error('Redeem API error:', error);
+        member.availableRewards = originalRewards;
+        updateMemberRow(member);
         showToast('error', 'Error', 'Failed to redeem. Check connection.');
     }
 };
