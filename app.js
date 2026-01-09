@@ -2066,28 +2066,33 @@ window.exportTransactionsToCSV = function() {
     const headers = [
         'Transaction ID',
         'Timestamp',
-        'Member ID',
+        'Member Code',
         'Member Name',
-        'Type',
-        'Details',
-        'Campaign',
-        'Store',
+        'Transaction Type',
+        'Stamps Added',
+        'New Total',
+        'Campaign ID',
+        'Shop',
         'User',
-        'Device'
+        'Panel'
     ];
     
-    const rows = allTransactions.map(t => [
-        t.id || '',
-        t.created_at ? new Date(t.created_at).toLocaleString() : '',
-        t.member_id || '',
-        t.member_name || '',
-        t.transaction_type || '',
-        t.details || '',
-        t.campaign || '',
-        t.store || '',
-        t.user || '',
-        t.device || ''
-    ]);
+    const rows = allTransactions.map(t => {
+        const data = t.transaction_data || {};
+        return [
+            t.id || '',
+            t.created_at ? new Date(t.created_at).toLocaleString() : '',
+            t.member_code || '',
+            t.member_name || '',
+            t.transaction_type || '',
+            data.stamps_added || '',
+            data.new_total || '',
+            t.campaign_id || '',
+            t.shop || '',
+            t.user_name || '',
+            t.panel || ''
+        ];
+    });
     
     // Create CSV content
     const csvContent = [
