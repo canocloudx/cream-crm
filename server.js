@@ -4,10 +4,60 @@ const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
 
+// ============================================
+// Import monitoring and documentation modules
+// ============================================
+let logger, metricsMiddleware, register, updateMemberStats, metrics;
+let swaggerUi, specs, uiOptions;
+
+// Try to load optional modules (graceful fallback)
+try {
+    const loggerModule = require('./logger');
+    logger = loggerModule;
+} catch (err) {
+    // Fallback to console logging
+    logger = {
+        info: console.log,
+        error: console.error,
+        warn: console.warn,
+        debug: console.log,
+        requestLogger: (req, res, next) => next()
+    };
+}
+
+try {
+    const metricsModule = require('./metrics');
+    metricsMiddleware = metricsModule.metricsMiddleware;
+    register = metricsModule.register;
+    updateMemberStats = metricsModule.updateMemberStats;
+    metrics = metricsModule.metrics;
+} catch (err) {
+    console.warn('Metrics module not available:', err.message);
+}
+
+try {
+    const swaggerModule = require('./swagger');
+    swaggerUi = swaggerModule.swaggerUi;
+    specs = swaggerModule.specs;
+    uiOptions = swaggerModule.uiOptions;
+} catch (err) {
+    console.warn('Swagger module not available:', err.message);
+}
+
 const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(express.static('.'));
+
+// Apply metrics middleware if available
+if (metricsMiddleware) {
+    app.use(metricsMiddleware);
+}
+
+// Apply request logging middleware if available
+if (logger.requestLogger) {
+    app.use(logger.requestLogger);
+}
 
 // PostgreSQL connection - uses environment variables or defaults to localhost
 const pool = new Pool({
@@ -28,7 +78,50 @@ initWalletService(pool, generatePass, sendPassUpdate);
 
 // Mount wallet routes at /wallet
 app.use('/wallet', walletRouter);
-console.log('🍎 Apple Wallet web service mounted at /wallet');
+logger.info('🍎 Apple Wallet web service mounted at /wallet');
+
+// ============================================
+// SWAGGER API DOCUMENTATION
+// ============================================
+if (swaggerUi && specs) {
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, uiOptions));
+    logger.info('�� API Documentation available at /api-docs');
+}
+
+// ============================================
+// PROMETHEUS METRICS ENDPOINT
+// ============================================
+if (register) {
+    /**
+     * @swagger
+     * /metrics:
+     *   get:
+     *     summary: Prometheus metrics endpoint
+     *     description: Returns application metrics in Prometheus format
+     *     tags: [Monitoring]
+     *     responses:
+     *       200:
+     *         description: Prometheus metrics
+     *         content:
+     *           text/plain:
+     *             schema:
+     *               type: string
+     */
+    app.get('/metrics', async (req, res) => {
+        try {
+            // Update member stats before returning metrics
+            if (updateMemberStats) {
+                await updateMemberStats(pool);
+            }
+            res.set('Content-Type', register.contentType);
+            res.end(await register.metrics());
+        } catch (err) {
+            logger.error('Metrics error:', err);
+            res.status(500).end(err.message);
+        }
+    });
+    logger.info('📊 Prometheus metrics available at /metrics');
+}
 
 // Generate unique member ID
 function generateMemberId() {
@@ -45,11 +138,38 @@ async function logTransaction(memberId, type, data = {}, options = {}) {
             [memberId, type, JSON.stringify(data), campaign_id || null, shop || 'C.R.E.A.M. Paspatur', user_name || 'Admin', panel || 'crm']
         );
     } catch (err) {
-        console.error('Transaction log failed:', err.message);
+        logger.error('Transaction log failed:', err.message);
     }
 }
 
-// Register new member
+// ============================================
+// API ENDPOINTS WITH SWAGGER DOCUMENTATION
+// ============================================
+
+/**
+ * @swagger
+ * /register:
+ *   post:
+ *     summary: Register a new member
+ *     tags: [Members]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/MemberCreate'
+ *     responses:
+ *       200:
+ *         description: Member registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Success'
+ *       400:
+ *         description: Email already registered
+ *       500:
+ *         $ref: '#/components/responses/ServerError'
+ */
 app.post('/api/register', async (req, res) => {
     try {
         const { name, email, phone, birthday, gender } = req.body;
@@ -62,10 +182,16 @@ app.post('/api/register', async (req, res) => {
             [memberId, name, email, phone || null, birthday || null, gender || null]
         );
         
-        console.log('New member registered:', result.rows[0]);
+        logger.info('New member registered:', { memberId, name, email });
+        
+        // Track registration metric
+        if (metrics && metrics.newRegistrations) {
+            metrics.newRegistrations.inc({ source: 'api' });
+        }
+        
         res.json({ success: true, member: result.rows[0] });
     } catch (error) {
-        console.error('Registration error:', error);
+        logger.error('Registration error:', error);
         if (error.code === '23505') {
             res.status(400).json({ success: false, error: 'Email already registered' });
         } else {
@@ -74,18 +200,55 @@ app.post('/api/register', async (req, res) => {
     }
 });
 
-// Get all members
+/**
+ * @swagger
+ * /members:
+ *   get:
+ *     summary: Get all members
+ *     tags: [Members]
+ *     responses:
+ *       200:
+ *         description: List of all members
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Member'
+ */
 app.get('/api/members', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM members ORDER BY created_at DESC');
         res.json(result.rows);
     } catch (error) {
-        console.error('Error fetching members:', error);
+        logger.error('Error fetching members:', error);
         res.status(500).json({ error: 'Failed to fetch members' });
     }
 });
 
-// Get member by ID
+/**
+ * @swagger
+ * /members/{memberId}:
+ *   get:
+ *     summary: Get a member by ID
+ *     tags: [Members]
+ *     parameters:
+ *       - in: path
+ *         name: memberId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Member ID (e.g., CREAM-123456)
+ *     responses:
+ *       200:
+ *         description: Member details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Member'
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
 app.get('/api/members/:memberId', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM members WHERE member_id = $1', [req.params.memberId]);
@@ -95,12 +258,29 @@ app.get('/api/members/:memberId', async (req, res) => {
             res.json(result.rows[0]);
         }
     } catch (error) {
-        console.error('Error:', error);
+        logger.error('Error:', error);
         res.status(500).json({ error: 'Failed to fetch member' });
     }
 });
 
-// Add stamp to member - NOW WITH AUTOMATIC PASS UPDATE
+/**
+ * @swagger
+ * /members/{memberId}/stamp:
+ *   post:
+ *     summary: Add a stamp to member's card
+ *     tags: [Loyalty]
+ *     parameters:
+ *       - in: path
+ *         name: memberId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Stamp added successfully
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
 app.post('/api/members/:memberId/stamp', async (req, res) => {
     try {
         const { memberId } = req.params;
@@ -137,10 +317,15 @@ app.post('/api/members/:memberId/stamp', async (req, res) => {
         // Trigger Apple Wallet pass update
         try {
             await triggerPassUpdate(memberId);
-            console.log(`📱 Pass update triggered for: ${memberId}`);
+            logger.info(`📱 Pass update triggered for: ${memberId}`);
         } catch (pushError) {
-            console.error('Pass update push failed:', pushError.message);
+            logger.error('Pass update push failed:', pushError.message);
             // Don't fail the stamp operation if push fails
+        }
+        
+        // Track stamp metric
+        if (metrics && metrics.stampsAdded) {
+            metrics.stampsAdded.inc({ source: 'crm' });
         }
         
         // Log transaction
@@ -148,12 +333,31 @@ app.post('/api/members/:memberId/stamp', async (req, res) => {
         
         res.json({ success: true, member: result.rows[0] });
     } catch (error) {
-        console.error('Error adding stamp:', error);
+        logger.error('Error adding stamp:', error);
         res.status(500).json({ error: 'Failed to add stamp' });
     }
 });
 
-// Redeem reward - ALSO WITH PASS UPDATE
+/**
+ * @swagger
+ * /members/{memberId}/redeem:
+ *   post:
+ *     summary: Redeem a reward
+ *     tags: [Loyalty]
+ *     parameters:
+ *       - in: path
+ *         name: memberId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Reward redeemed successfully
+ *       400:
+ *         description: No rewards available
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
 app.post('/api/members/:memberId/redeem', async (req, res) => {
     try {
         const { memberId } = req.params;
@@ -182,9 +386,14 @@ app.post('/api/members/:memberId/redeem', async (req, res) => {
         // Trigger Apple Wallet pass update
         try {
             await triggerPassUpdate(memberId);
-            console.log(`📱 Pass update triggered for: ${memberId}`);
+            logger.info(`📱 Pass update triggered for: ${memberId}`);
         } catch (pushError) {
-            console.error('Pass update push failed:', pushError.message);
+            logger.error('Pass update push failed:', pushError.message);
+        }
+        
+        // Track redemption metric
+        if (metrics && metrics.rewardsRedeemed) {
+            metrics.rewardsRedeemed.inc();
         }
         
         // Log transaction
@@ -192,7 +401,7 @@ app.post('/api/members/:memberId/redeem', async (req, res) => {
         
         res.json({ success: true, member: result.rows[0] });
     } catch (error) {
-        console.error('Error redeeming:', error);
+        logger.error('Error redeeming:', error);
         res.status(500).json({ error: 'Failed to redeem reward' });
     }
 });
@@ -202,7 +411,29 @@ app.post('/api/members/:memberId/redeem', async (req, res) => {
 // TRANSACTIONS API
 // ============================================
 
-// Get all transactions (live feed)
+/**
+ * @swagger
+ * /transactions:
+ *   get:
+ *     summary: Get all transactions (live feed)
+ *     tags: [Transactions]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 50
+ *         description: Maximum number of transactions to return
+ *     responses:
+ *       200:
+ *         description: List of transactions
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Transaction'
+ */
 app.get('/api/transactions', async (req, res) => {
     try {
         const limit = parseInt(req.query.limit) || 50;
@@ -216,21 +447,40 @@ app.get('/api/transactions', async (req, res) => {
         );
         res.json(result.rows);
     } catch (error) {
-        console.error('Error fetching transactions:', error);
+        logger.error('Error fetching transactions:', error);
         res.status(500).json({ error: 'Failed to fetch transactions' });
     }
 });
 
-console.log('✅ Transactions API loaded');
+logger.info('✅ Transactions API loaded');
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`🚀 C.R.E.A.M. CRM Server running on http://localhost:${PORT}`);
-    console.log(`📱 QR Code page: http://localhost:${PORT}/qrcode.html`);
-    console.log(`📝 Registration: http://localhost:${PORT}/register.html`);
+    logger.info(`🚀 C.R.E.A.M. CRM Server running on http://localhost:${PORT}`);
+    logger.info(`📱 QR Code page: http://localhost:${PORT}/qrcode.html`);
+    logger.info(`📝 Registration: http://localhost:${PORT}/register.html`);
+    if (swaggerUi) {
+        logger.info(`📚 API Docs: http://localhost:${PORT}/api-docs`);
+    }
+    if (register) {
+        logger.info(`📊 Metrics: http://localhost:${PORT}/metrics`);
+    }
 });
 
-// Dashboard Stats
+/**
+ * @swagger
+ * /stats:
+ *   get:
+ *     summary: Get dashboard statistics
+ *     tags: [Dashboard]
+ *     responses:
+ *       200:
+ *         description: Dashboard statistics
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Stats'
+ */
 app.get('/api/stats', async (req, res) => {
     try {
         const totalMembers = await pool.query('SELECT COUNT(*) as count FROM members');
@@ -245,12 +495,33 @@ app.get('/api/stats', async (req, res) => {
             todayMembers: parseInt(todayMembers.rows[0].count)
         });
     } catch (error) {
-        console.error('Stats error:', error);
+        logger.error('Stats error:', error);
         res.status(500).json({ error: 'Failed to fetch stats' });
     }
 });
 
-// Get reward history for a member
+/**
+ * @swagger
+ * /members/{memberId}/history:
+ *   get:
+ *     summary: Get reward history for a member
+ *     tags: [Loyalty]
+ *     parameters:
+ *       - in: path
+ *         name: memberId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Member's reward history
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/RewardHistory'
+ */
 app.get('/api/members/:memberId/history', async (req, res) => {
     try {
         const member = await pool.query('SELECT id FROM members WHERE member_id = $1', [req.params.memberId]);
@@ -264,12 +535,34 @@ app.get('/api/members/:memberId/history', async (req, res) => {
         );
         res.json(history.rows);
     } catch (error) {
-        console.error('History error:', error);
+        logger.error('History error:', error);
         res.status(500).json({ error: 'Failed to fetch history' });
     }
 });
 
-// Search members
+/**
+ * @swagger
+ * /search:
+ *   get:
+ *     summary: Search members
+ *     tags: [Members]
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Search query (name, email, or member ID)
+ *     responses:
+ *       200:
+ *         description: Matching members
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Member'
+ */
 app.get('/api/search', async (req, res) => {
     try {
         const { q } = req.query;
@@ -283,14 +576,31 @@ app.get('/api/search', async (req, res) => {
         );
         res.json(result.rows);
     } catch (error) {
-        console.error('Search error:', error);
+        logger.error('Search error:', error);
         res.status(500).json({ error: 'Search failed' });
     }
 });
 
-console.log('✅ Additional API endpoints loaded');
+logger.info('✅ Additional API endpoints loaded');
 
-// Delete member
+/**
+ * @swagger
+ * /members/{memberId}:
+ *   delete:
+ *     summary: Delete a member
+ *     tags: [Members]
+ *     parameters:
+ *       - in: path
+ *         name: memberId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Member deleted successfully
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
 app.delete('/api/members/:memberId', async (req, res) => {
     try {
         const { memberId } = req.params;
@@ -309,16 +619,38 @@ app.delete('/api/members/:memberId', async (req, res) => {
         // Delete the member
         await pool.query('DELETE FROM members WHERE member_id = $1', [memberId]);
         
-        console.log('Member deleted:', memberId);
+        logger.info('Member deleted:', memberId);
         res.json({ success: true, message: 'Member deleted successfully' });
     } catch (error) {
-        console.error('Delete error:', error);
+        logger.error('Delete error:', error);
         res.status(500).json({ error: 'Failed to delete member' });
     }
 });
 
 
-// Apple Wallet Pass Generation
+/**
+ * @swagger
+ * /pass/{memberId}:
+ *   get:
+ *     summary: Generate Apple Wallet pass for a member
+ *     tags: [Wallet]
+ *     parameters:
+ *       - in: path
+ *         name: memberId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Apple Wallet pass (.pkpass file)
+ *         content:
+ *           application/vnd.apple.pkpass:
+ *             schema:
+ *               type: string
+ *               format: binary
+ *       404:
+ *         $ref: '#/components/responses/NotFound'
+ */
 app.get('/api/pass/:memberId', async (req, res) => {
     try {
         const { memberId } = req.params;
@@ -342,32 +674,35 @@ app.get('/api/pass/:memberId', async (req, res) => {
         });
         res.send(passBuffer);
         
-        console.log('Generated pass for:', memberId);
+        // Track wallet pass metric
+        if (metrics && metrics.walletPassesGenerated) {
+            metrics.walletPassesGenerated.inc();
+        }
+        
+        logger.info('Generated pass for:', memberId);
     } catch (error) {
-        console.error('Pass generation error:', error);
+        logger.error('Pass generation error:', error);
         res.status(500).json({ error: 'Failed to generate pass', details: error.message });
     }
 });
 
-console.log('🍎 Apple Wallet pass endpoint: /api/pass/:memberId');
-console.log('📲 Automatic pass updates enabled!');
+logger.info('🍎 Apple Wallet pass endpoint: /api/pass/:memberId');
+logger.info('📲 Automatic pass updates enabled!');
 
 // ============================================
 // CAMPAIGNS API
 // ============================================
 
-// Get all campaigns
 app.get('/api/campaigns', async (req, res) => {
     try {
         const result = await pool.query('SELECT * FROM campaigns ORDER BY created_at DESC');
         res.json(result.rows);
     } catch (error) {
-        console.error('Error fetching campaigns:', error);
+        logger.error('Error fetching campaigns:', error);
         res.status(500).json({ error: 'Failed to fetch campaigns' });
     }
 });
 
-// Create campaign
 app.post('/api/campaigns', async (req, res) => {
     try {
         const { name, description, campaign_type, start_date, end_date, is_active } = req.body;
@@ -376,15 +711,14 @@ app.post('/api/campaigns', async (req, res) => {
              VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
             [name, description, campaign_type || 'general', start_date || null, end_date || null, is_active !== false]
         );
-        console.log('Campaign created:', result.rows[0]);
+        logger.info('Campaign created:', result.rows[0]);
         res.json({ success: true, campaign: result.rows[0] });
     } catch (error) {
-        console.error('Error creating campaign:', error);
+        logger.error('Error creating campaign:', error);
         res.status(500).json({ error: 'Failed to create campaign' });
     }
 });
 
-// Update campaign
 app.put('/api/campaigns/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -399,30 +733,28 @@ app.put('/api/campaigns/:id', async (req, res) => {
         }
         res.json({ success: true, campaign: result.rows[0] });
     } catch (error) {
-        console.error('Error updating campaign:', error);
+        logger.error('Error updating campaign:', error);
         res.status(500).json({ error: 'Failed to update campaign' });
     }
 });
 
-// Delete campaign
 app.delete('/api/campaigns/:id', async (req, res) => {
     try {
         const { id } = req.params;
         await pool.query('DELETE FROM campaigns WHERE id = $1', [id]);
         res.json({ success: true, message: 'Campaign deleted' });
     } catch (error) {
-        console.error('Error deleting campaign:', error);
+        logger.error('Error deleting campaign:', error);
         res.status(500).json({ error: 'Failed to delete campaign' });
     }
 });
 
-console.log('✅ Campaigns API loaded');
+logger.info('✅ Campaigns API loaded');
 
 // ============================================
 // MESSAGES API
 // ============================================
 
-// Get all messages (recent)
 app.get('/api/messages', async (req, res) => {
     try {
         const result = await pool.query(
@@ -433,12 +765,11 @@ app.get('/api/messages', async (req, res) => {
         );
         res.json(result.rows);
     } catch (error) {
-        console.error('Error fetching messages:', error);
+        logger.error('Error fetching messages:', error);
         res.status(500).json({ error: 'Failed to fetch messages' });
     }
 });
 
-// Send message - with Apple Wallet notification
 app.post('/api/messages', async (req, res) => {
     try {
         const { member_id, title, body } = req.body;
@@ -448,7 +779,7 @@ app.post('/api/messages', async (req, res) => {
             `INSERT INTO messages (member_id, title, body) VALUES ($1, $2, $3) RETURNING *`,
             [member_id || null, title, body]
         );
-        console.log('Message sent:', result.rows[0]);
+        logger.info('Message sent:', result.rows[0]);
         
         // If sending to a specific member, update their pass and trigger notification
         if (member_id) {
@@ -467,9 +798,9 @@ app.post('/api/messages', async (req, res) => {
                 const memberId = memberResult.rows[0].member_id;
                 try {
                     await triggerPassUpdate(memberId);
-                    console.log(`📱 Wallet notification triggered for: ${memberId}`);
+                    logger.info(`📱 Wallet notification triggered for: ${memberId}`);
                 } catch (pushError) {
-                    console.error('Wallet push failed:', pushError.message);
+                    logger.error('Wallet push failed:', pushError.message);
                     // Don't fail the message operation if push fails
                 }
             }
@@ -477,18 +808,17 @@ app.post('/api/messages', async (req, res) => {
         
         res.json({ success: true, message: result.rows[0] });
     } catch (error) {
-        console.error('Error sending message:', error);
+        logger.error('Error sending message:', error);
         res.status(500).json({ error: 'Failed to send message' });
     }
 });
 
-console.log('✅ Messages API loaded');
+logger.info('✅ Messages API loaded');
 
 // ============================================
 // GLOBAL REWARD HISTORY API
 // ============================================
 
-// Get global reward history
 app.get('/api/rewards/history', async (req, res) => {
     try {
         const result = await pool.query(
@@ -499,12 +829,12 @@ app.get('/api/rewards/history', async (req, res) => {
         );
         res.json(result.rows);
     } catch (error) {
-        console.error('Error fetching reward history:', error);
+        logger.error('Error fetching reward history:', error);
         res.status(500).json({ error: 'Failed to fetch reward history' });
     }
 });
 
-console.log('✅ Reward History API loaded');
+logger.info('✅ Reward History API loaded');
 
 // ============================================
 // STORES API
@@ -515,7 +845,7 @@ app.get('/api/stores', async (req, res) => {
         const result = await pool.query('SELECT * FROM stores ORDER BY name');
         res.json(result.rows);
     } catch (error) {
-        console.error('Error fetching stores:', error);
+        logger.error('Error fetching stores:', error);
         res.status(500).json({ error: 'Failed to fetch stores' });
     }
 });
@@ -529,7 +859,7 @@ app.post('/api/stores', async (req, res) => {
         );
         res.json({ success: true, store: result.rows[0] });
     } catch (error) {
-        console.error('Error creating store:', error);
+        logger.error('Error creating store:', error);
         res.status(500).json({ error: 'Failed to create store' });
     }
 });
@@ -544,7 +874,7 @@ app.put('/api/stores/:id', async (req, res) => {
         );
         res.json({ success: true, store: result.rows[0] });
     } catch (error) {
-        console.error('Error updating store:', error);
+        logger.error('Error updating store:', error);
         res.status(500).json({ error: 'Failed to update store' });
     }
 });
@@ -555,12 +885,12 @@ app.delete('/api/stores/:id', async (req, res) => {
         await pool.query('DELETE FROM stores WHERE id=$1', [id]);
         res.json({ success: true });
     } catch (error) {
-        console.error('Error deleting store:', error);
+        logger.error('Error deleting store:', error);
         res.status(500).json({ error: 'Failed to delete store' });
     }
 });
 
-console.log('✅ Stores API loaded');
+logger.info('✅ Stores API loaded');
 
 // ============================================
 // STAFF USERS API
@@ -571,7 +901,7 @@ app.get('/api/users', async (req, res) => {
         const result = await pool.query('SELECT id, name, surname, email, phone, role, store_id FROM staff_users ORDER BY name');
         res.json(result.rows);
     } catch (error) {
-        console.error('Error fetching users:', error);
+        logger.error('Error fetching users:', error);
         res.status(500).json({ error: 'Failed to fetch users' });
     }
 });
@@ -585,7 +915,7 @@ app.post('/api/users', async (req, res) => {
         );
         res.json({ success: true, user: result.rows[0] });
     } catch (error) {
-        console.error('Error creating user:', error);
+        logger.error('Error creating user:', error);
         res.status(500).json({ error: 'Failed to create user' });
     }
 });
@@ -600,7 +930,7 @@ app.put('/api/users/:id', async (req, res) => {
         );
         res.json({ success: true, user: result.rows[0] });
     } catch (error) {
-        console.error('Error updating user:', error);
+        logger.error('Error updating user:', error);
         res.status(500).json({ error: 'Failed to update user' });
     }
 });
@@ -611,12 +941,12 @@ app.delete('/api/users/:id', async (req, res) => {
         await pool.query('DELETE FROM staff_users WHERE id=$1', [id]);
         res.json({ success: true });
     } catch (error) {
-        console.error('Error deleting user:', error);
+        logger.error('Error deleting user:', error);
         res.status(500).json({ error: 'Failed to delete user' });
     }
 });
 
-console.log('✅ Staff Users API loaded');
+logger.info('✅ Staff Users API loaded');
 
 // ============================================
 // SEND REWARD API
@@ -632,22 +962,202 @@ app.post('/api/rewards/send', async (req, res) => {
             for (const member of members.rows) {
                 await pool.query('INSERT INTO reward_history (member_id, reward_type, status) VALUES ($1, $2, $3)', 
                     [member.id, reward_type, 'sent']);
-                try { await triggerPassUpdate(member.member_id); } catch(e) { console.error('Pass update failed:', e.message); }
+                try { await triggerPassUpdate(member.member_id); } catch(e) { logger.error('Pass update failed:', e.message); }
                 count++;
             }
         } else if (member_id) {
             await pool.query('INSERT INTO reward_history (member_id, reward_type, status) VALUES ($1, $2, $3)', 
                 [member_id, reward_type, 'sent']);
             const m = await pool.query('SELECT member_id FROM members WHERE id=$1', [member_id]);
-            if (m.rows.length) try { await triggerPassUpdate(m.rows[0].member_id); } catch(e) { console.error('Pass update failed:', e.message); }
+            if (m.rows.length) try { await triggerPassUpdate(m.rows[0].member_id); } catch(e) { logger.error('Pass update failed:', e.message); }
             count = 1;
         }
         
         res.json({ success: true, count });
     } catch (error) {
-        console.error('Error sending reward:', error);
+        logger.error('Error sending reward:', error);
         res.status(500).json({ error: 'Failed to send reward' });
     }
 });
 
-console.log('✅ Rewards Send API loaded');
+logger.info('✅ Rewards Send API loaded');
+
+// ============================================
+// HEALTH CHECK ENDPOINT
+// ============================================
+
+/**
+ * @swagger
+ * /health:
+ *   get:
+ *     summary: Health check endpoint
+ *     tags: [Monitoring]
+ *     responses:
+ *       200:
+ *         description: Service is healthy
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: healthy
+ *                 uptime:
+ *                   type: number
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ */
+app.get('/api/health', async (req, res) => {
+    try {
+        // Check database connectivity
+        await pool.query('SELECT 1');
+        
+        res.json({
+            status: 'healthy',
+            uptime: process.uptime(),
+            timestamp: new Date().toISOString(),
+            database: 'connected'
+        });
+    } catch (error) {
+        res.status(503).json({
+            status: 'unhealthy',
+            uptime: process.uptime(),
+            timestamp: new Date().toISOString(),
+            database: 'disconnected',
+            error: error.message
+        });
+    }
+});
+
+logger.info('✅ Health check endpoint loaded');
+
+// ============================================
+// SYSTEM MONITORING API (for dashboard)
+// ============================================
+
+/**
+ * @swagger
+ * /monitoring:
+ *   get:
+ *     summary: Get comprehensive system monitoring data
+ *     tags: [Monitoring]
+ *     responses:
+ *       200:
+ *         description: System monitoring data
+ */
+app.get('/api/monitoring', async (req, res) => {
+    const startTime = Date.now();
+    
+    try {
+        // Database health check with timing
+        const dbStart = Date.now();
+        const dbResult = await pool.query('SELECT 1');
+        const dbLatency = Date.now() - dbStart;
+        
+        // Get pool stats
+        const poolStats = {
+            total: pool.totalCount,
+            idle: pool.idleCount,
+            waiting: pool.waitingCount
+        };
+        
+        // Get business metrics
+        const [membersResult, stampsResult, rewardsResult, todayResult, transactionsResult] = await Promise.all([
+            pool.query('SELECT COUNT(*) as count FROM members'),
+            pool.query('SELECT COALESCE(SUM(stamps), 0) as total FROM members'),
+            pool.query('SELECT COALESCE(SUM(total_rewards), 0) as total FROM members'),
+            pool.query("SELECT COUNT(*) as count FROM members WHERE DATE(created_at) = CURRENT_DATE"),
+            pool.query(`SELECT COUNT(*) as count FROM transactions WHERE created_at > NOW() - INTERVAL '24 hours'`)
+        ]);
+        
+        // Get recent activity
+        const recentActivity = await pool.query(`
+            SELECT t.*, m.member_id as member_code, m.name as member_name
+            FROM transactions t
+            LEFT JOIN members m ON t.member_id = m.id
+            ORDER BY t.created_at DESC
+            LIMIT 10
+        `);
+        
+        // Memory usage
+        const memUsage = process.memoryUsage();
+        
+        // Format uptime
+        const uptime = process.uptime();
+        const days = Math.floor(uptime / 86400);
+        const hours = Math.floor((uptime % 86400) / 3600);
+        const minutes = Math.floor((uptime % 3600) / 60);
+        const seconds = Math.floor(uptime % 60);
+        
+        const response = {
+            status: 'healthy',
+            timestamp: new Date().toISOString(),
+            
+            // System info
+            system: {
+                nodeVersion: process.version,
+                platform: process.platform,
+                uptime: uptime,
+                uptimeFormatted: `${days}d ${hours}h ${minutes}m ${seconds}s`,
+                pid: process.pid
+            },
+            
+            // Memory
+            memory: {
+                heapUsed: Math.round(memUsage.heapUsed / 1024 / 1024),
+                heapTotal: Math.round(memUsage.heapTotal / 1024 / 1024),
+                rss: Math.round(memUsage.rss / 1024 / 1024),
+                external: Math.round(memUsage.external / 1024 / 1024),
+                percentUsed: Math.round((memUsage.heapUsed / memUsage.heapTotal) * 100)
+            },
+            
+            // Database
+            database: {
+                status: 'connected',
+                latency: dbLatency,
+                pool: poolStats
+            },
+            
+            // Business metrics
+            metrics: {
+                totalMembers: parseInt(membersResult.rows[0].count),
+                totalStamps: parseInt(stampsResult.rows[0].total) || 0,
+                totalRewards: parseInt(rewardsResult.rows[0].total) || 0,
+                todayMembers: parseInt(todayResult.rows[0].count),
+                last24hTransactions: parseInt(transactionsResult.rows[0].count)
+            },
+            
+            // Recent activity
+            recentActivity: recentActivity.rows.map(t => ({
+                id: t.id,
+                type: t.transaction_type,
+                memberCode: t.member_code,
+                memberName: t.member_name,
+                data: t.transaction_data,
+                timestamp: t.created_at,
+                panel: t.panel
+            })),
+            
+            // Response time
+            responseTime: Date.now() - startTime
+        };
+        
+        res.json(response);
+        
+    } catch (error) {
+        logger.error('Monitoring error:', error);
+        res.status(503).json({
+            status: 'unhealthy',
+            timestamp: new Date().toISOString(),
+            error: error.message,
+            database: {
+                status: 'disconnected'
+            },
+            responseTime: Date.now() - startTime
+        });
+    }
+});
+
+logger.info('✅ System Monitoring API loaded');

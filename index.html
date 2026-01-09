@@ -450,6 +450,18 @@
                                 <span class="reward-history-count">2,432 sent</span>
                             </div>
                         </div>
+
+                    <!-- System Monitoring Card -->
+                    <div class="card settings-card">
+                        <div class="settings-icon">
+                            <span class="material-icons-round">monitor_heart</span>
+                        </div>
+                        <h3>System Monitoring</h3>
+                        <p>Real-time health and performance metrics</p>
+                        <button class="btn btn-primary" onclick="openMonitoringModal()">
+                            <span class="material-icons-round">dashboard</span>
+                            View Dashboard
+                        </button>
                     </div>
                 </div>
             </div>
@@ -626,8 +638,7 @@
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+        </section></main>
 
     <!-- Member Detail Modal -->
     <div class="modal-overlay hidden" id="modalOverlay">
@@ -1185,6 +1196,177 @@
     </style>
 
     <script src="app.js?v=5"></script>
+
+    <!-- Monitoring Modal -->
+    <div class="modal-overlay hidden" id="monitoringModalOverlay">
+        <div class="modal monitoring-modal" style="max-width: 1200px; width: 95%;">
+            <div class="modal-header">
+                <h2>
+                    <span class="material-icons-round" style="margin-right: 8px;">monitor_heart</span>
+                    System Monitoring
+                </h2>
+                <button class="modal-close" onclick="closeMonitoringModal()">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body" id="monitoringModalBody">
+                <!-- Status Cards -->
+                <div class="monitoring-status-grid">
+                    <div class="monitoring-card status-card" id="serverStatus">
+                        <div class="status-indicator healthy"></div>
+                        <div class="status-content">
+                            <span class="status-label">Server</span>
+                            <span class="status-value" id="serverStatusText">Checking...</span>
+                        </div>
+                    </div>
+                    <div class="monitoring-card status-card" id="dbStatus">
+                        <div class="status-indicator healthy"></div>
+                        <div class="status-content">
+                            <span class="status-label">Database</span>
+                            <span class="status-value" id="dbStatusText">Checking...</span>
+                        </div>
+                    </div>
+                    <div class="monitoring-card metric-card">
+                        <span class="material-icons-round metric-icon">speed</span>
+                        <div class="metric-content">
+                            <span class="metric-value" id="dbLatency">--</span>
+                            <span class="metric-label">DB Latency</span>
+                        </div>
+                    </div>
+                    <div class="monitoring-card metric-card">
+                        <span class="material-icons-round metric-icon">timer</span>
+                        <div class="metric-content">
+                            <span class="metric-value" id="responseTime">--</span>
+                            <span class="metric-label">API Response</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Cards Row -->
+                <div class="monitoring-info-grid">
+                    <!-- System Info Card -->
+                    <div class="card monitoring-detail-card">
+                        <h3>
+                            <span class="material-icons-round">dns</span>
+                            System Information
+                        </h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Uptime</span>
+                                <span class="detail-value" id="systemUptime">--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Node.js</span>
+                                <span class="detail-value" id="nodeVersion">--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Platform</span>
+                                <span class="detail-value" id="systemPlatform">--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Process ID</span>
+                                <span class="detail-value" id="processPid">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Memory Card -->
+                    <div class="card monitoring-detail-card">
+                        <h3>
+                            <span class="material-icons-round">memory</span>
+                            Memory Usage
+                        </h3>
+                        <div class="memory-bar-container">
+                            <div class="memory-bar" id="memoryBar" style="width: 0%"></div>
+                        </div>
+                        <div class="memory-stats">
+                            <span id="memoryUsed">-- MB</span> / <span id="memoryTotal">-- MB</span>
+                            <span class="memory-percent" id="memoryPercent">--%</span>
+                        </div>
+                        <div class="detail-grid" style="margin-top: 16px;">
+                            <div class="detail-item">
+                                <span class="detail-label">RSS</span>
+                                <span class="detail-value" id="memoryRss">-- MB</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">External</span>
+                                <span class="detail-value" id="memoryExternal">-- MB</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Database Pool Card -->
+                    <div class="card monitoring-detail-card">
+                        <h3>
+                            <span class="material-icons-round">storage</span>
+                            Database Pool
+                        </h3>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <span class="detail-label">Total</span>
+                                <span class="detail-value" id="poolTotal">--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Idle</span>
+                                <span class="detail-value" id="poolIdle">--</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Waiting</span>
+                                <span class="detail-value" id="poolWaiting">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Business Metrics -->
+                <div class="card monitoring-metrics-card" style="margin-bottom: 20px;">
+                    <h3>
+                        <span class="material-icons-round">analytics</span>
+                        Business Metrics
+                    </h3>
+                    <div class="business-metrics-grid">
+                        <div class="business-metric">
+                            <span class="business-metric-value" id="metricMembers">--</span>
+                            <span class="business-metric-label">Total Members</span>
+                        </div>
+                        <div class="business-metric">
+                            <span class="business-metric-value" id="metricStamps">--</span>
+                            <span class="business-metric-label">Total Stamps</span>
+                        </div>
+                        <div class="business-metric">
+                            <span class="business-metric-value" id="metricRewards">--</span>
+                            <span class="business-metric-label">Total Rewards</span>
+                        </div>
+                        <div class="business-metric">
+                            <span class="business-metric-value" id="metricToday">--</span>
+                            <span class="business-metric-label">New Today</span>
+                        </div>
+                        <div class="business-metric">
+                            <span class="business-metric-value" id="metricTransactions">--</span>
+                            <span class="business-metric-label">24h Transactions</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="monitoring-links">
+                    <a href="/api-docs" target="_blank" class="monitoring-link-btn">
+                        <span class="material-icons-round">menu_book</span>
+                        API Documentation
+                    </a>
+                    <a href="/metrics" target="_blank" class="monitoring-link-btn">
+                        <span class="material-icons-round">data_object</span>
+                        Raw Metrics
+                    </a>
+                    <button class="monitoring-link-btn" onclick="loadMonitoringData()">
+                        <span class="material-icons-round">refresh</span>
+                        Refresh
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

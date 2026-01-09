@@ -40,6 +40,9 @@ COPY --chown=nodejs:nodejs package*.json ./
 COPY --chown=nodejs:nodejs server.js ./
 COPY --chown=nodejs:nodejs wallet-*.js ./
 COPY --chown=nodejs:nodejs apns-push.js ./
+COPY --chown=nodejs:nodejs logger.js ./
+COPY --chown=nodejs:nodejs metrics.js ./
+COPY --chown=nodejs:nodejs swagger.js ./
 COPY --chown=nodejs:nodejs database ./database
 COPY --chown=nodejs:nodejs certs ./certs
 COPY --chown=nodejs:nodejs pass-template ./pass-template
@@ -55,7 +58,7 @@ EXPOSE 3000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD curl -f http://localhost:3000/api/stats || exit 1
+  CMD curl -f http://localhost:3000/api/health || exit 1
 
 # Use tini for proper signal handling
 ENTRYPOINT ["/sbin/tini", "--"]

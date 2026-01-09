@@ -2113,3 +2113,207 @@ window.exportTransactionsToCSV = function() {
     
     showToast('success', 'Export Complete', `${allTransactions.length} transactions exported to CSV`);
 };
+
+// ============================================
+// MONITORING PAGE
+// ============================================
+
+let monitoringInterval = null;
+
+// Load monitoring data from API
+async function loadMonitoringData() {
+    try {
+        const response = await fetch('/api/monitoring');
+        const data = await response.json();
+        updateMonitoringUI(data);
+    } catch (error) {
+        console.error('Failed to load monitoring data:', error);
+        // Show error state
+        document.getElementById('serverStatusText').textContent = 'Error';
+        document.getElementById('serverStatus').querySelector('.status-indicator').className = 'status-indicator unhealthy';
+    }
+}
+
+// Update the monitoring UI with data
+function updateMonitoringUI(data) {
+    // Update last refresh time
+    document.getElementById('monitoringLastUpdate').textContent = 
+        'Last updated: ' + new Date().toLocaleTimeString();
+    
+    // Server status
+    const serverIndicator = document.getElementById('serverStatus').querySelector('.status-indicator');
+    const serverText = document.getElementById('serverStatusText');
+    if (data.status === 'healthy') {
+        serverIndicator.className = 'status-indicator healthy';
+        serverText.textContent = 'Online';
+    } else if (data.status === 'degraded') {
+        serverIndicator.className = 'status-indicator degraded';
+        serverText.textContent = 'Degraded';
+    } else {
+        serverIndicator.className = 'status-indicator unhealthy';
+        serverText.textContent = 'Offline';
+    }
+    
+    // Database status
+    const dbIndicator = document.getElementById('dbStatus').querySelector('.status-indicator');
+    const dbText = document.getElementById('dbStatusText');
+    if (data.database && data.database.status === 'connected') {
+        dbIndicator.className = 'status-indicator healthy';
+        dbText.textContent = 'Connected';
+    } else {
+        dbIndicator.className = 'status-indicator unhealthy';
+        dbText.textContent = 'Disconnected';
+    }
+    
+    // Latency metrics
+    if (data.database) {
+        document.getElementById('dbLatency').textContent = data.database.latency + 'ms';
+    }
+    document.getElementById('responseTime').textContent = data.responseTime + 'ms';
+    
+    // System info
+    if (data.system) {
+        document.getElementById('systemUptime').textContent = data.system.uptimeFormatted;
+        document.getElementById('nodeVersion').textContent = data.system.nodeVersion;
+        document.getElementById('systemPlatform').textContent = data.system.platform;
+        document.getElementById('processPid').textContent = data.system.pid;
+    }
+    
+    // Memory
+    if (data.memory) {
+        document.getElementById('memoryUsed').textContent = data.memory.heapUsed + ' MB';
+        document.getElementById('memoryTotal').textContent = data.memory.heapTotal + ' MB';
+        document.getElementById('memoryPercent').textContent = data.memory.percentUsed + '%';
+        document.getElementById('memoryBar').style.width = data.memory.percentUsed + '%';
+        document.getElementById('memoryRss').textContent = data.memory.rss + ' MB';
+        document.getElementById('memoryExternal').textContent = data.memory.external + ' MB';
+    }
+    
+    // Database pool
+    if (data.database && data.database.pool) {
+        document.getElementById('poolTotal').textContent = data.database.pool.total || '-';
+        document.getElementById('poolIdle').textContent = data.database.pool.idle || '-';
+        document.getElementById('poolWaiting').textContent = data.database.pool.waiting || '-';
+    }
+    
+    // Business metrics
+    if (data.metrics) {
+        document.getElementById('metricMembers').textContent = data.metrics.totalMembers.toLocaleString();
+        document.getElementById('metricStamps').textContent = data.metrics.totalStamps.toLocaleString();
+        document.getElementById('metricRewards').textContent = data.metrics.totalRewards.toLocaleString();
+        document.getElementById('metricToday').textContent = data.metrics.todayMembers.toLocaleString();
+        document.getElementById('metricTransactions').textContent = data.metrics.last24hTransactions.toLocaleString();
+    }
+    
+    // Recent activity
+    if (data.recentActivity) {
+        renderActivityFeed(data.recentActivity);
+    }
+}
+
+// Render activity feed
+function renderActivityFeed(activities) {
+    const container = document.getElementById('activityFeed');
+    
+    if (!activities || activities.length === 0) {
+        container.innerHTML = '<div class="activity-loading">No recent activity</div>';
+        return;
+    }
+    
+    container.innerHTML = activities.map(activity => {
+        const iconClass = activity.type === 'stamp' ? 'stamp' : 
+                          activity.type === 'redeem' ? 'redeem' : 'register';
+        const icon = activity.type === 'stamp' ? '☕' : 
+                     activity.type === 'redeem' ? '🎁' : '👤';
+        
+        const timeAgo = getTimeAgo(new Date(activity.timestamp));
+        
+        let description = '';
+        if (activity.type === 'stamp') {
+            description = `${activity.memberName || activity.memberCode} received a stamp`;
+        } else if (activity.type === 'redeem') {
+            description = `${activity.memberName || activity.memberCode} redeemed a reward`;
+        } else {
+            description = `${activity.memberName || 'New member'} registered`;
+        }
+        
+        return `
+            <div class="activity-item">
+                <div class="activity-icon ${iconClass}">${icon}</div>
+                <div class="activity-info">
+                    <span class="activity-title">${description}</span>
+                    <span class="activity-meta">${activity.panel || 'crm'}</span>
+                </div>
+                <span class="activity-time">${timeAgo}</span>
+            </div>
+        `;
+    }).join('');
+}
+
+// Get time ago string
+function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    
+    if (seconds < 60) return 'Just now';
+    if (seconds < 3600) return Math.floor(seconds / 60) + 'm ago';
+    if (seconds < 86400) return Math.floor(seconds / 3600) + 'h ago';
+    return Math.floor(seconds / 86400) + 'd ago';
+}
+
+// Start auto-refresh when on monitoring page
+function startMonitoringAutoRefresh() {
+    loadMonitoringData(); // Load immediately
+    monitoringInterval = setInterval(loadMonitoringData, 10000); // Refresh every 10s
+}
+
+// Stop auto-refresh
+function stopMonitoringAutoRefresh() {
+    if (monitoringInterval) {
+        clearInterval(monitoringInterval);
+        monitoringInterval = null;
+    }
+}
+
+// Hook into page navigation
+const originalShowPage = window.showPage;
+if (originalShowPage) {
+    window.showPage = function(pageId) {
+        // Stop monitoring refresh when leaving
+        stopMonitoringAutoRefresh();
+        
+        // Call original function
+        originalShowPage(pageId);
+        
+        // Start refresh if on monitoring page
+        if (pageId === 'monitoring') {
+            startMonitoringAutoRefresh();
+        }
+    };
+}
+
+// ============================================
+// MONITORING MODAL FUNCTIONS
+// ============================================
+
+function openMonitoringModal() {
+    document.getElementById('monitoringModalOverlay').classList.remove('hidden');
+    loadMonitoringData();
+    startMonitoringAutoRefresh();
+}
+
+function closeMonitoringModal() {
+    document.getElementById('monitoringModalOverlay').classList.add('hidden');
+    stopMonitoringAutoRefresh();
+}
+
+// Close modal when clicking overlay
+document.addEventListener('DOMContentLoaded', () => {
+    const overlay = document.getElementById('monitoringModalOverlay');
+    if (overlay) {
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) {
+                closeMonitoringModal();
+            }
+        });
+    }
+});
