@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Comparison</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #050508;
+            color: #F0F0F5;
+            min-height: 100vh;
+            padding: 40px;
+        }
+        h1 { text-align: center; margin-bottom: 40px; color: #00FFFF; }
+        h2 { margin-bottom: 20px; font-size: 1.2rem; }
+        .comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; max-width: 1400px; margin: 0 auto; }
+        .option {
+            background: rgba(10, 10, 12, 0.9);
+            border: 1px solid rgba(0, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 30px;
+        }
+        .option-title { color: #00FFFF; margin-bottom: 20px; text-align: center; }
+        .sidebar-preview {
+            background: rgba(10, 10, 12, 0.9);
+            border-right: 1px solid rgba(0, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .logo-container { display: flex; align-items: center; gap: 12px; }
+        .logo-img { height: 140px; width: auto; max-width: 240px; }
+        /* Option 2 CSS blend mode effect */
+        .logo-img.blend { mix-blend-mode: screen; }
+        .logo-img.rounded { border-radius: 12px; }
+        .description {
+            background: rgba(0, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(0, 255, 255, 0.2);
+            color: #00FFFF;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 Logo Integration Options</h1>
+    
+    <div class="comparison">
+        <!-- Option 1: Matched Background -->
+        <div class="option">
+            <h2 class="option-title">Option 1: Matched Background Color</h2>
+            <span class="badge">Recommended</span>
+            
+            <div class="sidebar-preview">
+                <div class="logo-container">
+                    <img src="logo-icon-option1.png" alt="Logo Option 1" class="logo-img">
+                </div>
+            </div>
+            
+            <div class="description">
+                <strong>How it works:</strong> The logo's black background is replaced with the exact sidebar color (#0a0a0c), making it blend seamlessly.
+                <br><br>
+                <strong>Pros:</strong> Perfect integration, no CSS tricks needed, works everywhere.
+                <br>
+                <strong>Cons:</strong> If sidebar color changes, logo needs to be regenerated.
+            </div>
+        </div>
+        
+        <!-- Option 2: CSS Blend Mode -->
+        <div class="option">
+            <h2 class="option-title">Option 2: CSS Blend Mode</h2>
+            <span class="badge">Alternative</span>
+            
+            <div class="sidebar-preview">
+                <div class="logo-container">
+                    <img src="logo-icon-option2.png" alt="Logo Option 2" class="logo-img blend">
+                </div>
+            </div>
+            
+            <div class="description">
+                <strong>How it works:</strong> Uses CSS <code>mix-blend-mode: screen</code> to make black transparent while keeping the neon glow.
+                <br><br>
+                <strong>Pros:</strong> Adapts to any background automatically.
+                <br>
+                <strong>Cons:</strong> Glow effect may appear slightly different, browser compatibility considerations.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
