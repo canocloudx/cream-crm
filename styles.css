@@ -2716,7 +2716,15 @@ input[type="radio"] {
     top: 0;
     animation-delay: 0.2s;
 }
-.logo-img { height: 140px; width: auto; max-width: 240px; }
+.logo-img { 
+    height: 60px; 
+    width: auto; 
+    max-width: 200px; 
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.8)) 
+            drop-shadow(0 0 20px rgba(0, 255, 255, 0.5)) 
+            drop-shadow(0 0 30px rgba(0, 255, 255, 0.3));
+}
 
 /* ============================================= */
 /* CYBERPUNK ENHANCEMENTS - NEON GLOW EFFECTS   */
