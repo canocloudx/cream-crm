@@ -7,7 +7,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadMembersFromAPI();
     initCharts();
     initModals();
+    
+    // Set Transactions as the default page
+    showPage('transactions');
 });
+
+// Helper function to show a page programmatically
+function showPage(pageId) {
+    const navItems = document.querySelectorAll('.nav-item');
+    const pages = document.querySelectorAll('.page');
+    
+    navItems.forEach(nav => {
+        nav.classList.remove('active');
+        if (nav.dataset.page === pageId) {
+            nav.classList.add('active');
+        }
+    });
+    
+    pages.forEach(page => {
+        page.classList.remove('active');
+        if (page.id === `page-${pageId}`) {
+            page.classList.add('active');
+        }
+    });
+    
+    // Auto-load data based on page
+    if (pageId === 'transactions') {
+        startTransactionsAutoRefresh();
+    } else {
+        stopTransactionsAutoRefresh();
+    }
+}
 
 // Load stats from API and then initialize counters
 async function loadStatsAndInitCounters() {
@@ -96,6 +126,13 @@ function initNavigation() {
                     page.classList.add('active');
                 }
             });
+            
+            // Auto-load data based on page
+            if (pageId === 'transactions') {
+                startTransactionsAutoRefresh();
+            } else {
+                stopTransactionsAutoRefresh();
+            }
         });
     });
 }
@@ -1935,6 +1972,9 @@ window.loadTransactions = async function() {
         const response = await fetch('/api/transactions?limit=100');
         const transactions = await response.json();
         
+        // Store for CSV export
+        allTransactions = transactions;
+        
         const tbody = document.getElementById('transactionsTableBody');
         if (!tbody) return;
         
@@ -2007,18 +2047,64 @@ function stopTransactionsAutoRefresh() {
     }
 }
 
-// Hook into page navigation
-const originalShowPage = window.showPage;
-window.showPage = function(pageId) {
-    if (typeof originalShowPage === 'function') {
-        originalShowPage(pageId);
-    }
-    
-    if (pageId === 'transactions') {
-        startTransactionsAutoRefresh();
-    } else {
-        stopTransactionsAutoRefresh();
-    }
-};
+// Page navigation is handled in showPage() function above
 
 console.log('✅ Transactions feed loaded');
+
+// ============================================
+// TRANSACTIONS CSV EXPORT
+// ============================================
+
+let allTransactions = []; // Store all loaded transactions for export
+
+window.exportTransactionsToCSV = function() {
+    if (!allTransactions || allTransactions.length === 0) {
+        showToast('warning', 'No Data', 'No transactions to export. Please wait for data to load.');
+        return;
+    }
+    
+    const headers = [
+        'Transaction ID',
+        'Timestamp',
+        'Member ID',
+        'Member Name',
+        'Type',
+        'Details',
+        'Campaign',
+        'Store',
+        'User',
+        'Device'
+    ];
+    
+    const rows = allTransactions.map(t => [
+        t.id || '',
+        t.created_at ? new Date(t.created_at).toLocaleString() : '',
+        t.member_id || '',
+        t.member_name || '',
+        t.transaction_type || '',
+        t.details || '',
+        t.campaign || '',
+        t.store || '',
+        t.user || '',
+        t.device || ''
+    ]);
+    
+    // Create CSV content
+    const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+    
+    // Create download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `cream-transactions-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    showToast('success', 'Export Complete', `${allTransactions.length} transactions exported to CSV`);
+};
