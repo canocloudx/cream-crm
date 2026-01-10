@@ -3839,3 +3839,51 @@ input[type="radio"] {
 .form-actions {
     margin-top: 20px;
 }
+
+/* ============================================
+   STORE & USER ITEMS - Text glow instead of bg
+   ============================================ */
+
+/* Store items in Settings */
+.store-item {
+    background: rgba(30, 30, 40, 0.8) !important;
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    transition: border-color 0.3s ease;
+}
+
+.store-item:hover {
+    background: rgba(30, 30, 40, 0.8) !important;
+    border-color: rgba(0, 255, 255, 0.3);
+}
+
+.store-item:hover .store-item-name {
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.4);
+    color: #fff;
+}
+
+.store-item:hover .store-item-address,
+.store-item:hover .store-item-manager,
+.store-item:hover .store-item-phone {
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
+
+/* User items in Settings */
+.user-item {
+    background: rgba(30, 30, 40, 0.8) !important;
+    border: 1px solid rgba(0, 255, 255, 0.1);
+    transition: border-color 0.3s ease;
+}
+
+.user-item:hover {
+    background: rgba(30, 30, 40, 0.8) !important;
+    border-color: rgba(0, 255, 255, 0.3);
+}
+
+.user-item:hover .user-item-name {
+    text-shadow: 0 0 10px rgba(0, 255, 255, 0.8), 0 0 20px rgba(0, 255, 255, 0.4);
+    color: #fff;
+}
+
+.user-item:hover .user-item-email {
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
+}
