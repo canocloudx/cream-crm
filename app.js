@@ -2223,6 +2223,7 @@ function updateMonitoringUI(data) {
 // Render activity feed
 function renderActivityFeed(activities) {
     const container = document.getElementById('activityFeed');
+    if (!container) return; // Element not present in modal
     
     if (!activities || activities.length === 0) {
         container.innerHTML = '<div class="activity-loading">No recent activity</div>';
