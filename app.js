@@ -2128,20 +2128,29 @@ async function loadMonitoringData() {
         updateMonitoringUI(data);
     } catch (error) {
         console.error('Failed to load monitoring data:', error);
-        // Show error state
-        document.getElementById('serverStatusText').textContent = 'Error';
-        document.getElementById('serverStatus').querySelector('.status-indicator').className = 'status-indicator unhealthy';
+        // Show error state with null checks
+        const serverText = document.getElementById('serverStatusText');
+        const serverStatus = document.getElementById('serverStatus');
+        if (serverText) serverText.textContent = 'Error';
+        if (serverStatus) {
+            const indicator = serverStatus.querySelector('.status-indicator');
+            if (indicator) indicator.className = 'status-indicator unhealthy';
+        }
     }
 }
 
 // Update the monitoring UI with data
 function updateMonitoringUI(data) {
-    // Update last refresh time
-    document.getElementById('monitoringLastUpdate').textContent = 
-        'Last updated: ' + new Date().toLocaleTimeString();
+    // Update last refresh time (optional element)
+    const lastUpdate = document.getElementById('monitoringLastUpdate');
+    if (lastUpdate) {
+        lastUpdate.textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+    }
     
     // Server status
-    const serverIndicator = document.getElementById('serverStatus').querySelector('.status-indicator');
+    const serverStatus = document.getElementById('serverStatus');
+    if (!serverStatus) return; // Exit if modal not present
+    const serverIndicator = serverStatus.querySelector('.status-indicator');
     const serverText = document.getElementById('serverStatusText');
     if (data.status === 'healthy') {
         serverIndicator.className = 'status-indicator healthy';
