@@ -319,13 +319,30 @@
         </section>
 
         <!-- Settings Page -->
-        <section class="page" id="page-settings">
+                <section class="page" id="page-settings">
             <header class="page-header">
                 <div>
                     <h1>Settings</h1>
                     <p class="subtitle">Configure your loyalty program</p>
                 </div>
             </header>
+
+            <!-- System Monitoring - Full Width at Top -->
+            <div class="card settings-card monitoring-card-top" style="margin-bottom: 24px;">
+                <div class="monitoring-top-content">
+                    <div class="monitoring-info">
+                        <span class="material-icons-round" style="font-size: 32px; color: var(--primary);">monitor_heart</span>
+                        <div>
+                            <h3 style="margin: 0;">System Monitoring</h3>
+                            <p style="margin: 4px 0 0 0; color: var(--text-light);">Real-time health and performance metrics</p>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary btn-sm" onclick="openMonitoringModal()">
+                        <span class="material-icons-round">dashboard</span>
+                        View Dashboard
+                    </button>
+                </div>
+            </div>
 
             <div class="settings-columns">
                 <!-- Left Column: Stores + QR Codes -->
@@ -336,38 +353,13 @@
                         </div>
                         <h3>Stores</h3>
                         <p>Manage your coffee shop locations</p>
-                        <button class="btn btn-primary" onclick="openStoreModal()">
+                        <button class="btn btn-primary btn-sm" onclick="openStoreModal()">
                             <span class="material-icons-round">add_business</span>
-                            Add New Store
+                            Add Store
                         </button>
                         <div class="stores-list" id="storesList">
                             <div class="store-list-header">
-                                <span class="stores-count">Locations (1)</span>
-                            </div>
-                            <div class="store-item">
-                                <div class="store-item-icon">
-                                    <span class="material-icons-round">store</span>
-                                </div>
-                                <div class="store-item-info">
-                                    <span class="store-item-name">C.R.E.A.M. Paspatur</span>
-                                    <span class="store-item-address">Cumhuriyet Mah 38. Sokak No:4</span>
-                                    <span class="store-item-manager">
-                                        <span class="material-icons-round">person</span>
-                                        Ece Diler Türedi
-                                    </span>
-                                    <span class="store-item-phone">
-                                        <span class="material-icons-round">phone</span>
-                                        05336892009
-                                    </span>
-                                </div>
-                                <div class="store-actions">
-                                    <button class="btn-edit-store" onclick="editStore(1)" title="Edit store">
-                                        <span class="material-icons-round">edit</span>
-                                    </button>
-                                    <button class="btn-delete-store" onclick="deleteStore(1)" title="Delete store">
-                                        <span class="material-icons-round">delete</span>
-                                    </button>
-                                </div>
+                                <span class="stores-count">Loading...</span>
                             </div>
                         </div>
                     </div>
@@ -378,24 +370,11 @@
                         </div>
                         <h3>QR Codes</h3>
                         <p>View survey QR codes for members</p>
-                        <button class="btn btn-primary" onclick="openQRCodesModal()">View QR Codes</button>
-                    </div>
-
-                    <!-- System Monitoring Card -->
-                    <div class="card settings-card">
-                        <div class="settings-icon">
-                            <span class="material-icons-round">monitor_heart</span>
-                        </div>
-                        <h3>System Monitoring</h3>
-                        <p>Real-time health and performance metrics</p>
-                        <button class="btn btn-primary" onclick="openMonitoringModal()">
-                            <span class="material-icons-round">dashboard</span>
-                            View Dashboard
-                        </button>
+                        <button class="btn btn-primary btn-sm" onclick="openQRCodesModal()">View QR Codes</button>
                     </div>
                 </div>
 
-                <!-- Right Column: Users + Stamp Card Settings -->
+                <!-- Right Column: Users -->
                 <div class="settings-column">
                     <div class="card settings-card users-section">
                         <div class="settings-icon">
@@ -403,58 +382,14 @@
                         </div>
                         <h3>Users</h3>
                         <p>Manage staff accounts (Owners & Baristas)</p>
-                        <button class="btn btn-primary" onclick="openUserModal()">
+                        <button class="btn btn-primary btn-sm" onclick="openUserModal()">
                             <span class="material-icons-round">person_add</span>
                             Add User
                         </button>
                         <div class="users-list" id="usersList">
                             <div class="user-list-header">
-                                <span class="users-count">Staff Members (2)</span>
+                                <span class="users-count">Loading...</span>
                             </div>
-                            <div class="user-item">
-                                <div class="user-item-avatar owner">AM</div>
-                                <div class="user-item-info">
-                                    <span class="user-item-name">Admin Manager</span>
-                                    <span class="user-item-email">admin@creamcoffee.com</span>
-                                </div>
-                                <span class="user-type-badge owner">Owner</span>
-                                <div class="user-actions">
-                                    <button class="btn-edit-user" onclick="editUser(1)" title="Edit user">
-                                        <span class="material-icons-round">edit</span>
-                                    </button>
-                                    <button class="btn-delete-user" onclick="deleteUser(1)" title="Delete user">
-                                        <span class="material-icons-round">delete</span>
-                                    </button>
-                                </div>
-                            </div>
-                            <div class="user-item">
-                                <div class="user-item-avatar barista">JD</div>
-                                <div class="user-item-info">
-                                    <span class="user-item-name">John Doe</span>
-                                    <span class="user-item-email">john@creamcoffee.com</span>
-                                </div>
-                                <span class="user-type-badge barista">Barista</span>
-                                <div class="user-actions">
-                                    <button class="btn-edit-user" onclick="editUser(2)" title="Edit user">
-                                        <span class="material-icons-round">edit</span>
-                                    </button>
-                                    <button class="btn-delete-user" onclick="deleteUser(2)" title="Delete user">
-                                        <span class="material-icons-round">delete</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card settings-card">
-                        <div class="settings-icon">
-                            <span class="material-icons-round">local_cafe</span>
-                        </div>
-                        <h3>Stamp Card Settings</h3>
-                        <p>Configure stamps required for rewards</p>
-                        <div class="setting-row">
-                            <label>Stamps for free drink:</label>
-                            <input type="number" class="form-input small" value="6" min="1" max="20">
                         </div>
                     </div>
                 </div>

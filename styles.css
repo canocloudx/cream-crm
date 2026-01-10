@@ -3768,3 +3768,46 @@ input[type="radio"] {
     }
 }
 
+
+/* ============================================
+   SETTINGS PAGE - COMPACT BUTTONS & LAYOUT
+   ============================================ */
+
+.btn-sm {
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    gap: 6px !important;
+}
+
+.btn-sm .material-icons-round {
+    font-size: 18px !important;
+}
+
+.monitoring-card-top {
+    background: linear-gradient(135deg, var(--glass-bg), rgba(0, 255, 255, 0.05));
+    border: 1px solid rgba(0, 255, 255, 0.2);
+}
+
+.monitoring-top-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.monitoring-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .monitoring-top-content {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .monitoring-info {
+        flex-direction: column;
+    }
+}

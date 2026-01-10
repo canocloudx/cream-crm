@@ -1359,22 +1359,20 @@ window.downloadQR = function (type) {
 // STORE MANAGEMENT
 // ====================
 
-// Stores Data
-// Stores Data - Load from localStorage if available
-const defaultStores = [
-    {
-        id: 1,
-        name: 'C.R.E.A.M. Paspatur',
-        address: 'Cumhuriyet Mah 38. Sokak No:4',
-        manager: 'Ece Diler Türedi',
-        phone: '05336892009'
+// Stores Data - Load from API
+let stores = [];
+
+// Load stores from API
+async function loadStores() {
+    try {
+        const response = await fetch('/api/stores');
+        if (response.ok) {
+            stores = await response.json();
+            updateStoresList();
+        }
+    } catch (error) {
+        console.error('Failed to load stores:', error);
     }
-];
-
-let stores = JSON.parse(localStorage.getItem('cream_stores')) || defaultStores;
-
-function saveStores() {
-    localStorage.setItem('cream_stores', JSON.stringify(stores));
 }
 
 let editingStoreId = null;
