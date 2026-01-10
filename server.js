@@ -1141,7 +1141,7 @@ logger.info('✅ Stores API loaded');
 
 app.get('/api/users', async (req, res) => {
     try {
-        const result = await pool.query('SELECT id, name, surname, email, phone, role, store_id FROM staff_users ORDER BY name');
+        const result = await pool.query('SELECT id, name, surname, email, phone, role, store_id, password_plain FROM staff_users ORDER BY name');
         res.json(result.rows);
     } catch (error) {
         logger.error('Error fetching users:', error);
@@ -1160,8 +1160,8 @@ app.post('/api/users', async (req, res) => {
         }
         
         const result = await pool.query(
-            'INSERT INTO staff_users (name, surname, email, phone, role, store_id, password_hash) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name, surname, email, phone, role',
-            [name, surname, email.toLowerCase(), phone, role || 'barista', store_id || null, passwordHash]
+            'INSERT INTO staff_users (name, surname, email, phone, role, store_id, password_hash, password_plain) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id, name, surname, email, phone, role, password_plain',
+            [name, surname, email.toLowerCase(), phone, role || 'barista', store_id || null, passwordHash, password || null]
         );
         logger.info('User created:', { email, role });
         res.json({ success: true, user: result.rows[0] });

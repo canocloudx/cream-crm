@@ -3887,3 +3887,13 @@ input[type="radio"] {
 .user-item:hover .user-item-email {
     text-shadow: 0 0 8px rgba(0, 255, 255, 0.5);
 }
+
+/* User password display */
+.user-item-password {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: var(--text-light);
+    font-family: monospace;
+}
