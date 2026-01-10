@@ -1214,6 +1214,22 @@ window.editUser = function (id) {
     document.getElementById('userModalOverlay')?.classList.remove('hidden');
 };
 
+
+// Load users from database
+async function loadUsers() {
+    try {
+        const response = await fetch('/api/users');
+        const users = await response.json();
+        staffUsers = users;
+        updateUsersList();
+    } catch (error) {
+        console.error('Error loading users:', error);
+    }
+}
+
+// Make loadUsers globally accessible
+window.loadUsers = loadUsers;
+
 // Modified Add User to handle both add and edit - NOW USES API
 window.addUser = async function (event) {
     event.preventDefault();
