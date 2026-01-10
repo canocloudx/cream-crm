@@ -275,9 +275,9 @@ window.viewMember = function (id) {
     const member = members.find(m => m.id === id);
     if (!member) return;
 
-    const initials = member.name.split(' ').map(n => n[0]).join('');
+    const initials = user.name.split(' ').map(n => n[0]).join('');
 
-    openModal(`${member.name}`, `
+    openModal(`${user.name}`, `
         <div class="member-detail">
             <div class="member-header">
                 <div class="customer-avatar-large">${initials}</div>
@@ -420,9 +420,9 @@ window.addStampToMember = async function (id) {
             updateMemberRow(member);
 
             if (result.member.stamps === 0 && originalStamps > 0) {
-                showToast("success", "🎉 Reward Earned!", `${member.name} earned a free drink!`);
+                showToast("success", "🎉 Reward Earned!", `${user.name} earned a free drink!`);
             } else {
-                showToast("success", "Stamp Added", `${member.name} now has ${result.member.stamps}/6 stamps`);
+                showToast("success", "Stamp Added", `${user.name} now has ${result.member.stamps}/6 stamps`);
             }
             // CRITICAL: NO TABLE RELOAD
         } else {
@@ -456,7 +456,7 @@ window.redeemReward = async function (id) {
     const originalRewards = member.availableRewards;
     member.availableRewards = originalRewards - 1;
     updateMemberRow(member);
-    showToast('success', 'Reward Redeemed', `Free drink applied for ${member.name}!`);
+    showToast('success', 'Reward Redeemed', `Free drink applied for ${user.name}!`);
 
     try {
         const response = await fetch(`/api/members/${member.memberId}/redeem`, {
@@ -909,11 +909,11 @@ window.openMessageToMember = function (id) {
     const member = members.find(m => m.id === id);
     if (!member) return;
 
-    openModal(`Message ${member.name}`, `
+    openModal(`Message ${user.name}`, `
         <div class="member-message-form">
             <div class="message-recipient">
                 <span class="material-icons-round">person</span>
-                <span>Sending to: <strong>${member.name}</strong> (${member.memberId})</span>
+                <span>Sending to: <strong>${user.name}</strong> (${member.memberId})</span>
             </div>
             
             <div class="form-group">
@@ -993,7 +993,7 @@ window.sendMessageToMember = async function (id) {
         }
 
         closeModal();
-        showToast('success', 'Message Sent!', `Message delivered to ${member.name}`);
+        showToast('success', 'Message Sent!', `Message delivered to ${user.name}`);
     } catch (error) {
         console.error('Message send error:', error);
         showToast('error', 'Send Failed', 'Could not send message. Please try again.');
@@ -2337,13 +2337,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Check if member is logged in
 function checkMemberSession() {
-    const memberData = localStorage.getItem('memberSession');
+    const memberData = localStorage.getItem('staffSession');
     if (memberData) {
         try {
             const member = JSON.parse(memberData);
             updateMemberUI(member);
         } catch (e) {
-            localStorage.removeItem('memberSession');
+            localStorage.removeItem('staffSession');
         }
     }
 }
@@ -2362,10 +2362,10 @@ function updateMemberUI(member) {
         profileSection.classList.remove('hidden');
         
         // Set avatar initials
-        const initials = member.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
         memberAvatar.textContent = initials;
-        memberDisplayName.textContent = member.name;
-        memberDisplayId.textContent = member.member_id;
+        memberDisplayName.textContent = user.name;
+        memberDisplayId.textContent = user.email;
     } else {
         // Show logged-out state
         loginSection.classList.remove('hidden');
@@ -2397,7 +2397,7 @@ async function handleMemberLogin(event) {
     const errorText = document.getElementById('memberLoginErrorText');
     
     try {
-        const response = await fetch('/api/member/login', {
+        const response = await fetch('/api/staff/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -2412,10 +2412,10 @@ async function handleMemberLogin(event) {
         }
         
         // Save session and update UI
-        localStorage.setItem('memberSession', JSON.stringify(data.member));
-        updateMemberUI(data.member);
+        localStorage.setItem('staffSession', JSON.stringify(data.user));
+        updateMemberUI(data.user);
         closeMemberLoginModal();
-        showToast('success', 'Welcome!', `Logged in as ${data.member.name}`);
+        showToast('success', 'Welcome!', `Logged in as ${data.user.name}`);
     } catch (error) {
         errorText.textContent = 'Connection error. Please try again.';
         errorDiv.classList.remove('hidden');
@@ -2424,21 +2424,21 @@ async function handleMemberLogin(event) {
 
 // Open member profile modal
 function openMemberProfileModal() {
-    const memberData = localStorage.getItem('memberSession');
+    const memberData = localStorage.getItem('staffSession');
     if (!memberData) return;
     
     const member = JSON.parse(memberData);
     
     // Populate profile fields
-    const initials = member.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     document.getElementById('profileAvatar').textContent = initials;
-    document.getElementById('profileName').textContent = member.name;
-    document.getElementById('profileMemberId').textContent = member.member_id;
+    document.getElementById('profileName').textContent = user.name;
+    document.getElementById('profileMemberId').textContent = user.email;
     document.getElementById('profileStamps').textContent = member.stamps || 0;
     document.getElementById('profileRewards').textContent = member.available_rewards || 0;
     
     // Populate form fields
-    document.getElementById('profileEditName').value = member.name || '';
+    document.getElementById('profileEditName').value = user.name || '';
     document.getElementById('profileEditPhone').value = member.phone || '';
     document.getElementById('profileEditBirthday').value = member.birthday ? member.birthday.split('T')[0] : '';
     document.getElementById('profileEditGender').value = member.gender || '';
@@ -2456,7 +2456,7 @@ function closeMemberProfileModal() {
 async function handleMemberProfileUpdate(event) {
     event.preventDefault();
     
-    const memberData = localStorage.getItem('memberSession');
+    const memberData = localStorage.getItem('staffSession');
     if (!memberData) return;
     
     const member = JSON.parse(memberData);
@@ -2469,7 +2469,7 @@ async function handleMemberProfileUpdate(event) {
     };
     
     try {
-        const response = await fetch(`/api/member/profile/${member.member_id}`, {
+        const response = await fetch(`/api/member/profile/${user.email}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updatedData)
@@ -2483,8 +2483,8 @@ async function handleMemberProfileUpdate(event) {
         }
         
         // Update session with new data
-        const updatedMember = { ...member, ...data.member };
-        localStorage.setItem('memberSession', JSON.stringify(updatedMember));
+        const updatedMember = { ...member, ...data.user };
+        localStorage.setItem('staffSession', JSON.stringify(updatedMember));
         updateMemberUI(updatedMember);
         
         closeMemberProfileModal();
@@ -2496,7 +2496,7 @@ async function handleMemberProfileUpdate(event) {
 
 // Handle member logout
 function handleMemberLogout() {
-    localStorage.removeItem('memberSession');
+    localStorage.removeItem('staffSession');
     updateMemberUI(null);
     closeMemberProfileModal();
     showToast('info', 'Logged Out', 'You have been logged out');
@@ -2534,7 +2534,7 @@ async function handleSetPassword(event) {
     }
     
     try {
-        const response = await fetch('/api/member/set-password', {
+        const response = await fetch('/api/staff/set-password', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })

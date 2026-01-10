@@ -560,6 +560,95 @@ app.post('/api/member/set-password', async (req, res) => {
 
 logger.info('🔐 Member authentication API loaded');
 
+// ============================================
+// STAFF LOGIN API
+// ============================================
+
+/**
+ * @swagger
+ * /staff/login:
+ *   post:
+ *     summary: Staff/Admin login
+ *     tags: [Staff Auth]
+ */
+app.post('/api/staff/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+        
+        const result = await pool.query(
+            'SELECT * FROM staff_users WHERE email = $1',
+            [email.toLowerCase()]
+        );
+        
+        if (result.rows.length === 0) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
+        
+        const user = result.rows[0];
+        
+        // Check if password_hash exists
+        if (!user.password_hash) {
+            return res.status(401).json({ error: 'Password not set. Please set your password first.' });
+        }
+        
+        const validPassword = await bcrypt.compare(password, user.password_hash);
+        if (!validPassword) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
+        
+        await pool.query('UPDATE staff_users SET updated_at = NOW() WHERE id = $1', [user.id]);
+        delete user.password_hash;
+        
+        logger.info('Staff logged in:', { userId: user.id, email: user.email, role: user.role });
+        res.json({ success: true, user });
+    } catch (error) {
+        logger.error('Staff login error:', error);
+        res.status(500).json({ error: 'Login failed' });
+    }
+});
+
+/**
+ * @swagger
+ * /staff/set-password:
+ *   post:
+ *     summary: Set or update staff password
+ *     tags: [Staff Auth]
+ */
+app.post('/api/staff/set-password', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+        
+        if (password.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters' });
+        }
+        
+        const user = await pool.query('SELECT id FROM staff_users WHERE email = $1', [email.toLowerCase()]);
+        if (user.rows.length === 0) {
+            return res.status(404).json({ error: 'User not found. Please add yourself in Settings > Users first.' });
+        }
+        
+        const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+        await pool.query('UPDATE staff_users SET password_hash = $1, updated_at = NOW() WHERE email = $2', [passwordHash, email.toLowerCase()]);
+        
+        logger.info('Staff password set:', email);
+        res.json({ success: true, message: 'Password set successfully' });
+    } catch (error) {
+        logger.error('Set password error:', error);
+        res.status(500).json({ error: 'Failed to set password' });
+    }
+});
+
+logger.info('🔐 Staff authentication API loaded');
+
+
 
 // ============================================
 // TRANSACTIONS API
