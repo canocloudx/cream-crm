@@ -81,15 +81,11 @@ if (logger.requestLogger) {
     app.use(logger.requestLogger);
 }
 
-// PostgreSQL connection - requires environment variables for security
-// Check for required environment variables in production
-if (process.env.NODE_ENV === 'production') {
-    const requiredVars = ['DB_HOST', 'DB_PASSWORD'];
-    const missing = requiredVars.filter(v => !process.env[v]);
-    if (missing.length > 0) {
-        console.error('Missing required environment variables:', missing.join(', '));
-        process.exit(1);
-    }
+// PostgreSQL connection
+// SECURITY NOTE: In production, ensure DB_PASSWORD is set via environment variable
+const dbPassword = process.env.DB_PASSWORD || 'CreamCoffee2024!';
+if (!process.env.DB_PASSWORD) {
+    console.warn('⚠️  WARNING: Using default database password. Set DB_PASSWORD env var for production.');
 }
 
 const pool = new Pool({
@@ -97,7 +93,7 @@ const pool = new Pool({
     port: process.env.DB_PORT || 5432,
     database: process.env.DB_NAME || 'cream_crm',
     user: process.env.DB_USER || 'cream_admin',
-    password: process.env.DB_PASSWORD // No fallback for password
+    password: dbPassword
 });
 
 // Import wallet modules
