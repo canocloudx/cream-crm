@@ -1214,8 +1214,8 @@ window.editUser = function (id) {
     document.getElementById('userModalOverlay')?.classList.remove('hidden');
 };
 
-// Modified Add User to handle both add and edit
-window.addUser = function (event) {
+// Modified Add User to handle both add and edit - NOW USES API
+window.addUser = async function (event) {
     event.preventDefault();
 
     const name = document.getElementById('userName')?.value;
@@ -1236,36 +1236,34 @@ window.addUser = function (event) {
         return;
     }
 
-    if (editingUserId) {
-        // Update existing user
-        const user = staffUsers.find(u => u.id === editingUserId);
-        if (user) {
-            user.name = name;
-            user.surname = surname;
-            user.email = email;
-            user.phone = phone;
-            user.type = type;
-            saveUsers();
+    try {
+        if (editingUserId) {
+            // Update existing user via API
+            const response = await fetch(`/api/users/${editingUserId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, surname, email, phone, role: type })
+            });
+            if (!response.ok) throw new Error('Failed to update user');
             showToast('success', 'User Updated', `${name} ${surname}'s info has been updated`);
+            editingUserId = null;
+        } else {
+            // Create new user via API
+            const response = await fetch('/api/users', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, surname, email, phone, role: type, password })
+            });
+            if (!response.ok) throw new Error('Failed to create user');
+            showToast('success', 'User Added', `${name} ${surname} has been added as ${type === 'owner' ? 'an Owner' : 'a Barista'}`);
         }
-        editingUserId = null;
-    } else {
-        // Create new user
-        const newUser = {
-            id: staffUsers.length > 0 ? Math.max(...staffUsers.map(u => u.id)) + 1 : 1,
-            name: name,
-            surname: surname,
-            email: email,
-            phone: phone,
-            type: type
-        };
-        staffUsers.push(newUser);
-        saveUsers();
-        showToast('success', 'User Added', `${name} ${surname} has been added as ${type === 'owner' ? 'an Owner' : 'a Barista'}`);
+        
+        await loadUsers();
+        closeUserModal();
+    } catch (error) {
+        console.error('User error:', error);
+        showToast('error', 'Error', error.message);
     }
-
-    updateUsersList();
-    closeUserModal();
 };
 
 // Modified closeUserModal to reset state
