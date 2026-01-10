@@ -3811,3 +3811,31 @@ input[type="radio"] {
         flex-direction: column;
     }
 }
+
+/* ============================================
+   BUTTON SPACING - Add margin after text
+   ============================================ */
+
+/* Settings cards - space between description and button */
+.settings-card p + .btn,
+.settings-card p + button {
+    margin-top: 16px;
+}
+
+/* Monitoring card top - space between text and button */
+.monitoring-top-content .btn {
+    margin-left: auto;
+}
+
+/* General button spacing after paragraphs */
+.card p + .btn,
+.card p + button,
+.modal-body p + .btn,
+.modal-body p + button {
+    margin-top: 16px;
+}
+
+/* Form actions spacing */
+.form-actions {
+    margin-top: 20px;
+}
