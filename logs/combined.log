@@ -593,3 +593,47 @@
 {"level":"info","message":"📝 Registration: http://localhost:3000/register.html","service":"cream-crm","timestamp":"2026-01-10 16:35:33","version":"2.1.0"}
 {"level":"info","message":"📚 API Docs: http://localhost:3000/api-docs","service":"cream-crm","timestamp":"2026-01-10 16:35:33","version":"2.1.0"}
 {"level":"info","message":"📊 Metrics: http://localhost:3000/metrics","service":"cream-crm","timestamp":"2026-01-10 16:35:33","version":"2.1.0"}
+{"level":"info","message":"🍎 Apple Wallet web service mounted at /wallet","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"�� API Documentation available at /api-docs","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"📊 Prometheus metrics available at /metrics","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"🔐 Member authentication API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"🔐 Staff authentication API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"✅ Transactions API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"✅ Additional API endpoints loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"🍎 Apple Wallet pass endpoint: /api/pass/:memberId","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"📲 Automatic pass updates enabled!","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"✅ Campaigns API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"✅ Messages API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"✅ Reward History API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"✅ Stores API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"✅ Staff Users API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"✅ Rewards Send API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"✅ Health check endpoint loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"✅ System Monitoring API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"🚀 C.R.E.A.M. CRM Server running on http://localhost:3000","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"📱 QR Code page: http://localhost:3000/qrcode.html","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"📝 Registration: http://localhost:3000/register.html","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"📚 API Docs: http://localhost:3000/api-docs","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"📊 Metrics: http://localhost:3000/metrics","service":"cream-crm","timestamp":"2026-01-10 18:34:04","version":"2.1.0"}
+{"level":"info","message":"🍎 Apple Wallet web service mounted at /wallet","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"�� API Documentation available at /api-docs","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"📊 Prometheus metrics available at /metrics","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"🔐 Member authentication API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"🔐 Staff authentication API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"✅ Transactions API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"✅ Additional API endpoints loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"🍎 Apple Wallet pass endpoint: /api/pass/:memberId","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"📲 Automatic pass updates enabled!","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"✅ Campaigns API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"✅ Messages API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"✅ Reward History API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"✅ Stores API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"✅ Staff Users API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"✅ Rewards Send API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"✅ Health check endpoint loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"✅ System Monitoring API loaded","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"🚀 C.R.E.A.M. CRM Server running on http://localhost:3000","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"📱 QR Code page: http://localhost:3000/qrcode.html","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"📝 Registration: http://localhost:3000/register.html","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"📚 API Docs: http://localhost:3000/api-docs","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}
+{"level":"info","message":"📊 Metrics: http://localhost:3000/metrics","service":"cream-crm","timestamp":"2026-01-10 18:34:54","version":"2.1.0"}

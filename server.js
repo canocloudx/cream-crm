@@ -5,6 +5,26 @@ const path = require('path');
 require('dotenv').config();
 const bcrypt = require('bcrypt');
 const SALT_ROUNDS = 10;
+const rateLimit = require('express-rate-limit');
+const { body, param, validationResult } = require('express-validator');
+
+// Rate limiter for login endpoints - prevent brute force
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // 5 attempts per window
+    message: { error: 'Too many login attempts. Please try again in 15 minutes.' },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
+
+// Input validation helper
+const validate = (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    next();
+};
 
 // ============================================
 // Import monitoring and documentation modules
@@ -61,13 +81,23 @@ if (logger.requestLogger) {
     app.use(logger.requestLogger);
 }
 
-// PostgreSQL connection - uses environment variables or defaults to localhost
+// PostgreSQL connection - requires environment variables for security
+// Check for required environment variables in production
+if (process.env.NODE_ENV === 'production') {
+    const requiredVars = ['DB_HOST', 'DB_PASSWORD'];
+    const missing = requiredVars.filter(v => !process.env[v]);
+    if (missing.length > 0) {
+        console.error('Missing required environment variables:', missing.join(', '));
+        process.exit(1);
+    }
+}
+
 const pool = new Pool({
     host: process.env.DB_HOST || 'localhost',
     port: process.env.DB_PORT || 5432,
     database: process.env.DB_NAME || 'cream_crm',
     user: process.env.DB_USER || 'cream_admin',
-    password: process.env.DB_PASSWORD || 'CreamCoffee2024!'
+    password: process.env.DB_PASSWORD // No fallback for password
 });
 
 // Import wallet modules
@@ -172,7 +202,13 @@ async function logTransaction(memberId, type, data = {}, options = {}) {
  *       500:
  *         $ref: '#/components/responses/ServerError'
  */
-app.post('/api/register', async (req, res) => {
+app.post('/api/register', [
+    body('name').trim().isLength({ min: 1, max: 100 }).withMessage('Name is required (max 100 chars)'),
+    body('email').isEmail().normalizeEmail().withMessage('Valid email required'),
+    body('phone').optional().trim().isLength({ max: 20 }),
+    body('birthday').optional().isISO8601(),
+    body('gender').optional().isIn(['male', 'female', 'other', ''])
+], validate, async (req, res) => {
     try {
         const { name, email, phone, birthday, gender } = req.body;
         const memberId = generateMemberId();
@@ -421,13 +457,12 @@ app.post('/api/members/:memberId/redeem', async (req, res) => {
  *     summary: Member login
  *     tags: [Member Auth]
  */
-app.post('/api/member/login', async (req, res) => {
+app.post('/api/member/login', loginLimiter, [
+    body('email').isEmail().normalizeEmail().withMessage('Valid email required'),
+    body('password').isLength({ min: 1 }).withMessage('Password required')
+], validate, async (req, res) => {
     try {
         const { email, password } = req.body;
-        
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
-        }
         
         const result = await pool.query(
             'SELECT id, member_id, name, email, phone, birthday, gender, stamps, available_rewards, password_hash FROM members WHERE email = $1',
@@ -571,13 +606,12 @@ logger.info('🔐 Member authentication API loaded');
  *     summary: Staff/Admin login
  *     tags: [Staff Auth]
  */
-app.post('/api/staff/login', async (req, res) => {
+app.post('/api/staff/login', loginLimiter, [
+    body('email').isEmail().normalizeEmail().withMessage('Valid email required'),
+    body('password').isLength({ min: 1 }).withMessage('Password required')
+], validate, async (req, res) => {
     try {
         const { email, password } = req.body;
-        
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
-        }
         
         const result = await pool.query(
             'SELECT * FROM staff_users WHERE email = $1',

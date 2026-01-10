@@ -2362,24 +2362,25 @@ function checkMemberSession() {
     }
 }
 
-// Update UI based on member login state
-function updateMemberUI(member) {
+// Update UI based on staff login state
+function updateMemberUI(user) {
     const loginSection = document.getElementById('memberLoginSection');
     const profileSection = document.getElementById('memberProfileSection');
     const memberAvatar = document.getElementById('memberAvatar');
     const memberDisplayName = document.getElementById('memberDisplayName');
     const memberDisplayId = document.getElementById('memberDisplayId');
     
-    if (member) {
+    if (user) {
         // Show logged-in state
         loginSection.classList.add('hidden');
         profileSection.classList.remove('hidden');
         
-        // Set avatar initials
-        const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        // Set avatar initials - safely access name
+        const name = user.name || 'User';
+        const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
         memberAvatar.textContent = initials;
-        memberDisplayName.textContent = user.name;
-        memberDisplayId.textContent = user.email;
+        memberDisplayName.textContent = name;
+        memberDisplayId.textContent = user.email || '';
     } else {
         // Show logged-out state
         loginSection.classList.remove('hidden');
@@ -2441,13 +2442,14 @@ function openMemberProfileModal() {
     const memberData = localStorage.getItem('staffSession');
     if (!memberData) return;
     
-    const member = JSON.parse(memberData);
+    const user = JSON.parse(memberData);
     
     // Populate profile fields
-    const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    const name = user.name || 'User';
+    const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
     document.getElementById('profileAvatar').textContent = initials;
-    document.getElementById('profileName').textContent = user.name;
-    document.getElementById('profileMemberId').textContent = user.email;
+    document.getElementById('profileName').textContent = name;
+    document.getElementById('profileMemberId').textContent = user.email || '';
     document.getElementById('profileStamps').textContent = member.stamps || 0;
     document.getElementById('profileRewards').textContent = member.available_rewards || 0;
     
