@@ -3513,3 +3513,258 @@ input[type="radio"] {
         flex-direction: column;
     }
 }
+
+/* ============================================
+   MEMBER LOGIN & PROFILE STYLES
+   ============================================ */
+
+/* Sidebar Member Login Button */
+.member-login-section {
+    width: 100%;
+}
+
+.member-login-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px 20px;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.15), rgba(255, 0, 255, 0.1));
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    color: var(--neon-cyan);
+    font-weight: 600;
+    transition: var(--transition-glow);
+}
+
+.member-login-btn:hover {
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.25), rgba(255, 0, 255, 0.2));
+    border-color: var(--neon-cyan);
+    box-shadow: var(--glow-cyan);
+    transform: translateY(-2px);
+}
+
+.sidebar.collapsed .member-login-btn .btn-text {
+    display: none;
+}
+
+.sidebar.collapsed .member-login-btn {
+    padding: 12px;
+}
+
+/* Sidebar Logged In State */
+.member-profile-section {
+    width: 100%;
+}
+
+.member-logged-in {
+    cursor: pointer;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    transition: var(--transition);
+    position: relative;
+}
+
+.member-logged-in:hover {
+    background: rgba(0, 255, 255, 0.1);
+}
+
+.member-logged-in .edit-icon {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    color: var(--neon-cyan);
+    font-size: 18px;
+    transition: var(--transition);
+}
+
+.member-logged-in:hover .edit-icon {
+    opacity: 1;
+}
+
+.member-avatar {
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta)) !important;
+    box-shadow: var(--glow-cyan-subtle);
+}
+
+/* Member Login Modal */
+.member-login-modal,
+.member-profile-modal,
+.set-password-modal {
+    max-width: 420px;
+}
+
+.member-login-modal .modal-header h2,
+.member-profile-modal .modal-header h2,
+.set-password-modal .modal-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--neon-cyan);
+}
+
+.member-login-modal .modal-header .material-icons-round,
+.member-profile-modal .modal-header .material-icons-round,
+.set-password-modal .modal-header .material-icons-round {
+    color: var(--neon-cyan);
+}
+
+/* Login Error Message */
+.login-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: rgba(255, 0, 255, 0.15);
+    border: 1px solid rgba(255, 0, 255, 0.3);
+    border-radius: var(--radius-sm);
+    color: var(--neon-magenta);
+    font-size: 13px;
+}
+
+.login-error .material-icons-round {
+    font-size: 18px;
+}
+
+/* Profile Modal Styles */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.05));
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    border: 1px solid rgba(0, 255, 255, 0.15);
+}
+
+.profile-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--neon-cyan), var(--neon-magenta));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--bg-void);
+    box-shadow: var(--glow-cyan);
+}
+
+.profile-info h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.member-id-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    background: rgba(0, 255, 255, 0.15);
+    border: 1px solid rgba(0, 255, 255, 0.3);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--neon-cyan);
+    letter-spacing: 0.5px;
+}
+
+/* Profile Stats */
+.profile-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.profile-stat {
+    text-align: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(0, 255, 255, 0.1);
+}
+
+.profile-stat .stat-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    display: block;
+    text-shadow: var(--glow-cyan);
+}
+
+.profile-stat .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Form Row for Profile */
+.member-profile-modal .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Danger Button (Logout) */
+.btn-danger {
+    background: linear-gradient(135deg, rgba(255, 0, 255, 0.2), rgba(255, 0, 255, 0.1));
+    border: 1px solid rgba(255, 0, 255, 0.3);
+    color: var(--neon-magenta);
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, rgba(255, 0, 255, 0.3), rgba(255, 0, 255, 0.2));
+    box-shadow: var(--glow-magenta);
+}
+
+/* Set Password Modal */
+.set-password-modal .modal-subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* Password Input Wrapper (for toggle button) */
+.password-input-wrapper {
+    position: relative;
+}
+
+.password-input-wrapper .form-input {
+    padding-right: 48px;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 8px;
+    transition: var(--transition);
+}
+
+.password-toggle:hover {
+    color: var(--neon-cyan);
+}
+
+/* Hidden utility class */
+.hidden {
+    display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .member-profile-modal .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .profile-stats {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+

@@ -39,8 +39,8 @@
                 <span class="nav-text">Members</span>
             </a>
             <a href="#" class="nav-item" data-page="campaigns">
-                <span class="material-icons-round">campaign</span>
-                <span class="nav-text">Campaigns</span>
+                <span class="material-icons-round">message</span>
+                <span class="nav-text">Messages</span>
             </a>
             <a href="#" class="nav-item" data-page="settings">
                 <span class="material-icons-round">settings</span>
@@ -48,12 +48,24 @@
             </a>
         </nav>
 
-        <div class="sidebar-footer">
-            <div class="user-info">
-                <div class="user-avatar">AM</div>
-                <div class="user-details">
-                    <span class="user-name">Admin</span>
-                    <span class="user-role">Manager</span>
+                <div class="sidebar-footer">
+            <!-- Logged Out State -->
+            <div class="member-login-section" id="memberLoginSection">
+                <button class="btn btn-outline member-login-btn" onclick="openMemberLoginModal()">
+                    <span class="material-icons-round">login</span>
+                    <span class="btn-text">Member Login</span>
+                </button>
+            </div>
+            
+            <!-- Logged In State (hidden by default) -->
+            <div class="member-profile-section hidden" id="memberProfileSection">
+                <div class="user-info member-logged-in" onclick="openMemberProfileModal()">
+                    <div class="user-avatar member-avatar" id="memberAvatar">--</div>
+                    <div class="user-details">
+                        <span class="user-name" id="memberDisplayName">Member</span>
+                        <span class="user-role" id="memberDisplayId">CREAM-XXXXXX</span>
+                    </div>
+                    <span class="material-icons-round edit-icon">edit</span>
                 </div>
             </div>
         </div>
@@ -151,101 +163,13 @@
         <section class="page" id="page-campaigns">
             <header class="page-header">
                 <div>
-                    <h1>Campaigns</h1>
-                    <p class="subtitle">Manage campaigns, messages, and rewards</p>
+                    <h1>Messages</h1>
+                    <p class="subtitle">Send messages to your members</p>
                 </div>
             </header>
 
-            <!-- Tabs -->
-            <div class="campaign-tabs">
-                <button class="tab-btn active" data-tab="campaigns-tab">
-                    <span class="material-icons-round">campaign</span>
-                    Campaigns
-                </button>
-                <button class="tab-btn" data-tab="messages-tab">
-                    <span class="material-icons-round">message</span>
-                    Messages
-                </button>
-                <button class="tab-btn" data-tab="rewards-tab">
-                    <span class="material-icons-round">card_giftcard</span>
-                    Send Rewards
-                </button>
-            </div>
-
-            <!-- Campaigns Tab -->
-            <div class="tab-content active" id="campaigns-tab">
-                <div class="tab-header">
-                    <h3>Active Campaigns</h3>
-                    <button class="btn btn-primary btn-sm" onclick="openNewCampaignModal()">
-                        <span class="material-icons-round">add</span>
-                        New Campaign
-                    </button>
-                </div>
-                <div class="campaigns-grid" id="campaignsList">
-                    <div class="card campaign-card">
-                        <div class="campaign-header">
-                            <span class="campaign-status active">Active</span>
-                            <span class="material-icons-round">more_vert</span>
-                        </div>
-                        <h3>Double Stamp Weekend</h3>
-                        <p>Earn 2 stamps per visit this weekend only!</p>
-                        <div class="campaign-stats">
-                            <div class="campaign-stat">
-                                <span class="stat-num">1,234</span>
-                                <span class="stat-label">Reached</span>
-                            </div>
-                            <div class="campaign-stat">
-                                <span class="stat-num">45%</span>
-                                <span class="stat-label">Engagement</span>
-                            </div>
-                        </div>
-                        <div class="campaign-dates">Dec 14-15, 2024</div>
-                    </div>
-
-                    <div class="card campaign-card">
-                        <div class="campaign-header">
-                            <span class="campaign-status scheduled">Scheduled</span>
-                            <span class="material-icons-round">more_vert</span>
-                        </div>
-                        <h3>Holiday Special</h3>
-                        <p>Free reward for all members during holidays!</p>
-                        <div class="campaign-stats">
-                            <div class="campaign-stat">
-                                <span class="stat-num">2,847</span>
-                                <span class="stat-label">Target</span>
-                            </div>
-                            <div class="campaign-stat">
-                                <span class="stat-num">--</span>
-                                <span class="stat-label">Engagement</span>
-                            </div>
-                        </div>
-                        <div class="campaign-dates">Dec 24-26, 2024</div>
-                    </div>
-
-                    <div class="card campaign-card">
-                        <div class="campaign-header">
-                            <span class="campaign-status completed">Completed</span>
-                            <span class="material-icons-round">more_vert</span>
-                        </div>
-                        <h3>Welcome Bonus</h3>
-                        <p>New members get 1 free stamp on signup</p>
-                        <div class="campaign-stats">
-                            <div class="campaign-stat">
-                                <span class="stat-num">523</span>
-                                <span class="stat-label">New Members</span>
-                            </div>
-                            <div class="campaign-stat">
-                                <span class="stat-num">89%</span>
-                                <span class="stat-label">Conversion</span>
-                            </div>
-                        </div>
-                        <div class="campaign-dates">Nov 1-30, 2024</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Messages Tab -->
-            <div class="tab-content" id="messages-tab">
+            <!-- Messages Section -->
+            <div class="messages-section" id="messages-section">
                 <div class="messages-layout">
                     <!-- Compose Message -->
                     <div class="card compose-card">
@@ -349,108 +273,6 @@
                 </div>
             </div>
 
-            <!-- Send Rewards Tab -->
-            <div class="tab-content" id="rewards-tab">
-                <div class="rewards-layout">
-                    <!-- Send Reward Form -->
-                    <div class="card send-reward-card">
-                        <h3>
-                            <span class="material-icons-round">card_giftcard</span>
-                            Send Rewards
-                        </h3>
-
-                        <div class="form-group">
-                            <label>Reward Type</label>
-                            <select class="form-input" id="rewardType">
-                                <option value="free_drink">🎉 Free Drink</option>
-                                <option value="bonus_stamp">☕ Bonus Stamp</option>
-                                <option value="double_stamps">⭐ Double Stamps (Next Visit)</option>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Recipients</label>
-                            <div class="recipient-options">
-                                <label class="radio-option">
-                                    <input type="radio" name="rewardRecipient" value="all" checked
-                                        onchange="toggleRewardRecipientSelect()">
-                                    <span class="radio-label">All Members (2,847)</span>
-                                </label>
-                                <label class="radio-option">
-                                    <input type="radio" name="rewardRecipient" value="specific"
-                                        onchange="toggleRewardRecipientSelect()">
-                                    <span class="radio-label">Specific Member</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div class="form-group member-select-group" id="rewardMemberSelectGroup" style="display: none;">
-                            <label>Search Member</label>
-                            <div class="member-search-container">
-                                <span class="material-icons-round search-icon">search</span>
-                                <input type="text" class="form-input member-search" id="rewardMemberSearch" 
-                                    placeholder="Type member name..." autocomplete="off"
-                                    oninput="filterMembers(this, 'rewardMemberSuggestions')">
-                                <input type="hidden" id="rewardMemberSelect" value="">
-                                <div class="member-suggestions" id="rewardMemberSuggestions"></div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label>Reason (Optional)</label>
-                            <input type="text" class="form-input" id="rewardReason"
-                                placeholder="e.g., Birthday reward, Loyal customer appreciation">
-                        </div>
-
-                        <div class="reward-preview">
-                            <div class="reward-preview-icon">🎉</div>
-                            <div class="reward-preview-text">
-                                <strong>Free Drink</strong>
-                                <span>Will be added to 2,847 members</span>
-                            </div>
-                        </div>
-
-                        <div class="form-actions">
-                            <button class="btn btn-primary btn-lg" onclick="sendReward()">
-                                <span class="material-icons-round">send</span>
-                                Send Reward
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Reward History -->
-                    <div class="card reward-history-card">
-                        <h3>
-                            <span class="material-icons-round">history</span>
-                            Reward History
-                        </h3>
-                        <div class="reward-history-list" id="rewardHistoryList">
-                            <div class="reward-history-item">
-                                <div class="reward-history-icon">🎉</div>
-                                <div class="reward-history-info">
-                                    <span class="reward-history-title">Free Drink to All Members</span>
-                                    <span class="reward-history-meta">Holiday Special • Dec 1, 2024</span>
-                                </div>
-                                <span class="reward-history-count">2,654 sent</span>
-                            </div>
-                            <div class="reward-history-item">
-                                <div class="reward-history-icon">☕</div>
-                                <div class="reward-history-info">
-                                    <span class="reward-history-title">Bonus Stamp to David Kim</span>
-                                    <span class="reward-history-meta">Birthday Reward • Nov 28, 2024</span>
-                                </div>
-                                <span class="reward-history-count">1 sent</span>
-                            </div>
-                            <div class="reward-history-item">
-                                <div class="reward-history-icon">⭐</div>
-                                <div class="reward-history-info">
-                                    <span class="reward-history-title">Double Stamps to All Members</span>
-                                    <span class="reward-history-meta">Black Friday • Nov 24, 2024</span>
-                                </div>
-                                <span class="reward-history-count">2,432 sent</span>
-                            </div>
-                        </div>
-            </div>
         </section>
         <!-- Transactions Page -->
         <section class="page" id="page-transactions">
@@ -649,6 +471,159 @@
                 </button>
             </div>
             <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Member Login Modal -->
+    <div class="modal-overlay hidden" id="memberLoginModalOverlay">
+        <div class="modal member-login-modal">
+            <div class="modal-header">
+                <h2><span class="material-icons-round">login</span> Member Login</h2>
+                <button class="modal-close" onclick="closeMemberLoginModal()">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="memberLoginForm" onsubmit="handleMemberLogin(event)">
+                    <div class="form-group">
+                        <label for="memberLoginEmail">Email</label>
+                        <input type="email" class="form-input" id="memberLoginEmail" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="memberLoginPassword">Password</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" class="form-input" id="memberLoginPassword" placeholder="Enter your password" required>
+                            <button type="button" class="password-toggle" onclick="toggleMemberPasswordVisibility('memberLoginPassword')">
+                                <span class="material-icons-round">visibility_off</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group login-error hidden" id="memberLoginError">
+                        <span class="material-icons-round">error</span>
+                        <span id="memberLoginErrorText">Invalid credentials</span>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="openSetPasswordModal()">Set Password</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-icons-round">login</span>
+                            Login
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Member Profile Modal -->
+    <div class="modal-overlay hidden" id="memberProfileModalOverlay">
+        <div class="modal member-profile-modal">
+            <div class="modal-header">
+                <h2><span class="material-icons-round">person</span> My Profile</h2>
+                <button class="modal-close" onclick="closeMemberProfileModal()">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="profile-header">
+                    <div class="profile-avatar" id="profileAvatar">--</div>
+                    <div class="profile-info">
+                        <h3 id="profileName">Member Name</h3>
+                        <span class="member-id-badge" id="profileMemberId">CREAM-XXXXXX</span>
+                    </div>
+                </div>
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <span class="stat-value" id="profileStamps">0</span>
+                        <span class="stat-label">Stamps</span>
+                    </div>
+                    <div class="profile-stat">
+                        <span class="stat-value" id="profileRewards">0</span>
+                        <span class="stat-label">Rewards</span>
+                    </div>
+                </div>
+                <form id="memberProfileForm" onsubmit="handleMemberProfileUpdate(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profileEditName">Name</label>
+                            <input type="text" class="form-input" id="profileEditName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profileEditPhone">Phone</label>
+                            <input type="tel" class="form-input" id="profileEditPhone">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profileEditBirthday">Birthday</label>
+                            <input type="date" class="form-input" id="profileEditBirthday">
+                        </div>
+                        <div class="form-group">
+                            <label for="profileEditGender">Gender</label>
+                            <select class="form-input" id="profileEditGender">
+                                <option value="">Select...</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                                <option value="prefer_not_to_say">Prefer not to say</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" class="form-input" id="profileEditEmail" disabled>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-danger" onclick="handleMemberLogout()">
+                            <span class="material-icons-round">logout</span>
+                            Logout
+                        </button>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-icons-round">save</span>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Set Password Modal -->
+    <div class="modal-overlay hidden" id="setPasswordModalOverlay">
+        <div class="modal set-password-modal">
+            <div class="modal-header">
+                <h2><span class="material-icons-round">lock</span> Set Password</h2>
+                <button class="modal-close" onclick="closeSetPasswordModal()">
+                    <span class="material-icons-round">close</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-subtitle">Enter your registered email to set or reset your password.</p>
+                <form id="setPasswordForm" onsubmit="handleSetPassword(event)">
+                    <div class="form-group">
+                        <label for="setPasswordEmail">Email</label>
+                        <input type="email" class="form-input" id="setPasswordEmail" placeholder="Enter your registered email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="setPasswordNew">New Password</label>
+                        <input type="password" class="form-input" id="setPasswordNew" placeholder="Min 6 characters" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="setPasswordConfirm">Confirm Password</label>
+                        <input type="password" class="form-input" id="setPasswordConfirm" placeholder="Confirm password" required minlength="6">
+                    </div>
+                    <div class="form-group login-error hidden" id="setPasswordError">
+                        <span class="material-icons-round">error</span>
+                        <span id="setPasswordErrorText">Error</span>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeSetPasswordModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-icons-round">lock</span>
+                            Set Password
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 

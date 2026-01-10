@@ -20,7 +20,14 @@
     "type": "git",
     "url": "git+https://github.com/canocloudx/cream-crm.git"
   },
-  "keywords": ["crm", "loyalty", "coffee", "rewards", "apple-wallet", "saas"],
+  "keywords": [
+    "crm",
+    "loyalty",
+    "coffee",
+    "rewards",
+    "apple-wallet",
+    "saas"
+  ],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
@@ -32,6 +39,7 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^5.2.1",

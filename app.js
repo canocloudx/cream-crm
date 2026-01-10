@@ -2317,3 +2317,250 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ==================== 
+// MEMBER LOGIN & PROFILE SYSTEM
+// ====================
+
+// Check for existing member session on page load
+document.addEventListener('DOMContentLoaded', () => {
+    checkMemberSession();
+});
+
+// Check if member is logged in
+function checkMemberSession() {
+    const memberData = localStorage.getItem('memberSession');
+    if (memberData) {
+        try {
+            const member = JSON.parse(memberData);
+            updateMemberUI(member);
+        } catch (e) {
+            localStorage.removeItem('memberSession');
+        }
+    }
+}
+
+// Update UI based on member login state
+function updateMemberUI(member) {
+    const loginSection = document.getElementById('memberLoginSection');
+    const profileSection = document.getElementById('memberProfileSection');
+    const memberAvatar = document.getElementById('memberAvatar');
+    const memberDisplayName = document.getElementById('memberDisplayName');
+    const memberDisplayId = document.getElementById('memberDisplayId');
+    
+    if (member) {
+        // Show logged-in state
+        loginSection.classList.add('hidden');
+        profileSection.classList.remove('hidden');
+        
+        // Set avatar initials
+        const initials = member.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+        memberAvatar.textContent = initials;
+        memberDisplayName.textContent = member.name;
+        memberDisplayId.textContent = member.member_id;
+    } else {
+        // Show logged-out state
+        loginSection.classList.remove('hidden');
+        profileSection.classList.add('hidden');
+    }
+}
+
+// Open member login modal
+function openMemberLoginModal() {
+    document.getElementById('memberLoginModalOverlay').classList.remove('hidden');
+    document.getElementById('memberLoginEmail').focus();
+    // Clear any previous errors
+    document.getElementById('memberLoginError').classList.add('hidden');
+}
+
+// Close member login modal
+function closeMemberLoginModal() {
+    document.getElementById('memberLoginModalOverlay').classList.add('hidden');
+    document.getElementById('memberLoginForm').reset();
+}
+
+// Handle member login
+async function handleMemberLogin(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('memberLoginEmail').value;
+    const password = document.getElementById('memberLoginPassword').value;
+    const errorDiv = document.getElementById('memberLoginError');
+    const errorText = document.getElementById('memberLoginErrorText');
+    
+    try {
+        const response = await fetch('/api/member/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            errorText.textContent = data.error || 'Login failed';
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+        
+        // Save session and update UI
+        localStorage.setItem('memberSession', JSON.stringify(data.member));
+        updateMemberUI(data.member);
+        closeMemberLoginModal();
+        showToast('success', 'Welcome!', `Logged in as ${data.member.name}`);
+    } catch (error) {
+        errorText.textContent = 'Connection error. Please try again.';
+        errorDiv.classList.remove('hidden');
+    }
+}
+
+// Open member profile modal
+function openMemberProfileModal() {
+    const memberData = localStorage.getItem('memberSession');
+    if (!memberData) return;
+    
+    const member = JSON.parse(memberData);
+    
+    // Populate profile fields
+    const initials = member.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    document.getElementById('profileAvatar').textContent = initials;
+    document.getElementById('profileName').textContent = member.name;
+    document.getElementById('profileMemberId').textContent = member.member_id;
+    document.getElementById('profileStamps').textContent = member.stamps || 0;
+    document.getElementById('profileRewards').textContent = member.available_rewards || 0;
+    
+    // Populate form fields
+    document.getElementById('profileEditName').value = member.name || '';
+    document.getElementById('profileEditPhone').value = member.phone || '';
+    document.getElementById('profileEditBirthday').value = member.birthday ? member.birthday.split('T')[0] : '';
+    document.getElementById('profileEditGender').value = member.gender || '';
+    document.getElementById('profileEditEmail').value = member.email || '';
+    
+    document.getElementById('memberProfileModalOverlay').classList.remove('hidden');
+}
+
+// Close member profile modal
+function closeMemberProfileModal() {
+    document.getElementById('memberProfileModalOverlay').classList.add('hidden');
+}
+
+// Handle member profile update
+async function handleMemberProfileUpdate(event) {
+    event.preventDefault();
+    
+    const memberData = localStorage.getItem('memberSession');
+    if (!memberData) return;
+    
+    const member = JSON.parse(memberData);
+    
+    const updatedData = {
+        name: document.getElementById('profileEditName').value,
+        phone: document.getElementById('profileEditPhone').value || null,
+        birthday: document.getElementById('profileEditBirthday').value || null,
+        gender: document.getElementById('profileEditGender').value || null
+    };
+    
+    try {
+        const response = await fetch(`/api/member/profile/${member.member_id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedData)
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            showToast('error', 'Error', data.error || 'Failed to update profile');
+            return;
+        }
+        
+        // Update session with new data
+        const updatedMember = { ...member, ...data.member };
+        localStorage.setItem('memberSession', JSON.stringify(updatedMember));
+        updateMemberUI(updatedMember);
+        
+        closeMemberProfileModal();
+        showToast('success', 'Profile Updated', 'Your changes have been saved');
+    } catch (error) {
+        showToast('error', 'Error', 'Connection error. Please try again.');
+    }
+}
+
+// Handle member logout
+function handleMemberLogout() {
+    localStorage.removeItem('memberSession');
+    updateMemberUI(null);
+    closeMemberProfileModal();
+    showToast('info', 'Logged Out', 'You have been logged out');
+}
+
+// Open set password modal
+function openSetPasswordModal() {
+    closeMemberLoginModal();
+    document.getElementById('setPasswordModalOverlay').classList.remove('hidden');
+    document.getElementById('setPasswordEmail').focus();
+    document.getElementById('setPasswordError').classList.add('hidden');
+}
+
+// Close set password modal
+function closeSetPasswordModal() {
+    document.getElementById('setPasswordModalOverlay').classList.add('hidden');
+    document.getElementById('setPasswordForm').reset();
+}
+
+// Handle set password
+async function handleSetPassword(event) {
+    event.preventDefault();
+    
+    const email = document.getElementById('setPasswordEmail').value;
+    const password = document.getElementById('setPasswordNew').value;
+    const confirmPassword = document.getElementById('setPasswordConfirm').value;
+    const errorDiv = document.getElementById('setPasswordError');
+    const errorText = document.getElementById('setPasswordErrorText');
+    
+    // Validate passwords match
+    if (password !== confirmPassword) {
+        errorText.textContent = 'Passwords do not match';
+        errorDiv.classList.remove('hidden');
+        return;
+    }
+    
+    try {
+        const response = await fetch('/api/member/set-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+            errorText.textContent = data.error || 'Failed to set password';
+            errorDiv.classList.remove('hidden');
+            return;
+        }
+        
+        closeSetPasswordModal();
+        showToast('success', 'Password Set', 'You can now login with your new password');
+        openMemberLoginModal();
+        document.getElementById('memberLoginEmail').value = email;
+    } catch (error) {
+        errorText.textContent = 'Connection error. Please try again.';
+        errorDiv.classList.remove('hidden');
+    }
+}
+
+// Toggle password visibility for member login
+function toggleMemberPasswordVisibility(inputId) {
+    const input = document.getElementById(inputId);
+    const icon = input.nextElementSibling.querySelector('.material-icons-round');
+    
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.textContent = 'visibility';
+    } else {
+        input.type = 'password';
+        icon.textContent = 'visibility_off';
+    }
+}
+

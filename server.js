@@ -3,6 +3,8 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+const bcrypt = require('bcrypt');
+const SALT_ROUNDS = 10;
 
 // ============================================
 // Import monitoring and documentation modules
@@ -405,6 +407,158 @@ app.post('/api/members/:memberId/redeem', async (req, res) => {
         res.status(500).json({ error: 'Failed to redeem reward' });
     }
 });
+
+
+
+// ============================================
+// MEMBER AUTHENTICATION API
+// ============================================
+
+/**
+ * @swagger
+ * /member/login:
+ *   post:
+ *     summary: Member login
+ *     tags: [Member Auth]
+ */
+app.post('/api/member/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+        
+        const result = await pool.query(
+            'SELECT id, member_id, name, email, phone, birthday, gender, stamps, available_rewards, password_hash FROM members WHERE email = $1',
+            [email.toLowerCase()]
+        );
+        
+        if (result.rows.length === 0) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
+        
+        const member = result.rows[0];
+        
+        if (!member.password_hash) {
+            return res.status(401).json({ error: 'Password not set. Please use set password option.' });
+        }
+        
+        const isValid = await bcrypt.compare(password, member.password_hash);
+        if (!isValid) {
+            return res.status(401).json({ error: 'Invalid email or password' });
+        }
+        
+        await pool.query('UPDATE members SET last_login = NOW() WHERE id = $1', [member.id]);
+        delete member.password_hash;
+        
+        logger.info('Member logged in:', { memberId: member.member_id, email: member.email });
+        res.json({ success: true, member });
+    } catch (error) {
+        logger.error('Member login error:', error);
+        res.status(500).json({ error: 'Login failed' });
+    }
+});
+
+/**
+ * @swagger
+ * /member/profile/{memberId}:
+ *   get:
+ *     summary: Get member profile
+ *     tags: [Member Auth]
+ */
+app.get('/api/member/profile/:memberId', async (req, res) => {
+    try {
+        const { memberId } = req.params;
+        
+        const result = await pool.query(
+            'SELECT id, member_id, name, email, phone, birthday, gender, stamps, available_rewards, total_rewards, created_at FROM members WHERE member_id = $1',
+            [memberId]
+        );
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Member not found' });
+        }
+        
+        res.json(result.rows[0]);
+    } catch (error) {
+        logger.error('Profile fetch error:', error);
+        res.status(500).json({ error: 'Failed to fetch profile' });
+    }
+});
+
+/**
+ * @swagger
+ * /member/profile/{memberId}:
+ *   put:
+ *     summary: Update member profile
+ *     tags: [Member Auth]
+ */
+app.put('/api/member/profile/:memberId', async (req, res) => {
+    try {
+        const { memberId } = req.params;
+        const { name, phone, birthday, gender } = req.body;
+        
+        const result = await pool.query(
+            `UPDATE members SET 
+                name = COALESCE($1, name),
+                phone = COALESCE($2, phone),
+                birthday = COALESCE($3, birthday),
+                gender = COALESCE($4, gender),
+                updated_at = NOW()
+             WHERE member_id = $5
+             RETURNING id, member_id, name, email, phone, birthday, gender, stamps, available_rewards`,
+            [name, phone, birthday, gender, memberId]
+        );
+        
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Member not found' });
+        }
+        
+        logger.info('Member profile updated:', memberId);
+        res.json({ success: true, member: result.rows[0] });
+    } catch (error) {
+        logger.error('Profile update error:', error);
+        res.status(500).json({ error: 'Failed to update profile' });
+    }
+});
+
+/**
+ * @swagger
+ * /member/set-password:
+ *   post:
+ *     summary: Set or update member password
+ *     tags: [Member Auth]
+ */
+app.post('/api/member/set-password', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        
+        if (!email || !password) {
+            return res.status(400).json({ error: 'Email and password are required' });
+        }
+        
+        if (password.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters' });
+        }
+        
+        const member = await pool.query('SELECT id FROM members WHERE email = $1', [email.toLowerCase()]);
+        if (member.rows.length === 0) {
+            return res.status(404).json({ error: 'Member not found' });
+        }
+        
+        const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+        await pool.query('UPDATE members SET password_hash = $1, updated_at = NOW() WHERE email = $2', [passwordHash, email.toLowerCase()]);
+        
+        logger.info('Member password set:', email);
+        res.json({ success: true, message: 'Password set successfully' });
+    } catch (error) {
+        logger.error('Set password error:', error);
+        res.status(500).json({ error: 'Failed to set password' });
+    }
+});
+
+logger.info('🔐 Member authentication API loaded');
 
 
 // ============================================
