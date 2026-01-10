@@ -1152,10 +1152,18 @@ app.get('/api/users', async (req, res) => {
 app.post('/api/users', async (req, res) => {
     try {
         const { name, surname, email, phone, role, store_id, password } = req.body;
+        
+        // Hash the password if provided
+        let passwordHash = null;
+        if (password && password.length >= 6) {
+            passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
+        }
+        
         const result = await pool.query(
             'INSERT INTO staff_users (name, surname, email, phone, role, store_id, password_hash) VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id, name, surname, email, phone, role',
-            [name, surname, email, phone, role || 'barista', store_id || null, password]
+            [name, surname, email.toLowerCase(), phone, role || 'barista', store_id || null, passwordHash]
         );
+        logger.info('User created:', { email, role });
         res.json({ success: true, user: result.rows[0] });
     } catch (error) {
         logger.error('Error creating user:', error);
