@@ -282,7 +282,7 @@
                 try {
                     const user = JSON.parse(session);
                     if (user && user.id) {
-                        window.location.href = '/transactions';
+                        window.location.href = '/index.html#transactions';
                     }
                 } catch (e) {
                     localStorage.removeItem('staffSession');
@@ -323,7 +323,7 @@
                 const data = await response.json();
                 if (data.success && data.user) {
                     localStorage.setItem('staffSession', JSON.stringify(data.user));
-                    window.location.href = '/transactions';
+                    window.location.href = '/index.html#transactions';
                 } else {
                     throw new Error(data.error || 'Invalid credentials');
                 }

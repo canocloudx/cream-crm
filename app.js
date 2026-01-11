@@ -4,29 +4,29 @@
 (function checkAuth() {
     const session = localStorage.getItem('staffSession');
     if (!session) {
-        window.location.href = '/login';
+        window.location.href = '/login.html';
         return;
     }
     try {
         const user = JSON.parse(session);
         if (!user || !user.id) {
             localStorage.removeItem('staffSession');
-            window.location.href = '/login';
+            window.location.href = '/login.html';
             return;
         }
     } catch (e) {
         localStorage.removeItem('staffSession');
-        window.location.href = '/login';
+        window.location.href = '/login.html';
     }
 })();
 
 // URL-based routing
-function getPageFromURL() {
-    const path = window.location.pathname;
+function getPageFromHash() {
+    const hash = window.location.hash.replace("#", "").replace("/", "");
     const validPages = ['transactions', 'members', 'campaigns', 'settings', 'messages'];
     
     // Remove leading slash and get page name
-    const pageName = path.replace(/^\//, '').replace('.html', '');
+    const pageName = hash;
     
     if (validPages.includes(pageName)) {
         return pageName;
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initModals();
     
     // Set page based on URL
-    const initialPage = getPageFromURL();
+    const initialPage = getPageFromHash();
     showPage(initialPage, false); // Don't update URL on initial load
 });
 
@@ -71,8 +71,7 @@ function showPage(pageId, updateURL = true) {
     
     // Update URL without page reload
     if (updateURL) {
-        const newURL = '/' + pageId;
-        window.history.pushState({ page: pageId }, '', newURL);
+        window.location.hash = '#' + pageId;
     }
     
     // Auto-load data based on page
@@ -84,8 +83,8 @@ function showPage(pageId, updateURL = true) {
 }
 
 // Handle browser back/forward buttons
-window.addEventListener('popstate', (event) => {
-    const pageId = event.state?.page || getPageFromURL();
+window.addEventListener('hashchange', (event) => {
+    const pageId = getPageFromHash();
     showPage(pageId, false);
 });
 
