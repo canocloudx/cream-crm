@@ -284,3 +284,107 @@ describe('Frontend Monitoring Page', () => {
     expect(content).toContain('.monitoring-card');
   });
 });
+
+// ============================================
+// AUTHENTICATION & ROUTING TESTS
+// ============================================
+
+describe('Authentication System', () => {
+  test('login.html exists', () => {
+    const loginPath = path.join(__dirname, '..', 'login.html');
+    expect(fs.existsSync(loginPath)).toBe(true);
+  });
+
+  test('login.html contains login form', () => {
+    const loginPath = path.join(__dirname, '..', 'login.html');
+    const content = fs.readFileSync(loginPath, 'utf8');
+    expect(content).toContain('id="loginForm"');
+    expect(content).toContain('id="email"');
+    expect(content).toContain('id="password"');
+  });
+
+  test('login.html contains staff login API call', () => {
+    const loginPath = path.join(__dirname, '..', 'login.html');
+    const content = fs.readFileSync(loginPath, 'utf8');
+    expect(content).toContain('/api/staff/login');
+  });
+
+  test('login.html contains set password functionality', () => {
+    const loginPath = path.join(__dirname, '..', 'login.html');
+    const content = fs.readFileSync(loginPath, 'utf8');
+    expect(content).toContain('setPasswordModal');
+    expect(content).toContain('/api/staff/set-password');
+  });
+
+  test('app.js contains auth check', () => {
+    const appPath = path.join(__dirname, '..', 'app.js');
+    const content = fs.readFileSync(appPath, 'utf8');
+    expect(content).toContain('checkAuth');
+    expect(content).toContain('staffSession');
+    expect(content).toContain('/login.html');
+  });
+
+  test('server.js contains staff login endpoint', () => {
+    const serverPath = path.join(__dirname, '..', 'server.js');
+    const content = fs.readFileSync(serverPath, 'utf8');
+    expect(content).toContain('/api/staff/login');
+    expect(content).toContain('bcrypt.compare');
+  });
+
+  test('server.js contains set-password endpoint', () => {
+    const serverPath = path.join(__dirname, '..', 'server.js');
+    const content = fs.readFileSync(serverPath, 'utf8');
+    expect(content).toContain('/api/staff/set-password');
+  });
+});
+
+describe('Hash-Based Routing', () => {
+  test('app.js contains hash routing function', () => {
+    const appPath = path.join(__dirname, '..', 'app.js');
+    const content = fs.readFileSync(appPath, 'utf8');
+    expect(content).toContain('getPageFromHash');
+    expect(content).toContain('window.location.hash');
+  });
+
+  test('app.js handles hashchange event', () => {
+    const appPath = path.join(__dirname, '..', 'app.js');
+    const content = fs.readFileSync(appPath, 'utf8');
+    expect(content).toContain('hashchange');
+  });
+
+  test('app.js updates hash in showPage', () => {
+    const appPath = path.join(__dirname, '..', 'app.js');
+    const content = fs.readFileSync(appPath, 'utf8');
+    expect(content).toContain("window.location.hash = '#' + pageId");
+  });
+
+  test('login.html redirects to index.html with hash', () => {
+    const loginPath = path.join(__dirname, '..', 'login.html');
+    const content = fs.readFileSync(loginPath, 'utf8');
+    expect(content).toContain('/index.html#');
+  });
+});
+
+describe('SPA Routes in Server', () => {
+  test('server.js contains SPA routes for pages', () => {
+    const serverPath = path.join(__dirname, '..', 'server.js');
+    const content = fs.readFileSync(serverPath, 'utf8');
+    expect(content).toContain('/members');
+    expect(content).toContain('/transactions');
+    expect(content).toContain('/settings');
+  });
+
+  test('server.js contains login route', () => {
+    const serverPath = path.join(__dirname, '..', 'server.js');
+    const content = fs.readFileSync(serverPath, 'utf8');
+    expect(content).toContain("app.get('/login'");
+  });
+});
+
+describe('Sidebar Logo Fix', () => {
+  test('styles.css contains logo collapse rule', () => {
+    const cssPath = path.join(__dirname, '..', 'styles.css');
+    const content = fs.readFileSync(cssPath, 'utf8');
+    expect(content).toContain('.sidebar.collapsed .logo-img');
+  });
+});
