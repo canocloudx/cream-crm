@@ -727,6 +727,32 @@ app.get('/api/transactions', async (req, res) => {
 
 logger.info('✅ Transactions API loaded');
 
+// ============================================
+// SPA ROUTES - Serve index.html for all app pages
+// ============================================
+
+// Define all valid SPA routes
+const spaRoutes = ['/members', '/transactions', '/settings', '/campaigns', '/messages'];
+
+// Handle SPA routes - serve index.html
+spaRoutes.forEach(route => {
+    app.get(route, (req, res) => {
+        res.sendFile(path.join(__dirname, 'index.html'));
+    });
+});
+
+// Login page route
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'login.html'));
+});
+
+// Register page route  
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, 'register.html'));
+});
+
+logger.info('✅ SPA Routes loaded');
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     logger.info(`🚀 C.R.E.A.M. CRM Server running on http://localhost:${PORT}`);
@@ -1443,29 +1469,3 @@ app.get('/api/monitoring', async (req, res) => {
 
 logger.info('✅ System Monitoring API loaded');
 
-
-// ============================================
-// SPA ROUTES - Serve index.html for all app pages
-// ============================================
-
-// Define all valid SPA routes
-const spaRoutes = ['/members', '/transactions', '/settings', '/campaigns', '/messages'];
-
-// Handle SPA routes - serve index.html
-spaRoutes.forEach(route => {
-    app.get(route, (req, res) => {
-        res.sendFile(path.join(__dirname, 'index.html'));
-    });
-});
-
-// Login page route
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'login.html'));
-});
-
-// Register page route  
-app.get('/register', (req, res) => {
-    res.sendFile(path.join(__dirname, 'register.html'));
-});
-
-logger.info('✅ SPA Routes loaded');
