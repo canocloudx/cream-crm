@@ -4,21 +4,37 @@
 (function checkAuth() {
     const session = localStorage.getItem('staffSession');
     if (!session) {
-        window.location.href = '/login.html';
+        window.location.href = '/login';
         return;
     }
     try {
         const user = JSON.parse(session);
         if (!user || !user.id) {
             localStorage.removeItem('staffSession');
-            window.location.href = '/login.html';
+            window.location.href = '/login';
             return;
         }
     } catch (e) {
         localStorage.removeItem('staffSession');
-        window.location.href = '/login.html';
+        window.location.href = '/login';
     }
 })();
+
+// URL-based routing
+function getPageFromURL() {
+    const path = window.location.pathname;
+    const validPages = ['transactions', 'members', 'campaigns', 'settings', 'messages'];
+    
+    // Remove leading slash and get page name
+    const pageName = path.replace(/^\//, '').replace('.html', '');
+    
+    if (validPages.includes(pageName)) {
+        return pageName;
+    }
+    
+    // Default to transactions
+    return 'transactions';
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     initNavigation();
@@ -29,12 +45,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     initCharts();
     initModals();
     
-    // Set Transactions as the default page
-    showPage('transactions');
+    // Set page based on URL
+    const initialPage = getPageFromURL();
+    showPage(initialPage, false); // Don't update URL on initial load
 });
 
 // Helper function to show a page programmatically
-function showPage(pageId) {
+function showPage(pageId, updateURL = true) {
     const navItems = document.querySelectorAll('.nav-item');
     const pages = document.querySelectorAll('.page');
     
@@ -52,6 +69,12 @@ function showPage(pageId) {
         }
     });
     
+    // Update URL without page reload
+    if (updateURL) {
+        const newURL = '/' + pageId;
+        window.history.pushState({ page: pageId }, '', newURL);
+    }
+    
     // Auto-load data based on page
     if (pageId === 'transactions') {
         startTransactionsAutoRefresh();
@@ -59,6 +82,13 @@ function showPage(pageId) {
         stopTransactionsAutoRefresh();
     }
 }
+
+// Handle browser back/forward buttons
+window.addEventListener('popstate', (event) => {
+    const pageId = event.state?.page || getPageFromURL();
+    showPage(pageId, false);
+});
+
 
 // Load stats from API and then initialize counters
 async function loadStatsAndInitCounters() {
@@ -130,30 +160,13 @@ async function loadMembersFromAPI() {
 
 // Navigation
 function initNavigation() {
-    const navItems = document.querySelectorAll('.nav-item');
-    const pages = document.querySelectorAll('.page');
+    const navItems = document.querySelectorAll(".nav-item");
 
     navItems.forEach(item => {
-        item.addEventListener('click', (e) => {
+        item.addEventListener("click", (e) => {
             e.preventDefault();
             const pageId = item.dataset.page;
-
-            navItems.forEach(nav => nav.classList.remove('active'));
-            item.classList.add('active');
-
-            pages.forEach(page => {
-                page.classList.remove('active');
-                if (page.id === `page-${pageId}`) {
-                    page.classList.add('active');
-                }
-            });
-            
-            // Auto-load data based on page
-            if (pageId === 'transactions') {
-                startTransactionsAutoRefresh();
-            } else {
-                stopTransactionsAutoRefresh();
-            }
+            showPage(pageId, true); // Update URL when clicking nav
         });
     });
 }
