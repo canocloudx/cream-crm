@@ -1,4 +1,25 @@
 // C.R.E.A.M. COFFEE CRM - Stamps & Rewards System
+
+// Authentication check - redirect to login if not authenticated
+(function checkAuth() {
+    const session = localStorage.getItem('staffSession');
+    if (!session) {
+        window.location.href = '/login.html';
+        return;
+    }
+    try {
+        const user = JSON.parse(session);
+        if (!user || !user.id) {
+            localStorage.removeItem('staffSession');
+            window.location.href = '/login.html';
+            return;
+        }
+    } catch (e) {
+        localStorage.removeItem('staffSession');
+        window.location.href = '/login.html';
+    }
+})();
+
 document.addEventListener('DOMContentLoaded', async () => {
     initNavigation();
     initSidebar();
@@ -275,9 +296,9 @@ window.viewMember = function (id) {
     const member = members.find(m => m.id === id);
     if (!member) return;
 
-    const initials = user.name.split(' ').map(n => n[0]).join('');
+    const initials = member.name.split(' ').map(n => n[0]).join('');
 
-    openModal(`${user.name}`, `
+    openModal(`${member.name}`, `
         <div class="member-detail">
             <div class="member-header">
                 <div class="customer-avatar-large">${initials}</div>
@@ -420,9 +441,9 @@ window.addStampToMember = async function (id) {
             updateMemberRow(member);
 
             if (result.member.stamps === 0 && originalStamps > 0) {
-                showToast("success", "🎉 Reward Earned!", `${user.name} earned a free drink!`);
+                showToast("success", "🎉 Reward Earned!", `${member.name} earned a free drink!`);
             } else {
-                showToast("success", "Stamp Added", `${user.name} now has ${result.member.stamps}/6 stamps`);
+                showToast("success", "Stamp Added", `${member.name} now has ${result.member.stamps}/6 stamps`);
             }
             // CRITICAL: NO TABLE RELOAD
         } else {
@@ -456,7 +477,7 @@ window.redeemReward = async function (id) {
     const originalRewards = member.availableRewards;
     member.availableRewards = originalRewards - 1;
     updateMemberRow(member);
-    showToast('success', 'Reward Redeemed', `Free drink applied for ${user.name}!`);
+    showToast('success', 'Reward Redeemed', `Free drink applied for ${member.name}!`);
 
     try {
         const response = await fetch(`/api/members/${member.memberId}/redeem`, {
@@ -657,7 +678,7 @@ function showToast(type, title, message) {
 document.addEventListener('DOMContentLoaded', () => {
     initCampaignTabs();
     updateStoresList();
-    updateUsersList();
+    loadUsers();
     populateMemberSelects();
 });
 
@@ -1112,7 +1133,7 @@ const defaultStaffUsers = [
     }
 ];
 
-let staffUsers = JSON.parse(localStorage.getItem('cream_users')) || defaultStaffUsers;
+let staffUsers = []; // Will be loaded from API
 
 function saveUsers() {
     localStorage.setItem('cream_users', JSON.stringify(staffUsers));
@@ -1221,7 +1242,7 @@ async function loadUsers() {
         const response = await fetch('/api/users');
         const users = await response.json();
         staffUsers = users;
-        updateUsersList();
+        loadUsers();
     } catch (error) {
         console.error('Error loading users:', error);
     }
@@ -1315,7 +1336,7 @@ window.deleteUser = function (id) {
     if (confirm(`Are you sure you want to delete ${fullName}?`)) {
         staffUsers.splice(userIndex, 1);
         saveUsers();
-        updateUsersList();
+        loadUsers();
         showToast('success', 'User Deleted', `${fullName} has been removed`);
     }
 };
@@ -1447,7 +1468,7 @@ window.addStore = async function (event) {
         }
         await loadStores();
         updateStoresList();
-        updateUsersList();
+        loadUsers();
         closeStoreModal();
     } catch (error) {
         console.error('Store error:', error);
@@ -1484,7 +1505,7 @@ window.deleteStore = function (id) {
         stores.splice(storeIndex, 1);
         saveStores();
         updateStoresList();
-        updateUsersList();
+        loadUsers();
         showToast('success', 'Store Deleted', `${store.name} has been removed`);
     }
 };

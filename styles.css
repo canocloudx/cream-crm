@@ -3897,3 +3897,29 @@ input[type="radio"] {
     color: var(--text-light);
     font-family: monospace;
 }
+
+/* ============================================= */
+/* SIDEBAR COLLAPSED STATE - LOGO FIX           */
+/* ============================================= */
+
+/* Hide logo image when sidebar is collapsed */
+.sidebar.collapsed .logo-img {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    transition: all 0.25s ease;
+}
+
+/* Ensure smooth transition when expanding */
+.sidebar .logo-img {
+    transition: all 0.25s ease;
+}
+
+/* Also hide logo container padding when collapsed */
+.sidebar.collapsed .logo {
+    padding: 8px;
+    justify-content: center;
+}
