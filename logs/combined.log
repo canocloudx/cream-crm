@@ -659,3 +659,116 @@
 {"level":"info","message":"📝 Registration: http://localhost:3000/register.html","service":"cream-crm","timestamp":"2026-01-10 18:56:01","version":"2.1.0"}
 {"level":"info","message":"📚 API Docs: http://localhost:3000/api-docs","service":"cream-crm","timestamp":"2026-01-10 18:56:01","version":"2.1.0"}
 {"level":"info","message":"📊 Metrics: http://localhost:3000/metrics","service":"cream-crm","timestamp":"2026-01-10 18:56:01","version":"2.1.0"}
+{"level":"info","message":"🍎 Apple Wallet web service mounted at /wallet","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"�� API Documentation available at /api-docs","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"📊 Prometheus metrics available at /metrics","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"🔐 Member authentication API loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"🔐 Staff authentication API loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"✅ Transactions API loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"✅ SPA Routes loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"✅ Additional API endpoints loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"🍎 Apple Wallet pass endpoint: /api/pass/:memberId","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"📲 Automatic pass updates enabled!","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"✅ Campaigns API loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"✅ Messages API loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"✅ Reward History API loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"✅ Stores API loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"✅ Staff Users API loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"✅ Rewards Send API loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"✅ Health check endpoint loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"✅ System Monitoring API loaded","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"🚀 C.R.E.A.M. CRM Server running on http://localhost:3000","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"📱 QR Code page: http://localhost:3000/qrcode.html","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"📝 Registration: http://localhost:3000/register.html","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"📚 API Docs: http://localhost:3000/api-docs","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"level":"info","message":"📊 Metrics: http://localhost:3000/metrics","service":"cream-crm","timestamp":"2026-01-13 19:52:06","version":"2.0.0"}
+{"duration":"7ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login-3d","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:52:13","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"1ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login-3d","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:52:20","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"0ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login-3d","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:52:25","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"1ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:52:31","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"1ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/favicon.ico","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:52:37","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"1ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login-3d","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:52:45","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"1ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login-3d","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:53:03","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"6ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login-3d","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:55:47","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"0ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login-3d","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:55:55","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"2ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:56:07","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"8ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login-3d","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:56:33","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"1ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login","service":"cream-crm","status":404,"timestamp":"2026-01-13 19:58:53","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"level":"info","message":"🍎 Apple Wallet web service mounted at /wallet","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"�� API Documentation available at /api-docs","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"📊 Prometheus metrics available at /metrics","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"🔐 Member authentication API loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"🔐 Staff authentication API loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"✅ Transactions API loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"✅ SPA Routes loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"✅ Additional API endpoints loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"🍎 Apple Wallet pass endpoint: /api/pass/:memberId","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"📲 Automatic pass updates enabled!","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"✅ Campaigns API loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"✅ Messages API loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"✅ Reward History API loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"✅ Stores API loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"✅ Staff Users API loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"✅ Rewards Send API loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"✅ Health check endpoint loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"✅ System Monitoring API loaded","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"🚀 C.R.E.A.M. CRM Server running on http://localhost:3000","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"📱 QR Code page: http://localhost:3000/qrcode.html","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"📝 Registration: http://localhost:3000/register.html","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"📚 API Docs: http://localhost:3000/api-docs","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"level":"info","message":"📊 Metrics: http://localhost:3000/metrics","service":"cream-crm","timestamp":"2026-01-13 20:01:45","version":"2.0.0"}
+{"duration":"14ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login-3d","service":"cream-crm","status":404,"timestamp":"2026-01-13 20:01:51","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"8ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login-3d","service":"cream-crm","status":404,"timestamp":"2026-01-13 20:02:12","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"level":"info","message":"🍎 Apple Wallet web service mounted at /wallet","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"�� API Documentation available at /api-docs","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"📊 Prometheus metrics available at /metrics","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"🔐 Member authentication API loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"🔐 Staff authentication API loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"✅ Transactions API loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"✅ SPA Routes loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"✅ Additional API endpoints loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"🍎 Apple Wallet pass endpoint: /api/pass/:memberId","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"📲 Automatic pass updates enabled!","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"✅ Campaigns API loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"✅ Messages API loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"✅ Reward History API loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"✅ Stores API loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"✅ Staff Users API loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"✅ Rewards Send API loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"✅ Health check endpoint loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"✅ System Monitoring API loaded","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"🚀 C.R.E.A.M. CRM Server running on http://localhost:3000","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"📱 QR Code page: http://localhost:3000/qrcode.html","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"📝 Registration: http://localhost:3000/register.html","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"📚 API Docs: http://localhost:3000/api-docs","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"level":"info","message":"📊 Metrics: http://localhost:3000/metrics","service":"cream-crm","timestamp":"2026-01-13 20:14:45","version":"2.0.0"}
+{"duration":"9ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login","service":"cream-crm","status":404,"timestamp":"2026-01-13 20:14:51","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"2ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login","service":"cream-crm","status":404,"timestamp":"2026-01-13 20:17:15","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"level":"info","message":"🍎 Apple Wallet web service mounted at /wallet","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"�� API Documentation available at /api-docs","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"📊 Prometheus metrics available at /metrics","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"🔐 Member authentication API loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"🔐 Staff authentication API loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"✅ Transactions API loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"✅ SPA Routes loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"✅ Additional API endpoints loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"🍎 Apple Wallet pass endpoint: /api/pass/:memberId","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"📲 Automatic pass updates enabled!","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"✅ Campaigns API loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"✅ Messages API loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"✅ Reward History API loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"✅ Stores API loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"✅ Staff Users API loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"✅ Rewards Send API loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"✅ Health check endpoint loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"✅ System Monitoring API loaded","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"🚀 C.R.E.A.M. CRM Server running on http://localhost:3000","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"📱 QR Code page: http://localhost:3000/qrcode.html","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"📝 Registration: http://localhost:3000/register.html","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"📚 API Docs: http://localhost:3000/api-docs","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"level":"info","message":"📊 Metrics: http://localhost:3000/metrics","service":"cream-crm","timestamp":"2026-01-13 20:19:23","version":"2.0.0"}
+{"duration":"12ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login","service":"cream-crm","status":404,"timestamp":"2026-01-13 20:19:29","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"6ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login","service":"cream-crm","status":404,"timestamp":"2026-01-13 20:19:54","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"1ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login","service":"cream-crm","status":404,"timestamp":"2026-01-13 20:20:20","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"2ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login-3d","service":"cream-crm","status":404,"timestamp":"2026-01-13 20:23:28","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}
+{"duration":"1ms","ip":"::1","level":"info","message":"HTTP Request","method":"GET","path":"/login/","service":"cream-crm","status":404,"timestamp":"2026-01-13 20:32:53","userAgent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36","version":"2.0.0"}

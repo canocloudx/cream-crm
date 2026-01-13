@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/1157</span>
+                <span class='fraction'>0/1156</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/595</span>
+                <span class='fraction'>0/593</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/1063</span>
+                <span class='fraction'>0/1062</span>
             </div>
         
             
@@ -2686,8 +2686,7 @@
 <a name='L2621'></a><a href='#L2621'>2621</a>
 <a name='L2622'></a><a href='#L2622'>2622</a>
 <a name='L2623'></a><a href='#L2623'>2623</a>
-<a name='L2624'></a><a href='#L2624'>2624</a>
-<a name='L2625'></a><a href='#L2625'>2625</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L2624'></a><a href='#L2624'>2624</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -2759,7 +2758,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -5317,29 +5315,29 @@
 <span class="cstat-no" title="statement not covered" >(function <span class="fstat-no" title="function not covered" >checkAuth(</span>) {</span>
     const session = <span class="cstat-no" title="statement not covered" >localStorage.getItem('staffSession');</span>
 <span class="cstat-no" title="statement not covered" >    if (!session) {</span>
-<span class="cstat-no" title="statement not covered" >        window.location.href = '/login';</span>
+<span class="cstat-no" title="statement not covered" >        window.location.href = '/login.html';</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
     }
 <span class="cstat-no" title="statement not covered" >    try {</span>
         const user = <span class="cstat-no" title="statement not covered" >JSON.parse(session);</span>
 <span class="cstat-no" title="statement not covered" >        if (!user || !user.id) {</span>
 <span class="cstat-no" title="statement not covered" >            localStorage.removeItem('staffSession');</span>
-<span class="cstat-no" title="statement not covered" >            window.location.href = '/login';</span>
+<span class="cstat-no" title="statement not covered" >            window.location.href = '/login.html';</span>
 <span class="cstat-no" title="statement not covered" >            return;</span>
         }
     } catch (e) {
 <span class="cstat-no" title="statement not covered" >        localStorage.removeItem('staffSession');</span>
-<span class="cstat-no" title="statement not covered" >        window.location.href = '/login';</span>
+<span class="cstat-no" title="statement not covered" >        window.location.href = '/login.html';</span>
     }
 })();
 &nbsp;
 // URL-based routing
-function <span class="fstat-no" title="function not covered" >getPageFromURL(</span>) {
-    const path = <span class="cstat-no" title="statement not covered" >window.location.pathname;</span>
+function <span class="fstat-no" title="function not covered" >getPageFromHash(</span>) {
+    const hash = <span class="cstat-no" title="statement not covered" >window.location.hash.replace("#", "").replace("/", "");</span>
     const validPages = <span class="cstat-no" title="statement not covered" >['transactions', 'members', 'campaigns', 'settings', 'messages'];</span>
     
     // Remove leading slash and get page name
-    const pageName = <span class="cstat-no" title="statement not covered" >path.replace(/^\//, '').replace('.html', '');</span>
+    const pageName = <span class="cstat-no" title="statement not covered" >hash;</span>
     
 <span class="cstat-no" title="statement not covered" >    if (validPages.includes(pageName)) {</span>
 <span class="cstat-no" title="statement not covered" >        return pageName;</span>
@@ -5359,7 +5357,7 @@ function <span class="fstat-no" title="function not covered" >getPageFromURL(</s
 <span class="cstat-no" title="statement not covered" >    initModals();</span>
     
     // Set page based on URL
-    const initialPage = <span class="cstat-no" title="statement not covered" >getPageFromURL();</span>
+    const initialPage = <span class="cstat-no" title="statement not covered" >getPageFromHash();</span>
 <span class="cstat-no" title="statement not covered" >    showPage(initialPage, false); </span>// Don't update URL on initial load
 });
 &nbsp;
@@ -5384,8 +5382,7 @@ function <span class="fstat-no" title="function not covered" >showPage(</span>pa
     
     // Update URL without page reload
 <span class="cstat-no" title="statement not covered" >    if (updateURL) {</span>
-        const newURL = <span class="cstat-no" title="statement not covered" >'/' + pageId;</span>
-<span class="cstat-no" title="statement not covered" >        window.history.pushState({ page: pageId }, '', newURL);</span>
+<span class="cstat-no" title="statement not covered" >        window.location.hash = '#' + pageId;</span>
     }
     
     // Auto-load data based on page
@@ -5397,8 +5394,8 @@ function <span class="fstat-no" title="function not covered" >showPage(</span>pa
 }
 &nbsp;
 // Handle browser back/forward buttons
-<span class="cstat-no" title="statement not covered" >window.addEventListener('popstate', <span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {</span>
-    const pageId = <span class="cstat-no" title="statement not covered" >event.state?.page || getPageFromURL();</span>
+<span class="cstat-no" title="statement not covered" >window.addEventListener('hashchange', <span class="fstat-no" title="function not covered" >(e</span>vent) =&gt; {</span>
+    const pageId = <span class="cstat-no" title="statement not covered" >getPageFromHash();</span>
 <span class="cstat-no" title="statement not covered" >    showPage(pageId, false);</span>
 });
 &nbsp;
@@ -7942,7 +7939,7 @@ function <span class="fstat-no" title="function not covered" >toggleMemberPasswo
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-11T07:26:05.723Z
+                at 2026-01-11T07:46:42.239Z
             </div>
         <script src="prettify.js"></script>
         <script>

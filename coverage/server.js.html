@@ -2263,6 +2263,32 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -2979,32 +3005,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const express = <span class="cstat-no" title="statement not covered" >require('express');</span>
 const { Pool } = <span class="cstat-no" title="statement not covered" >require('pg');</span>
 const cors = <span class="cstat-no" title="statement not covered" >require('cors');</span>
@@ -3734,6 +3734,32 @@ async function <span class="fstat-no" title="function not covered" >logTransacti
 &nbsp;
 <span class="cstat-no" title="statement not covered" >logger.info('✅ Transactions API loaded');</span>
 &nbsp;
+// ============================================
+// SPA ROUTES - Serve index.html for all app pages
+// ============================================
+&nbsp;
+// Define all valid SPA routes
+const spaRoutes = <span class="cstat-no" title="statement not covered" >['/members', '/transactions', '/settings', '/campaigns', '/messages'];</span>
+&nbsp;
+// Handle SPA routes - serve index.html
+<span class="cstat-no" title="statement not covered" >spaRoutes.forEach(<span class="fstat-no" title="function not covered" >ro</span>ute =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    app.get(route, <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >        res.sendFile(path.join(__dirname, 'index.html'));</span>
+    });
+});
+&nbsp;
+// Login page route
+<span class="cstat-no" title="statement not covered" >app.get('/login', <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    res.sendFile(path.join(__dirname, 'login.html'));</span>
+});
+&nbsp;
+// Register page route  
+<span class="cstat-no" title="statement not covered" >app.get('/register', <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    res.sendFile(path.join(__dirname, 'register.html'));</span>
+});
+&nbsp;
+<span class="cstat-no" title="statement not covered" >logger.info('✅ SPA Routes loaded');</span>
+&nbsp;
 const PORT = <span class="cstat-no" title="statement not covered" >process.env.PORT || 3000;</span>
 <span class="cstat-no" title="statement not covered" >app.listen(PORT, <span class="fstat-no" title="function not covered" >()</span> =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    logger.info(`🚀 C.R.E.A.M. CRM Server running on http://localhost:${PORT}`);</span>
@@ -4450,32 +4476,6 @@ const PORT = <span class="cstat-no" title="statement not covered" >process.env.P
 &nbsp;
 <span class="cstat-no" title="statement not covered" >logger.info('✅ System Monitoring API loaded');</span>
 &nbsp;
-&nbsp;
-// ============================================
-// SPA ROUTES - Serve index.html for all app pages
-// ============================================
-&nbsp;
-// Define all valid SPA routes
-const spaRoutes = <span class="cstat-no" title="statement not covered" >['/members', '/transactions', '/settings', '/campaigns', '/messages'];</span>
-&nbsp;
-// Handle SPA routes - serve index.html
-<span class="cstat-no" title="statement not covered" >spaRoutes.forEach(<span class="fstat-no" title="function not covered" >ro</span>ute =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    app.get(route, <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        res.sendFile(path.join(__dirname, 'index.html'));</span>
-    });
-});
-&nbsp;
-// Login page route
-<span class="cstat-no" title="statement not covered" >app.get('/login', <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    res.sendFile(path.join(__dirname, 'login.html'));</span>
-});
-&nbsp;
-// Register page route  
-<span class="cstat-no" title="statement not covered" >app.get('/register', <span class="fstat-no" title="function not covered" >(r</span>eq, res) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    res.sendFile(path.join(__dirname, 'register.html'));</span>
-});
-&nbsp;
-<span class="cstat-no" title="statement not covered" >logger.info('✅ SPA Routes loaded');</span>
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -4483,7 +4483,7 @@ const spaRoutes = <span class="cstat-no" title="statement not covered" >['/membe
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-01-11T07:26:05.739Z
+                at 2026-01-11T07:46:42.252Z
             </div>
         <script src="prettify.js"></script>
         <script>

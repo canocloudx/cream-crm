@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - C.R.E.A.M. COFFEE CRM</title>
+    <meta name="description" content="C.R.E.A.M. COFFEE CRM - Staff Login">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <!-- Import map for Three.js -->
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "./node_modules/three/build/three.module.js"
+        }
+      }
+    </script>
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+
+        #canvas-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: #050510;
+        }
+
+        .login-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .login-card {
+            pointer-events: auto;
+            background: rgba(15, 15, 25, 0.4);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            border-radius: 16px;
+            padding: 48px 40px;
+            width: 100%;
+            max-width: 420px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1), 0 0 80px rgba(255, 0, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+            margin: auto;
+        }
+
+        .login-form .form-input {
+            background: rgba(10, 10, 15, 0.6);
+        }
+
+        .login-logo img {
+            height: 60px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            margin-bottom: 12px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* NEW: Cyan Sign In Button */
+        .login-btn {
+            background: linear-gradient(135deg, #00ffff 0%, #00cccc 100%);
+            color: #000;
+            font-weight: 700;
+            border: none;
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #ccffff 0%, #00ffff 100%);
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.6);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+
+<body>
+    <div id="canvas-container"></div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-logo">
+                <img src="logo-icon.png" alt="C.R.E.A.M. Coffee">
+                <h1>C.R.E.A.M. COFFEE</h1>
+                <p>Staff Portal</p>
+            </div>
+
+            <form class="login-form" id="loginForm">
+                <div class="login-error" id="loginError">
+                    <span class="material-icons-round">error</span>
+                    <span id="loginErrorText">Invalid email or password</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">
+                        <span class="material-icons-round">email</span>
+                        Email Address
+                    </label>
+                    <input type="email" class="form-input" id="email" placeholder="Enter your email" required
+                        autocomplete="email">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        <span class="material-icons-round">lock</span>
+                        Password
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" class="form-input" id="password" placeholder="Enter your password"
+                            required autocomplete="current-password">
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <span class="material-icons-round">visibility_off</span>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="material-icons-round">login</span>
+                    Sign In
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p>First time? <a href="#" onclick="openSetPasswordModal(); return false;">Set your password</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const session = localStorage.getItem('staffSession');
+            if (session) {
+                try {
+                    const user = JSON.parse(session);
+                    if (user && user.id) {
+                        window.location.href = '/index.html#transactions';
+                    }
+                } catch (e) {
+                    localStorage.removeItem('staffSession');
+                }
+            }
+        });
+
+        function togglePassword() {
+            const input = document.getElementById('password');
+            const icon = document.querySelector('.password-toggle .material-icons-round');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility_off';
+            }
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            const errorDiv = document.getElementById('loginError');
+            const errorText = document.getElementById('loginErrorText');
+
+            errorDiv.classList.remove('show');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="material-icons-round rotating">sync</span> Signing in...';
+
+            try {
+                const response = await fetch('/api/staff/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await response.json();
+                if (data.success && data.user) {
+                    localStorage.setItem('staffSession', JSON.stringify(data.user));
+                    window.location.href = '/index.html#transactions';
+                } else {
+                    throw new Error(data.error || 'Invalid credentials');
+                }
+            } catch (error) {
+                errorText.textContent = error.message || 'Login failed. Please try again.';
+                errorDiv.classList.add('show');
+                btn.disabled = false;
+                btn.innerHTML = '<span class="material-icons-round">login</span> Sign In';
+            }
+        });
+
+        function openSetPasswordModal() {
+            alert("Please use the standard login page for password reset currently.");
+        }
+    </script>
+    <script type="module" src="js/login-scene.js"></script>
+</body>
+
+</html>
