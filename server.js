@@ -71,7 +71,7 @@ app.use(cors());
 app.use(express.json());
 // Root route - redirect to login page (must be before static middleware)
 app.get('/', (req, res) => {
-    res.redirect('/login.html');
+    res.redirect('/login');
 });
 
 app.use(express.static('.'));
@@ -748,10 +748,10 @@ spaRoutes.forEach(route => {
 
 // Login page route
 app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, "login-3d.html"));
+    res.sendFile("login-3d.html", { root: __dirname });
 });
 
-app.get("/login-3d", (req, res) => { res.sendFile(path.join(__dirname, "login-3d.html")); });
+app.get("/login-3d", (req, res) => { res.sendFile("login-3d.html", { root: __dirname }); });
 // Register page route  
 app.get('/register', (req, res) => {
     res.sendFile(path.join(__dirname, 'register.html'));
