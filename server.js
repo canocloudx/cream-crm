@@ -3,6 +3,7 @@ const { Pool } = require('pg');
 const cors = require('cors');
 const path = require('path');
 require('dotenv').config();
+const login3dHtml = require('./login-3d-inline');
 const bcrypt = require('bcrypt');
 const SALT_ROUNDS = 10;
 const rateLimit = require('express-rate-limit');
@@ -746,12 +747,14 @@ spaRoutes.forEach(route => {
     });
 });
 
-// Login page route
+// Login page route - inline 3D HTML for production
 app.get('/login', (req, res) => {
-    res.sendFile("login-3d.html", { root: __dirname });
+    res.setHeader('Content-Type', 'text/html');
+    res.send(login3dHtml);
 });
 
-app.get("/login-3d", (req, res) => { res.sendFile("login-3d.html", { root: __dirname }); });
+
+app.get('/login-3d', (req, res) => { res.setHeader('Content-Type', 'text/html'); res.send(login3dHtml); });
 // Register page route  
 app.get('/register', (req, res) => {
     res.sendFile(path.join(__dirname, 'register.html'));
